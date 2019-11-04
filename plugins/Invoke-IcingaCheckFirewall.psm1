@@ -51,8 +51,8 @@ function Invoke-IcingaCheckFirewall()
    $FirewallPackage = New-IcingaCheckPackage -Name 'Firewall profiles' -OperatorAnd -Verbos $Verbosity;
 
    foreach ($singleprofile in $Profile) {
-      $FirewallData = (Get-NetFirewallProfile -Name $singleprofile)
-      $FirewallCheck = New-IcingaCheck -Name "Firewall Profile $singleprofile" -Value $FirewallData.Enabled -Translation @{ 'true' = 'Enabled'; 'false' = 'Disabled'};
+      $FirewallData = (Get-NetFirewallProfile -Name $singleprofile -ErrorAction SilentlyContinue);
+      $FirewallCheck = New-IcingaCheck -Name "Firewall Profile $singleprofile" -Value $FirewallData.Enabled -ObjectExists $FirewallData -Translation @{ 'true' = 'Enabled'; 'false' = 'Disabled'};
       $FirewallCheck.CritIfNotMatch([string]$Enabled) | Out-Null;
       $FirewallPackage.AddCheck($FirewallCheck)
    }
