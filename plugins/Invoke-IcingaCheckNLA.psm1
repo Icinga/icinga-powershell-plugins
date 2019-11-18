@@ -31,11 +31,12 @@
 function Invoke-IcingaCheckNLA()
 {
    param(
-      [string]$Profile,
-      [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity  = 0,
-      [array]$NICs
-   );
+        [ValidateSet('DomainAuthenticated', 'Public', 'Private')]
+        [string]$Profile,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity  = 0,
+        [array]$NICs
+    );
 
    $NLAPackage = New-IcingaCheckPackage -Name 'NLA' -OperatorAnd -Verbos $Verbosity;
    
