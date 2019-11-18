@@ -55,5 +55,5 @@ function Invoke-IcingaCheckNLA()
       }
    }
 
-   return (New-IcingaCheckResult -Check $NLAPackage -NoPerfData $NoPerfData -Compile);
+   return (New-IcingaCheckResult -Check $NLAPackage -NoPerfData $TRUE -Compile);
 }
