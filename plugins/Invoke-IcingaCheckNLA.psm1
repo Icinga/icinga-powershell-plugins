@@ -30,7 +30,7 @@
 
 function Invoke-IcingaCheckNLA()
 {
-   param(
+    param(
         [ValidateSet('DomainAuthenticated', 'Public', 'Private')]
         [string]$Profile,
         [ValidateSet(0, 1, 2, 3)]
@@ -38,23 +38,23 @@ function Invoke-IcingaCheckNLA()
         [array]$NICs
     );
 
-   $NLAPackage = New-IcingaCheckPackage -Name 'NLA' -OperatorAnd -Verbos $Verbosity;
+    $NLAPackage = New-IcingaCheckPackage -Name 'NLA' -OperatorAnd -Verbos $Verbosity;
    
-   if ($NICs.Count -eq 0) {
-      foreach ($NLAData in Get-NetConnectionProfile) {
-          $NLAName = $NLAData.InterfaceAlias;
-          $NLACheck = New-IcingaCheck -Name "NLA for $NLAName" $NLAData.NetworkCategory -ObjectExists $NLAData -NoPerfData;
-          $NLACheck.CritIfNotMatch([string]$Profile) | Out-Null;
-          $NLAPackage.AddCheck($NLACheck);
-      }
-   } else {
-      foreach ($NIC in $NICs) {
-          $NLAData = (Get-NetConnectionProfile -InterfaceAlias $NIC);
-          $NLACheck = New-IcingaCheck -Name "NLA for $NIC" -Value $NLAData.NetworkCategory -ObjectExists $NLAData -NoPerfData;
-          $NLACheck.CritIfNotMatch([string]$Profile) | Out-Null;
-          $NLAPackage.AddCheck($NLACheck);
-      }
-   }
+    if ($NICs.Count -eq 0) {
+        foreach ($NLAData in Get-NetConnectionProfile) {
+            $NLAName = $NLAData.InterfaceAlias;
+            $NLACheck = New-IcingaCheck -Name "NLA for $NLAName" $NLAData.NetworkCategory -ObjectExists $NLAData -NoPerfData;
+            $NLACheck.CritIfNotMatch([string]$Profile) | Out-Null;
+            $NLAPackage.AddCheck($NLACheck);
+        }
+    } else {
+        foreach ($NIC in $NICs) {
+            $NLAData = (Get-NetConnectionProfile -InterfaceAlias $NIC);
+            $NLACheck = New-IcingaCheck -Name "NLA for $NIC" -Value $NLAData.NetworkCategory -ObjectExists $NLAData -NoPerfData;
+            $NLACheck.CritIfNotMatch([string]$Profile) | Out-Null;
+            $NLAPackage.AddCheck($NLACheck);
+        }
+    }
 
-   return (New-IcingaCheckResult -Check $NLAPackage -NoPerfData $TRUE -Compile);
+    return (New-IcingaCheckResult -Check $NLAPackage -NoPerfData $TRUE -Compile);
 }
