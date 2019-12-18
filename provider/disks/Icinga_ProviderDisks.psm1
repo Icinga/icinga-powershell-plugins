@@ -54,7 +54,7 @@ function Get-IcingaDiskPartitions()
         
         $DiskArray   = New-IcingaPerformanceCounterStructure -CounterCategory 'LogicalDisk' -PerformanceCounterHash (New-IcingaPerformanceCounterArray @('\LogicalDisk(*)\% free space'));
 
-        $diskPartitionSize = Get-Partition -DriveLetter $driveLetter;
+        $diskPartitionSize = (Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='${DriveLetter}:'");
 
         $PartitionDiskByDriveLetter.Add(
             $driveLetter,
