@@ -14,14 +14,14 @@
    [WARNING]: % Memory Check 78.74 is greater than 60
 .EXAMPLE
    PS> 
-.PARAMETER WarningBytes
+.PARAMETER Warning
    Used to specify a Warning threshold. In this case an string value.
 
-   The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20TB"
-.PARAMETER CriticalBytes
+   The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"
+.PARAMETER Critical
    Used to specify a Critical threshold. In this case an string value.
 
-   The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20TB"
+   The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"
 
 .PARAMETER Pagefile
    Switch which determines whether the pagefile should be used instead.
@@ -50,58 +50,79 @@
 
 function Invoke-IcingaCheckMemory()
 {
-      param(
-         [string]$CriticalBytes = $null,
-         [string]$WarningBytes  = $null,
-         $CriticalPercent       = $null,
-         $WarningPercent        = $null,
-   #        [switch]$PageFile,
-         [ValidateSet(0, 1, 2, 3)]
-         [int]$Verbosity        = 0,
-         [switch]$NoPerfData
-      );
-
-   If ([string]::IsNullOrEmpty($CriticalBytes) -eq $FALSE) {
-      $CrticalConvertedAll = Convert-Bytes $CriticalBytes -Unit B
-      [decimal]$CriticalConverted = $CriticalConvertedAll.value
-
-   }
-   If ([string]::IsNullOrEmpty($WarningBytes) -eq $FALSE) {
-      $WarningConvertedAll = Convert-Bytes $WarningBytes -Unit B
-      [decimal]$WarningConverted = $WarningConvertedAll.value
-   }
+   param(
+      [string]$Critical      = $null,
+      [string]$Warning       = $null,
+      $CriticalPercent       = $null,
+      $WarningPercent        = $null,
+      [ValidateSet(0, 1, 2, 3)]
+      [int]$Verbosity        = 0,
+      [switch]$NoPerfData
+   );
 
    $MemoryPackage = New-IcingaCheckPackage -Name 'Memory Usage' -OperatorAnd -Verbos $Verbosity;
    $MemoryData    = (Get-IcingaMemoryPerformanceCounter);
 
    # Auto-Detect?
    If (($MemoryData['Memory Total Bytes'] / [math]::Pow(2, 50)) -ge 1) {
-      $Unit = "PB"
+      $CalcUnit = 'PiB';
+      $Unit = "PB";
    } elseif (($MemoryData['Memory Total Bytes'] / [math]::Pow(2, 40)) -ge 1) {
-      $Unit = "TB"
+      $CalcUnit = 'TiB';
+      $Unit = "TB";
    } elseif (($MemoryData['Memory Total Bytes'] / [math]::Pow(2, 30)) -ge 1) {
-      $Unit = "GB"
+      $CalcUnit = 'GiB';
+      $Unit = "GB";
    } elseif (($MemoryData['Memory Total Bytes'] / [math]::Pow(2, 20)) -ge 1) {
-      $Unit = "MB"
+      $CalcUnit = 'MiB';
+      $Unit = "MB";
    } elseif (($MemoryData['Memory Total Bytes'] / [math]::Pow(2, 10)) -ge 1) {
-      $Unit = "KB"
+      $CalcUnit = 'KiB';
+      $Unit = "KB";
    } else {
-      $Unit = "B"
+      $CalcUnit = 'B';
+      $Unit = "B";
    }
 
-   $MemoryPerc             = New-IcingaCheck -Name 'Memory Percent Used' -Value $MemoryData['Memory Used %'] -Unit '%';
-   $MemoryByteUsed         = New-IcingaCheck -Name "Used Bytes" -Value $MemoryData['Memory Used Bytes'] -Unit 'B';
-   #$MemoryByteAvailable    = New-IcingaCheck -Name "Available Bytes" -Value $MemoryData['Memory Available Bytes'] -Unit 'B';
-   #$PageFileCheck          = New-IcingaCheck -Name 'PageFile Percent' -Value $MemoryData['PageFile %'] -Unit '%';
+   If ([string]::IsNullOrEmpty($Critical) -eq $FALSE) {
+      $CriticalConvertedAll = Convert-Bytes $Critical -Unit $Unit;
+      [decimal]$CriticalConverted = $CriticalConvertedAll.value;
+      if ($null -eq $CriticalPercent) {
+         $CriticalPercent = $Critical / $MemoryData['Memory Total Bytes'] * 100
+      }
+   }
+
+   If ([string]::IsNullOrEmpty($Warning) -eq $FALSE) {
+      $WarningConvertedAll = Convert-Bytes $Warning -Unit $Unit;
+      [decimal]$WarningConverted = $WarningConvertedAll.value;
+      if ($null -eq $WarningPercent) {
+         $WarningPercent = $Warning / $MemoryData['Memory Total Bytes'] * 100
+      }
+   }
+
+   If ($null -ne $CriticalPercent) {
+      if ([string]::IsNullOrEmpty($Critical)) {
+         $CriticalConverted = (Convert-Bytes ([string]::Format('{0}B', $MemoryData['Memory Total Bytes'] / 100 * $CriticalPercent)) -Unit $CalcUnit).Value;
+      }
+   }
+
+   If ($null -ne $WarningPercent) {
+      if ([string]::IsNullOrEmpty($Warning)) {
+         $WarningConverted = (Convert-Bytes ([string]::Format('{0}B', $MemoryData['Memory Total Bytes'] / 100 * $WarningPercent)) -Unit $CalcUnit).Value;
+      }
+   }
+
+   $UsedMemory     = Convert-Bytes ([string]::Format('{0}B', $MemoryData['Memory Used Bytes'])) -Unit $CalcUnit;
+   $TotalMemory    = Convert-Bytes ([string]::Format('{0}B', $MemoryData['Memory Total Bytes'])) -Unit $CalcUnit;
+   $MemoryPerc     = New-IcingaCheck -Name 'Memory Percent Used' -Value $MemoryData['Memory Used %'] -Unit '%';
+   $MemoryByteUsed = New-IcingaCheck -Name "Used Bytes" -Value $UsedMemory.value -Unit $Unit -Minimum 0 -Maximum $TotalMemory.value;
 
    # PageFile To-Do
-   $MemoryByteUsed.WarnOutOfRange($WarningConverted).CritOutOfRange($CrticalConverted) | Out-Null;
+   $MemoryByteUsed.WarnOutOfRange($WarningConverted).CritOutOfRange($CriticalConverted) | Out-Null;
    $MemoryPerc.WarnOutOfRange($WarningPercent).CritOutOfRange($CriticalPercent) | Out-Null;
 
    $MemoryPackage.AddCheck($MemoryPerc);
-   #$MemoryPackage.AddCheck($MemoryByteAvailable);
    $MemoryPackage.AddCheck($MemoryByteUsed);
-   #$MemoryPackage.AddCheck($PageFileCheck);
       
    return (New-IcingaCheckResult -Check $MemoryPackage -NoPerfData $NoPerfData -Compile);
 }
