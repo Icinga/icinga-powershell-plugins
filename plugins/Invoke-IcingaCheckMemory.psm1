@@ -13,7 +13,11 @@
    PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
    [WARNING]: % Memory Check 78.74 is greater than 60
 .EXAMPLE
-   PS> 
+   PS> Invoke-IcingaCheckMemory -WarningPercent 0:30 -CriticalPercent 0:50
+   [WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used
+   \_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"
+   | 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;8
+   1
 .PARAMETER Warning
    Used to specify a Warning threshold. In this case an string value.
 
