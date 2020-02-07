@@ -53,6 +53,8 @@ function Invoke-IcingaCheckUsedPartitionSpace()
 
    $DiskFree    = Get-IcingaDiskPartitions;
    $DiskPackage = New-IcingaCheckPackage -Name 'Used Partition Space' -OperatorAnd -Verbos $Verbosity;
+   $DiskBytePackage = New-IcingaCheckPackage -Name 'Used Partition Space in Bytes' -Verbose $Verbosity -Hidden;
+
 
    foreach ($Letter in $DiskFree.Keys) {
       if ($Include.Count -ne 0) {
@@ -69,9 +71,19 @@ function Invoke-IcingaCheckUsedPartitionSpace()
          }
       }
 
+      $Unit = Get-UnitPrefixIEC $DiskFree.([string]::Format($Letter))."Size"
+      $Bytes = [math]::Round(($DiskFree.([string]::Format($Letter))."Size") * (100-($DiskFree.([string]::Format($Letter))."Free Space")) / 100)
+      $ByteString = [string]::Format('{0}B', $Bytes);
+      $ByteValueConverted = Convert-Bytes -Value $ByteString -Unit $Unit;
+
+      $IcingaCheckByte = New-IcingaCheck -Name ([string]::Format( 'Used Partition Space in {0} for Partition {1}', $Unit, $Letter )) -Value $ByteValueConverted.Value -Unit $Unit;
+      $DiskBytePackage.AddCheck($IcingaCheckByte);
+
       $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $Letter)) -Value (100-($DiskFree.([string]::Format($Letter))."Free Space")) -Unit '%';
       $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
       $DiskPackage.AddCheck($IcingaCheck);
+      
+      $DiskPackage.AddCheck($DiskBytePackage);
    }
 
    return (New-IcingaCheckResult -Check $DiskPackage -NoPerfData $NoPerfData -Compile);
