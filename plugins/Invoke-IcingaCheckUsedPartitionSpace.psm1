@@ -28,7 +28,7 @@
    Used to specify an array of partitions to be excluded.
    e.g. 'C:\','D:\'
 .PARAMETER Include
-   Used to specify an array of partitions to be included.
+   Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.
    e.g. 'C:\','D:\'
 .INPUTS
    System.String
