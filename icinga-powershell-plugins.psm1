@@ -39,6 +39,8 @@ function Publish-IcingaPluginDocumentation()
     [string]$PluginDocDir = Join-Path -Path $PSScriptRoot -ChildPath 'doc/plugins';
     [int]$Index = 1;
 
+    Remove-Item -Path (Join-Path -Path $PluginDocDir -ChildPath '/*') -Recurse -Force;
+
     Set-Content -Path $PluginDocFile -Value '# Icinga Plugins';
     Add-Content -Path $PluginDocFile -Value '';
     Add-Content -Path $PluginDocFile -Value 'Below you will find a documentation for every single available plugin provided by this repository';
