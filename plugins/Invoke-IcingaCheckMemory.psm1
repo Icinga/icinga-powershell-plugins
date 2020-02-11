@@ -106,13 +106,17 @@ function Invoke-IcingaCheckMemory()
 
    If ($null -ne $CriticalPercent) {
       if ([string]::IsNullOrEmpty($Critical)) {
-         $CriticalConverted = (Convert-Bytes ([string]::Format('{0}B', $MemoryData['Memory Total Bytes'] / 100 * $CriticalPercent)) -Unit $CalcUnit).Value;
+         [string]$Value = ([string]::Format('{0}B', ($MemoryData['Memory Total Bytes'] / 100 * $CriticalPercent)));
+         $Value = $Value.Replace(',', '.');
+         $CriticalConverted = (Convert-Bytes $Value -Unit $CalcUnit).Value;
       }
    }
 
    If ($null -ne $WarningPercent) {
       if ([string]::IsNullOrEmpty($Warning)) {
-         $WarningConverted = (Convert-Bytes ([string]::Format('{0}B', $MemoryData['Memory Total Bytes'] / 100 * $WarningPercent)) -Unit $CalcUnit).Value;
+         [string]$Value = ([string]::Format('{0}B', ($MemoryData['Memory Total Bytes'] / 100 * $WarningPercent)));
+         $Value = $Value.Replace(',', '.');
+         $WarningConverted = (Convert-Bytes $Value -Unit $CalcUnit).Value;
       }
    }
 
