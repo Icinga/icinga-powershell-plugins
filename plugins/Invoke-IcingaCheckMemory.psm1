@@ -10,7 +10,7 @@
    This module is intended to be used to check on memory usage.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
 .EXAMPLE
-   PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
+   PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60MB -Critical 80MB
    [WARNING]: % Memory Check 78.74 is greater than 60
 .EXAMPLE
    PS> Invoke-IcingaCheckMemory -WarningPercent 30 -CriticalPercent 50
@@ -57,8 +57,8 @@ function Invoke-IcingaCheckMemory()
    param(
       [string]$Critical        = $null,
       [string]$Warning         = $null,
-      $CriticalPercent = $null,
-      $WarningPercent  = $null,
+      $CriticalPercent         = 100,
+      $WarningPercent          = 100,
       [ValidateSet(0, 1, 2, 3)]
       [int]$Verbosity          = 0,
       [switch]$NoPerfData
@@ -92,7 +92,7 @@ function Invoke-IcingaCheckMemory()
       $CriticalConvertedAll = Convert-Bytes $Critical -Unit $Unit;
       [decimal]$CriticalConverted = $CriticalConvertedAll.value;
       if ($null -eq $CriticalPercent) {
-         $CriticalPercent = $Critical / $MemoryData['Memory Total Bytes'] * 100
+         $CriticalPercent = $CriticalConverted / $MemoryData['Memory Total Bytes'] * 100
       }
    }
 
@@ -100,7 +100,7 @@ function Invoke-IcingaCheckMemory()
       $WarningConvertedAll = Convert-Bytes $Warning -Unit $Unit;
       [decimal]$WarningConverted = $WarningConvertedAll.value;
       if ($null -eq $WarningPercent) {
-         $WarningPercent = $Warning / $MemoryData['Memory Total Bytes'] * 100
+         $WarningPercent = $CriticalConverted / $MemoryData['Memory Total Bytes'] * 100
       }
    }
 
