@@ -52,7 +52,7 @@ function Invoke-IcingaCheckUsedPartitionSpace()
    );
 
    $DiskFree        = Get-IcingaDiskPartitions;
-   $DiskPackage     = New-IcingaCheckPackage -Name 'Used Partition Space' -OperatorAnd -Verbos $Verbosity;
+   $DiskPackage     = New-IcingaCheckPackage -Name 'Used Partition Space' -OperatorAnd -Verbose $Verbosity;
    $DiskBytePackage = New-IcingaCheckPackage -Name 'Used Partition Space in Bytes' -Verbose $Verbosity -Hidden;
 
    foreach ($Letter in $DiskFree.Keys) {
