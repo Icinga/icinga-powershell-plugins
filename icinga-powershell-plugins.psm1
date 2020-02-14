@@ -43,7 +43,19 @@ function Publish-IcingaPluginDocumentation()
 
     Set-Content -Path $PluginDocFile -Value '# Icinga Plugins';
     Add-Content -Path $PluginDocFile -Value '';
-    Add-Content -Path $PluginDocFile -Value 'Below you will find a documentation for every single available plugin provided by this repository';
+    Add-Content -Path $PluginDocFile -Value 'Below you will find a documentation for every single available plugin provided by this repository. Most of the plugins allow the usage of default Icinga threshold range handling, which is defined as follows:';
+    Add-Content -Path $PluginDocFile -Value '';
+    Add-Content -Path $PluginDocFile -Value '| Argument | Throws error on | Ok range                     |';
+    Add-Content -Path $PluginDocFile -Value '| ---      | ---             | ---                          |';
+    Add-Content -Path $PluginDocFile -Value '| 20       | < 0 or > 20     | 0 .. 20                      |';
+    Add-Content -Path $PluginDocFile -Value '| 20:      | < 20            | between 20 .. ∞              |';
+    Add-Content -Path $PluginDocFile -Value '| ~:20     | > 20            | between -∞ .. 20             |';
+    Add-Content -Path $PluginDocFile -Value '| 30:40    | < 30 or > 40    | between {30 .. 40}           |';
+    Add-Content -Path $PluginDocFile -Value '| `@30:40  | ≥ 30 and ≤ 40   | outside -∞ .. 29 and 41 .. ∞ |';
+    Add-Content -Path $PluginDocFile -Value '';
+    Add-Content -Path $PluginDocFile -Value 'Please ensure that you will escape the `@` if you are configuring it on the Icinga side. To do so, you will simply have to write an *\`* before the `@` symbol: \``@`';
+    Add-Content -Path $PluginDocFile -Value '';
+    Add-Content -Path $PluginDocFile -Value 'To test thresholds with different input values, you can use the Framework Cmdlet `Get-IcingaHelpThresholds`.';
     Add-Content -Path $PluginDocFile -Value '';
 
     $AvailablePlugins = Get-ChildItem -Path $PluginDir -Recurse -Filter *.psm1;
