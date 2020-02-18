@@ -495,6 +495,12 @@
     'Paused'          = 7;
 }
 
+[hashtable]$ServiceStartupType = @{
+    'Automatic' = 2;
+    'Manual'    = 3;
+    'Disabled'  = 4;
+}
+
 [hashtable]$ProviderEnums = @{
     #/lib/provider/bios
     BiosCharacteristics = $BiosCharacteristics;
@@ -519,7 +525,8 @@
     WindowsOSType = $WindowsOSType;
     #/lib/provider/services
     ServiceStatus = $ServiceStatus;
-    ServiceStatusName =$ServiceStatusName;
+    ServiceStatusName = $ServiceStatusName;
+    ServiceStartupType = $ServiceStartupType;
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');

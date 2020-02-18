@@ -3,17 +3,30 @@
    Checks if a service has a specified status.
 .DESCRIPTION
    Invoke-icingaCheckService returns either 'OK' or 'CRITICAL', if a service status is matching status to be checked.
+   If no specific services are configured to check for, the plugin will lookup all services which are configured to
+   run automatically on the Windows startup and report an error in case the service is not running and was not
+   terminated properly.
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
    This module is intended to be used to check whether one or more services have a certain status. 
    As soon as one of the specified services does not match the status, the function returns 'CRITICAL' instead of 'OK'.
 .EXAMPLE
-   PS>Invoke-IcingaCheckService -Service WiaRPC, Spooler -Status '1' -Verbose 3
+   PS>Invoke-IcingaCheckService
+   [OK] Check package "Services"
+.EXAMPLE
+   PS>Invoke-IcingaCheckService -Service WiaRPC, Spooler -Status 'Running' -Verbose 3
    [CRITICAL]: Check package "Services" is [CRITICAL] (Match All)
     \_ [OK]: Service "Ereignisse zum Abrufen von Standbildern (WiaRPC)" is Stopped
     \_ [CRITICAL]: Service "Druckwarteschlange (Spooler)" Running is not matching Stopped
+.EXAMPLE
+   PS>Invoke-IcingaCheckService -Exclude icinga2
+   [OK] Check package "Services"
 .PARAMETER Service
    Used to specify an array of services which should be checked against the status.
+   Seperated with ','
+.PARAMETER Exclude
+   Allows to exclude services which might come in handy for checking services which are configured to start automatically
+   on Windows but are not running and werent exited properly.
    Seperated with ','
 .PARAMETER Status
    Status for the specified service or services to check against.
@@ -30,6 +43,7 @@ function Invoke-IcingaCheckService()
 {
    param(
       [array]$Service,
+      [array]$Exclude     = @(),
       [ValidateSet('Stopped', 'StartPending', 'StopPending', 'Running', 'ContinuePending', 'PausePending', 'Paused')]
       [string]$Status     = 'Running',
       [ValidateSet(0, 1, 2, 3)]
@@ -39,17 +53,42 @@ function Invoke-IcingaCheckService()
 
    $ServicesPackage      = New-IcingaCheckPackage -Name 'Services' -OperatorAnd -Verbose $Verbosity;
    $ServicesCountPackage = New-IcingaCheckPackage -Name 'Count Services' -OperatorAnd -Verbose $Verbosity -Hidden;
-
+   $FetchedServices      = @{};
    [int]$StoppedCount,[int]$StartPendingCount,[int]$StopPendingCount,[int]$RunningCount,[int]$ContinuePendingCount,[int]$PausePendingCount,[int]$PausedCount,[int]$ServicesCounted = 0
-   foreach ($services in $Service) {
+
+   # Automatic load auto start services and check for errors in case no service
+   # to check for is configured
+   if ($Service.Count -eq 0) {
+      $AutoServices = Get-IcingaServices -Exclude $Exclude;
+      foreach ($autoservice in $AutoServices.Values) {
+         if ($autoservice.configuration.ExitCode -eq 0) {
+            continue;
+         }
+         if ($autoservice.configuration.StartType.Raw -ne $ProviderEnums.ServiceStartupType.Automatic) {
+            continue;
+         }
+         if ($autoservice.configuration.Status.Raw -eq $ProviderEnums.ServiceStatus.Running) {
+            continue;
+         }
+
+         $FetchedServices.Add(
+            $autoservice.metadata.ServiceName,
+            $autoservice
+         );
+      }
+   } else {
+      $FetchedServices = Get-IcingaServices -Service $Service -Exclude $Exclude;
+   }
+
+   foreach ($services in $FetchedServices.Keys) {
+      $services = $FetchedServices[$services];
       $IcingaCheck = $null;
 
-      $FoundService    = Get-IcingaServices -Service $services;
-      $ServiceName     = Get-IcingaServiceCheckName -ServiceInput $services -Service $FoundService;
+      $ServiceName     = Get-IcingaServiceCheckName -ServiceInput $services.metadata.DisplayName -Service $services;
       $ConvertedStatus = ConvertTo-ServiceStatusCode -Status $Status;
-      $StatusRaw       = $FoundService.Values.configuration.Status.raw;
+      $StatusRaw       = $services.configuration.Status.raw;
 
-      $IcingaCheck = New-IcingaCheck -Name $ServiceName -Value $StatusRaw -ObjectExists $FoundService -Translation $ProviderEnums.ServiceStatusName;
+      $IcingaCheck = New-IcingaCheck -Name $ServiceName -Value $StatusRaw -ObjectExists $services -Translation $ProviderEnums.ServiceStatusName;
       $IcingaCheck.CritIfNotMatch($ConvertedStatus) | Out-Null;
       $ServicesPackage.AddCheck($IcingaCheck)
 

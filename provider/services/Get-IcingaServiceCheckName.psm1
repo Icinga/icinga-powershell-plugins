@@ -14,7 +14,7 @@ function Get-IcingaServiceCheckName()
 
     return [string]::Format(
         'Service "{0} ({1})"',
-        $Service.Values.metadata.DisplayName,
-        $Service.Values.metadata.ServiceName
+        $Service.metadata.DisplayName,
+        $Service.metadata.ServiceName
     );
 }
