@@ -81,22 +81,22 @@
 function Invoke-IcingaCheckCertificate()
 {
    param(
-    #Checking
-	  [switch]$Trusted,
-	  $WarningStart          = $null,
-	  $CriticalStart         = $null,
-	  $WarningEnd            = $null,
-	  $CriticalEnd           = $null,
-    #CertStore-Related Param
-	  [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
-	  [string]$CertStore     = '*',
-	  [array]$CertThumbprint = $null,
-	  [array]$CertSubject    = $null,
-	  $CertStorePath         = '*',
-	#Local Certs
+      #Checking
+      [switch]$Trusted,
+      $WarningStart          = $null,
+      $CriticalStart         = $null,
+      $WarningEnd            = $null,
+      $CriticalEnd           = $null,
+      #CertStore-Related Param
+      [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
+      [string]$CertStore     = '*',
+      [array]$CertThumbprint = $null,
+      [array]$CertSubject    = $null,
+      $CertStorePath         = '*',
+      #Local Certs
       [array]$CertPaths      = $null,
-	  [array]$CertName		 = $null,
-	#Other
+      [array]$CertName       = $null,
+      #Other
       [ValidateSet(0, 1, 2, 3)]
       [int]$Verbosity        = 0,
       [switch]$NoPerfData
@@ -108,22 +108,22 @@ function Invoke-IcingaCheckCertificate()
 
    if($Trusted) {
       foreach($Cert in $CertData.CertStore) {
-	     if ($Cert.Thumbprint -eq $CompareThumbprint) {
-		    continue;
-		 }
-		 $CompareThumbprint = $Cert.Thumbprint;
+         if ($Cert.Thumbprint -eq $CompareThumbprint) {
+	    continue;
+	 }
+	 $CompareThumbprint = $Cert.Thumbprint;
          $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (Test-Certificate $Cert -ErrorAction silentlycontinue);
-		 $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
- 		 $CertPackage.AddCheck($IcingaCheck);
+	 $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
+ 	 $CertPackage.AddCheck($IcingaCheck);
       }
       foreach($Cert in $CertData.CertFile) {
-	  	 if ($Cert.Thumbprint -eq $CompareThumbprint) {
-		    continue;
-		 }
-		 $CompareThumbprint = $Cert.Thumbprint;
+         if ($Cert.Thumbprint -eq $CompareThumbprint) {
+            continue;
+         }
+         $CompareThumbprint = $Cert.Thumbprint;
          $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (Test-Certificate $Cert -ErrorAction silentlycontinue);
-		 $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
-		 $CertPackage.AddCheck($IcingaCheck);
+         $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
+         $CertPackage.AddCheck($IcingaCheck);
       }
    }
 
@@ -132,22 +132,22 @@ function Invoke-IcingaCheckCertificate()
       $CompareThumbprint = $null
       $CertPackageStart = New-IcingaCheckPackage -Name 'Certificate Start' -OperatorAnd -Verbose $Verbosity;
       foreach($Cert in $CertData.CertStore) {
-	  	 if ($Cert.Thumbprint -eq $CompareThumbprint) {
-		    continue;
-		 }
-		 $CompareThumbprint = $Cert.Thumbprint;
+         if ($Cert.Thumbprint -eq $CompareThumbprint) {
+            continue;
+         }
+         $CompareThumbprint = $Cert.Thumbprint;
          $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotBefore.DateTime).TotalSeconds;
          $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningStart)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalStart)) | Out-Null;
 	     $CertPackageStart.AddCheck($IcingaCheck);
-	  }
-	  foreach($Cert in $CertData.CertFile) {
-	  	 if ($Cert.Thumbprint -eq $CompareThumbprint) {
-		    continue;
-		 }
-		 $CompareThumbprint = $Cert.Thumbprint;
+      }
+      foreach($Cert in $CertData.CertFile) {
+         if ($Cert.Thumbprint -eq $CompareThumbprint) {
+            continue;
+         }
+         $CompareThumbprint = $Cert.Thumbprint;
          $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
          $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningStart)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalStart)) | Out-Null;
-		 $CertPackageStart.AddCheck($IcingaCheck);
+         $CertPackageStart.AddCheck($IcingaCheck);
       }
    }
 # Check for End of Cert
@@ -155,24 +155,23 @@ function Invoke-IcingaCheckCertificate()
       $CompareThumbprint = $null
       $CertPackageEnd = New-IcingaCheckPackage -Name 'Certificate End' -OperatorAnd -Verbose $Verbosity;
       foreach($Cert in $CertData.CertStore) {
-	  	 if ($Cert.Thumbprint -eq $CompareThumbprint) {
-		    continue;
-		 }
-		 $CompareThumbprint = $Cert.Thumbprint;
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
-		 $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
-		 $CertPackageEnd.AddCheck($IcingaCheck);
-
-	  }
-	  foreach($Cert in $CertData.CertFile) {
-	  	 if ($Cert.Thumbprint -eq $CompareThumbprint) {
-		    continue;
-		 }
-		 $CompareThumbprint = $Cert.Thumbprint;
+         if ($Cert.Thumbprint -eq $CompareThumbprint) {
+            continue;
+         }
+         $CompareThumbprint = $Cert.Thumbprint;
          $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
          $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
-		 $CertPackageEnd.AddCheck($IcingaCheck);
-     }
+         $CertPackageEnd.AddCheck($IcingaCheck);
+         }
+      foreach($Cert in $CertData.CertFile) {
+         if ($Cert.Thumbprint -eq $CompareThumbprint) {
+            continue;
+         }
+         $CompareThumbprint = $Cert.Thumbprint;
+         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject, $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
+         $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
+         $CertPackageEnd.AddCheck($IcingaCheck);
+      }
    }
 
    $CertPackage.AddCheck($CertPackageStart);
