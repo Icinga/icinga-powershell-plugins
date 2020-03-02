@@ -9,7 +9,7 @@ function Get-IcingaCertificateData()
       $CertStorePath         = '*',
       #Local Certs
       [array]$CertPaths      = $null,
-      [array]$CertName	     = $null
+      [array]$CertName       = $null
 
    );
    [hashtable]$CertData = @{};
