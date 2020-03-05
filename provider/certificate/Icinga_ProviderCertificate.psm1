@@ -2,16 +2,16 @@ function Get-IcingaCertificateData()
 {
    param(
       #CertStore-Related Param
-      [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
-      [string]$CertStore     = '*',
+      [ValidateSet('*', 'LocalMachine', 'CurrentUser', $null)]
+      [string]$CertStore     = $null,
       [array]$CertThumbprint = $null,
       [array]$CertSubject    = $null,
       $CertStorePath         = '*',
       #Local Certs
       [array]$CertPaths      = $null,
       [array]$CertName       = $null
-
    );
+
    [hashtable]$CertData = @{};
    
    if ([string]::IsNullOrEmpty($CertStore) -eq $FALSE){
@@ -25,7 +25,7 @@ function Get-IcingaCertificateData()
    if ($null -ne $CertDataFile) {
       foreach ($Cert in $CertDataFile) {
          $CertConverted = New-Object Security.Cryptography.X509Certificates.X509Certificate2 $Cert.FullName;
-	    $CertDataFile = $CertConverted;
+         $CertDataFile = $CertConverted;
       }
    }
 
@@ -38,37 +38,32 @@ function Get-IcingaCertificateData()
 function Get-IcingaCertStoreCertificates()
 {
    param(
-   #CertStore-Related Param
-   [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
-   [string]$CertStore = '*',
-   [array]$CertThumbprint = $null,
-   [array]$CertSubject    = $null,
-   $CertStorePath         = '*'
+      #CertStore-Related Param
+      [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
+      [string]$CertStore = '*',
+      [array]$CertThumbprint = $null,
+      [array]$CertSubject    = $null,
+      $CertStorePath         = '*'
    );
 
    $CertStoreArray = @();
    $CertStorePath  = [string]::Format('Cert:\{0}\{1}', $CertStore, $CertStorePath);
-   $CertStoreCerts = Get-ChildItem -Path $CertStorePath;
-   
-   if ($CertSubject -eq $null) {
-      $CertSubject += '*'
+   $CertStoreCerts = Get-ChildItem -Path $CertStorePath -Recurse;
+
+   if ($null -eq $CertSubject -And $null -eq $CertThumbprint) {
+      foreach ($Cert in $CertStoreCerts) {
+         $CertStoreArray += $Cert;
+      }
+      return $CertStoreCerts;
    }
    
-   if ($CertSubject -ne $null) {
-      foreach ($Subject in $CertSubject)
-      {
-         $CertStoreArray += Get-ChildItem -Path $CertStorePath -Recurse | Where-Object { $_.Subject -like $Subject };
+   foreach ($Cert in $CertStoreCerts) {
+      if (($CertSubject -Contains $Cert.Subject.TrimStart("CN=").Split(",")[0]) -Or ($CertSubject -eq '*')) {
+         $CertStoreArray += $Cert;
+      }
+      if ((($CertThumbprint -Contains $Cert) -Or ($CertThumbprint -eq '*')) -And $CertStoreArray -NotContains $Cert.Subject) {
+         $CertStoreArray += $Cert;
       }
    }
-   
-   if ($CertThumbprint -ne $null) {
-      foreach ($Thumbprint in $CertThumbprint)
-      {
-         if ($CertStoreArray.Thumbprint -like ($Thumbprint)) {
-            $CertStoreArray += Get-ChildItem -Path $CertStorePath -Recurse | Where-Object { $_.Thumbprint -like $Thumbprint };
-         }
-      }   
-   }
-   
    return $CertStoreArray;
 }
