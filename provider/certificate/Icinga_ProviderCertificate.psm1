@@ -58,10 +58,10 @@ function Get-IcingaCertStoreCertificates()
    }
    
    foreach ($Cert in $CertStoreCerts) {
-      if (($CertSubject -Contains $Cert.Subject.TrimStart("CN=").Split(",")[0]) -Or ($CertSubject -eq '*')) {
+      if (($CertSubject -Contains ($Cert.Subject.Substring(3).Split(",")[0])) -Or ($CertSubject -eq '*')) {
          $CertStoreArray += $Cert;
       }
-      if ((($CertThumbprint -Contains $Cert) -Or ($CertThumbprint -eq '*')) -And $CertStoreArray -NotContains $Cert.Subject) {
+      if ((($CertThumbprint -Contains $Cert.Thumbprint) -Or ($CertThumbprint -eq '*')) -And $CertStoreArray -NotContains $Cert.Subject) {
          $CertStoreArray += $Cert;
       }
    }
