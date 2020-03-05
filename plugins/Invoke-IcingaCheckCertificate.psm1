@@ -91,15 +91,17 @@ function Invoke-IcingaCheckCertificate()
       $CertStorePath         = '*',
       #Local Certs
       [array]$CertPaths      = $null,
-      [array]$CertName		 = $null,
+      [array]$CertName		  = $null,
       #Other
       [ValidateSet(0, 1, 2, 3)]
       [int]$Verbosity        = 0
    );
 
-   $CertData    = (Get-IcingaCertificateData -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath);
-   $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity;
-   
+   $CertData         = (Get-IcingaCertificateData -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath);
+   $CertPackage      = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity;
+   $ValidCertPackage = New-IcingaCheckPackage -Name 'Valid Certificates' -OperatorAnd -Verbose $Verbosity;
+   $UntrustedPackage = New-IcingaCheckPackage -Name 'Untrusted Certificates' -OperatorAnd -Verbose $Verbosity;
+
    if (($null -ne $WarningStart) -Or ($null -ne $CriticalStart)) {
       $CertPackageStart = New-IcingaCheckPackage -Name 'Certificate Start' -OperatorAnd -Verbose $Verbosity;
    }
@@ -107,26 +109,48 @@ function Invoke-IcingaCheckCertificate()
       $CertPackageEnd   = New-IcingaCheckPackage -Name 'Certificate End' -OperatorAnd -Verbose $Verbosity;
    }
 
-   foreach($Cert in ([array]$CertData.CertStore + [array]$CertData.CertFile)) {
-      if ($Trusted) {
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (Test-Certificate $Cert -ErrorAction silentlycontinue);
+   foreach ($subject in $CertData.CertStore.Keys) {
+      $thumbprints = $CertData.CertStore[$subject];
+      foreach ($cert in $thumbprints.Keys) {
+         $cert = $thumbprints[$cert];
+
+         $CertValid = $FALSE;
+         if ($Trusted) {
+            $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+         } else {
+            $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -AllowUntrustedRoot;
+         }
+
+         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value $CertValid;
          $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
-         $CertPackage.AddCheck($IcingaCheck);
+         if ($Trusted) {
+            $ValidCertPackage.AddCheck($IcingaCheck);
+         } else {
+            $UntrustedPackage.AddCheck($IcingaCheck);
+         }
+
+         if (($null -ne $WarningStart) -Or ($null -ne $CriticalStart)) {
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotBefore.DateTime).TotalSeconds;
+            $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningStart)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalStart)) | Out-Null;
+            $CertPackageStart.AddCheck($IcingaCheck);
+         }
+         if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
+            $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
+            $CertPackageEnd.AddCheck($IcingaCheck);
+         }
       }
-      if (($null -ne $WarningStart) -Or ($null -ne $CriticalStart)) {
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotBefore.DateTime).TotalSeconds;
-         $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningStart)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalStart)) | Out-Null;
-         $CertPackageStart.AddCheck($IcingaCheck);
-      }
-      if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
-         $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
-         $CertPackageEnd.AddCheck($IcingaCheck);
-      }
+   }
+
+   if ($ValidCertPackage.HasChecks()) {
+      $CertPackage.AddCheck($ValidCertPackage);
+   }
+   if ($UntrustedPackage.HasChecks()) {
+      $CertPackage.AddCheck($UntrustedPackage);
    }
 
    $CertPackage.AddCheck($CertPackageStart);
    $CertPackage.AddCheck($CertPackageEnd);
-   
+
    return (New-IcingaCheckResult -Name 'Certificates' -Check $CertPackage -NoPerfData $TRUE -Compile);
 }
