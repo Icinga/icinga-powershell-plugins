@@ -14,11 +14,11 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| CriticalBytes | String | false |  | Used to specify a Critical threshold. In this case an string value.  The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20TB" |
-| WarningBytes | String | false |  | Used to specify a Warning threshold. In this case an string value.  The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20TB" |
+| Critical | String | false |  | Used to specify a Critical threshold. In this case an string value.  The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" |
+| Warning | String | false |  | Used to specify a Warning threshold. In this case an string value.  The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" |
 | CriticalPercent | Object | false |  | Used to specify a Critical threshold. In this case an integer value.  Like 30 for 30%. If memory usage is below 30%, the check will return CRITICAL. |
 | WarningPercent | Object | false |  |  |
-| Verbosity | Int32 | false | 0 | [switch]$PageFile, |
+| Verbosity | Int32 | false | 0 |  |
 | NoPerfData | SwitchParameter | false | False |  |
 
 ## Examples
@@ -38,11 +38,11 @@ Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
 ### Example Command 2
 
 ```powershell
-
+Invoke-IcingaCheckMemory -WarningPercent 30 -CriticalPercent 50
 ```
 
 ### Example Output 2
 
 ```powershell
-
+[WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used\_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"| 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;81
 ```

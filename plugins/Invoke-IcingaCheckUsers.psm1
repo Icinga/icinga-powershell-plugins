@@ -1,18 +1,24 @@
 <#
 .SYNOPSIS
-   Checks how many files are in a directory.
+   Checks how many users are logged on to the host
 .DESCRIPTION
-   Invoke-IcingaCheckDirectory returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-   e.g 'C:\Users\Icinga\Backup' contains 200 files, WARNING is set to 150, CRITICAL is set to 300. In this case the check will return CRITICAL
+   Invoke-IcingaCheckUsers returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
+   e.g There are 13 users logged on, WARNING is set to 8, CRITICAL is set to 15. In this case the check will return WARNING.
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
-   This module is intended to be used to check how many files and directories are within are specified path. 
+   This module is intended to check how many users are loged onto a host. 
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
    
 .EXAMPLE
-   PS>
+   PS> Invoke-IcingaCheckUsers -Warning 8 -Critical 15
+   [WARNING] Check package "Users" - [WARNING] Logged On Users
+   \_ [WARNING] Logged On Users: Value "13" is greater than threshold "8"
+   | 'logged_on_users'=13;8;15 'logged_on_users_test'=5;; 'logged_on_users_umfd0'=1;; 'logged_on_users_dwm1'=2;; 'logged_on_users_system'=1;; 'logged_on_users_dwm2'=2;; 'logged_on_users_umfd1'=1;; 'logged_on_users_umfd2'=1;;
 .EXAMPLE
-   PS>
+   PS>  Invoke-IcingaCheckUsers -Username 'astoll' -Warning 8 -Critical 15
+   [OK] Check package "Users"
+   | 'logged_on_users_test'=5;8;15
+   0
 .PARAMETER Warning
    Used to specify a Warning threshold. In this case an integer value.
 .PARAMETER Critical

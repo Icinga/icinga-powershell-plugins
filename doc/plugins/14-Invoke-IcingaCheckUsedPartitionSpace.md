@@ -15,7 +15,7 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 | ---      | ---  | ---      | ---     | ---         |
 | Warning | Object | false |  | Used to specify a Warning threshold. In this case an integer value. |
 | Critical | Object | false |  | Used to specify a Critical threshold. In this case an integer value. |
-| Include | Array | false | @() | Used to specify an array of partitions to be included. e.g. 'C:\','D:\' |
+| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked. e.g. 'C:\','D:\' |
 | Exclude | Array | false | @() | Used to specify an array of partitions to be excluded. e.g. 'C:\','D:\' |
 | NoPerfData | SwitchParameter | false | False |  |
 | Verbosity | Int32 | false | 0 |  |

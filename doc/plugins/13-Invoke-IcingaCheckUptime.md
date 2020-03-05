@@ -31,3 +31,15 @@ Invoke-IcingaCheckUptime -Warning 18d -Critical 20d
 ```powershell
 [WARNING]: Check package "Windows Uptime: Days: 19 Hours: 13 Minutes: 48 Seconds: 29" is [WARNING]| 'Windows Uptime'=1691309,539176s;1555200;1728000
 ```
+
+### Example Command 2
+
+```powershell
+Invoke-IcingaCheckUptime -Warning 25d:
+```
+
+### Example Output 2
+
+```powershell
+[WARNING] Check package "System Uptime: 22d 16h 42m 35s" - [WARNING] System Uptime\_ [WARNING] System Uptime: Value "1960955.28s" is lower than threshold "2160000s"| 'system_uptime'=1960955.28s;2160000:;1
+```
