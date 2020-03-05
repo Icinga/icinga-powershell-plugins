@@ -17,14 +17,14 @@
    0
 .EXAMPLE
    PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -WarningEnd '@0d:10000d' -Verbosity 3
-   [WARNING] Check package "Certificates" (Match All) - [WARNING] Certificate astoll-powershe(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
+   [WARNING] Check package "Certificates" (Match All) - [WARNING] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
    \_ [WARNING] Check package "Certificate End" (Match All)
    \_ [WARNING] Certificate test-server(AD147B1AC4EF5B91F7261A7EE517C418844D7756): Value "471323842.25" is between threshold "0:864000000"
    \_ [WARNING] Certificate Cloudbase-Init WinRM(ACACBAC1A29ADC68D710C715DA20B036407BA3A8): Value "313538391.82" is between threshold "0:864000000"
 .EXAMPLE
    PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -Verbosity 3 -Trusted
-   [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate astoll-powershe(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
-   \_ [CRITICAL] Certificate astoll-powershe(AD647B1AC4EF5B91F7261A7EE517C418844D7756): Value "False" is not matching threshold "True"
+   [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
+   \_ [CRITICAL] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756): Value "False" is not matching threshold "True"
    \_ [CRITICAL] Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8): Value "False" is not matching threshold "True"
 .PARAMETER Trusted
    Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root.
@@ -77,7 +77,7 @@
 function Invoke-IcingaCheckCertificate()
 {
    param(
-   #Checking
+      #Checking
       [switch]$Trusted,
       $WarningStart          = $null,
       $CriticalStart         = $null,
