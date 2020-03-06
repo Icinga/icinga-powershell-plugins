@@ -109,10 +109,10 @@ function Invoke-IcingaCheckCertificate()
       $CertPackageEnd   = New-IcingaCheckPackage -Name 'Certificate End' -OperatorAnd -Verbose $Verbosity;
    }
 
-   foreach ($subject in $CertData.CertStore.Keys) {
-      $thumbprints = $CertData.CertStore[$subject];
-      foreach ($cert in $thumbprints.Keys) {
-         $cert = $thumbprints[$cert];
+   foreach ($Subject in $CertData.Keys) {
+      $Thumbprints = $CertData[$Subject];
+      foreach ($cert in $Thumbprints.Keys) {
+         $cert = $Thumbprints[$cert];
 
          $CertValid = $FALSE;
          if ($Trusted) {
