@@ -26,11 +26,7 @@ function Get-IcingaCertificateData()
   if ($null -ne $CertDataFile) {
      foreach ($Cert in $CertDataFile) {
         $CertConverted = New-Object Security.Cryptography.X509Certificates.X509Certificate2 $Cert.FullName;
-        $CertData.Add(
-           $CertConverted.Subject, @{
-              $CertConverted.Thumbprint = $CertConverted
-           }
-        );
+        $CertData = Add-IcingaCertificateToHashtable -Certificate $CertConverted -CertCache $CertData;
      }
   }
 
@@ -85,10 +81,12 @@ function Add-IcingaCertificateToHashtable()
    }
 
    if ($CertCache.ContainsKey($Certificate.Subject)) {
-      $CertCache[$Certificate.Subject].Add(
-         $Certificate.Thumbprint,
-         $Certificate
-      );
+      if ($CertCache[$Certificate.Subject].ContainsKey($Certificate.Thumbprint) -eq $FALSE) {
+         $CertCache[$Certificate.Subject].Add(
+            $Certificate.Thumbprint,
+            $Certificate
+         );
+      }
    } else {
       $CertCache.Add(
          $Certificate.Subject,

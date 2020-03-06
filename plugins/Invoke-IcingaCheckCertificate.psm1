@@ -73,7 +73,6 @@
 .NOTES
 #>
 
-
 function Invoke-IcingaCheckCertificate()
 {
    param(
@@ -120,8 +119,15 @@ function Invoke-IcingaCheckCertificate()
          } else {
             $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -AllowUntrustedRoot;
          }
+         $CertName = '';
+         if ($Cert.Subject.Contains(',')) {
+            $CertName = ([string]::Format('Certificate {0}({1})', $Cert.Subject.Split(",")[0], $Cert.Thumbprint));
+         } else {
+            $CertName = $Cert.Subject;
+         }
+         $CertName = $CertName.Replace('CN=', '').Replace('cn=', '');
 
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value $CertValid;
+         $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CertValid;
          $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
          if ($Trusted) {
             $ValidCertPackage.AddCheck($IcingaCheck);
@@ -130,12 +136,12 @@ function Invoke-IcingaCheckCertificate()
          }
 
          if (($null -ne $WarningStart) -Or ($null -ne $CriticalStart)) {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotBefore.DateTime).TotalSeconds;
+            $IcingaCheck = New-IcingaCheck -Name $CertName -Value (New-TimeSpan -End $Cert.NotBefore.DateTime).TotalSeconds;
             $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningStart)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalStart)) | Out-Null;
             $CertPackageStart.AddCheck($IcingaCheck);
          }
          if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Certificate {0}({1})', $Cert.Subject.Substring(3).Split(",")[0], $Cert.Thumbprint)) -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
+            $IcingaCheck = New-IcingaCheck -Name $CertName -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
             $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
             $CertPackageEnd.AddCheck($IcingaCheck);
          }
