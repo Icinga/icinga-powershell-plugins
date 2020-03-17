@@ -132,10 +132,10 @@ function Invoke-IcingaCheckCertificate()
          }
 
          if ($null -ne $CriticalStart) {
-		    [datetime]$CritDateTime=$CriticalStart
-		    $CritStart=((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
+	    [datetime]$CritDateTime=$CriticalStart
+	    $CritStart=((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
             $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CritStart;
-			$IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
+	    $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
             $CertPackageStart.AddCheck($IcingaCheck);
          }
          if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
