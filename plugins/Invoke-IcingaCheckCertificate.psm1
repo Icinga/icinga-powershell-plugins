@@ -14,7 +14,6 @@
    \_ [OK] Check package "Certificate End" (Match All)
       \_ [OK] Certificate CN=Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8): 313784201.23
    | 'certificate_cncloudbaseinit_winrmacacbac2a29adc68d710c715da20b036407ba3a8'=313784201.23;@864000:31536000;@0:864000
-   0
 .EXAMPLE
    PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -WarningEnd '@0d:10000d' -Verbosity 3
    [WARNING] Check package "Certificates" (Match All) - [WARNING] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
@@ -26,17 +25,14 @@
    [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
    \_ [CRITICAL] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756): Value "False" is not matching threshold "True"
    \_ [CRITICAL] Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8): Value "False" is not matching threshold "True"
+
 .PARAMETER Trusted
    Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root.
    Will return Critical in case of untrust.
 
-.PARAMETER WarningStart
-   Used to specify a Warning range for the start date of an certificate. In this case a string.
-   Allowed units include: ms, s, m, h, d, w, M, y
-
 .PARAMETER CriticalStart
-   Used to specify a Critical range for the start date of an certificate. In this case a string.
-   Allowed units include: ms, s, m, h, d, w, M, y
+   Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully.
+   Use format like: 'yyyy-MM-dd'
    
 .PARAMETER WarningEnd
    Used to specify a Warning range for the end date of an certificate. In this case a string.
@@ -78,7 +74,6 @@ function Invoke-IcingaCheckCertificate()
    param(
       #Checking
       [switch]$Trusted,
-      $WarningStart          = $null,
       $CriticalStart         = $null,
       $WarningEnd            = $null,
       $CriticalEnd           = $null,
@@ -101,7 +96,7 @@ function Invoke-IcingaCheckCertificate()
    $ValidCertPackage = New-IcingaCheckPackage -Name 'Valid Certificates' -OperatorAnd -Verbose $Verbosity;
    $UntrustedPackage = New-IcingaCheckPackage -Name 'Untrusted Certificates' -OperatorAnd -Verbose $Verbosity;
 
-   if (($null -ne $WarningStart) -Or ($null -ne $CriticalStart)) {
+   if ($null -ne $CriticalStart) {
       $CertPackageStart = New-IcingaCheckPackage -Name 'Certificate Start' -OperatorAnd -Verbose $Verbosity;
    }
    if (($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
@@ -121,11 +116,12 @@ function Invoke-IcingaCheckCertificate()
          }
          $CertName = '';
          if ($Cert.Subject.Contains(',')) {
-            $CertName = ([string]::Format('Certificate {0}({1})', $Cert.Subject.Split(",")[0], $Cert.Thumbprint));
+		    $SpanTilAfter = (New-TimeSpan -Start (Get-Date) -End $Cert.NotAfter);
+            $CertName = ([string]::Format('Certificate {0}({1} : {2}d)', $Cert.Subject.Split(",")[0], $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
          } else {
-            $CertName = $Cert.Subject;
+            $CertName = ([string]::Format('Certificate {0}({1} : {2}d)', $Cert.Subject, $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
          }
-         $CertName = $CertName.Replace('CN=', '').Replace('cn=', '');
+         $CertName = $CertName.Replace('CN=', '').Replace('cn=', '').Replace('OU=', '').Replace('ou=', '');
 
          $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CertValid;
          $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
@@ -135,9 +131,11 @@ function Invoke-IcingaCheckCertificate()
             $UntrustedPackage.AddCheck($IcingaCheck);
          }
 
-         if (($null -ne $WarningStart) -Or ($null -ne $CriticalStart)) {
-            $IcingaCheck = New-IcingaCheck -Name $CertName -Value (New-TimeSpan -End $Cert.NotBefore.DateTime).TotalSeconds;
-            $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningStart)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalStart)) | Out-Null;
+         if ($null -ne $CriticalStart) {
+		    [datetime]$CritDateTime=$CriticalStart
+		    $CritStart=((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
+            $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CritStart;
+			$IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
             $CertPackageStart.AddCheck($IcingaCheck);
          }
          if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
