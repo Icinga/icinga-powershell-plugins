@@ -12,23 +12,48 @@ function Get-IcingaCertificateData()
       [array]$CertName       = $null
    );
 
+   [array]$CertData = @();
 
    if ([string]::IsNullOrEmpty($CertStore) -eq $FALSE){
-      $CertData = Get-IcingaCertStoreCertificates -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertStorePath $CertStorePath;
-   } else {
-      [hashtable]$CertData = @{};
+      $CertData += Get-IcingaCertStoreCertificates -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertStorePath $CertStorePath;
    }
 
    if (($null -ne $CertPaths) -or ($null -ne $CertName)) {
-      $CertDataFile = Get-IcingaDirectoryRecurse -Path $CertPaths -FileNames $CertName;
+      $CertDataFile = @();
+
+      foreach ($path in $CertPaths) {
+         foreach ($name in $CertName) {
+            [array]$files = Get-IcingaDirectoryRecurse -Path $path -FileNames $name;
+            if ($null -ne $files) {
+               $CertDataFile += $files;
+            } else {
+               # Remember that pattern didn't match
+               $CertData += @{
+                  Path = "${path}\${name}"
+                  Cert = $null
+               };   
+            }
+         }
+      }
    }
 
-  if ($null -ne $CertDataFile) {
-     foreach ($Cert in $CertDataFile) {
-        $CertConverted = New-Object Security.Cryptography.X509Certificates.X509Certificate2 $Cert.FullName;
-        $CertData = Add-IcingaCertificateToHashtable -Certificate $CertConverted -CertCache $CertData;
-     }
-  }
+   if ($null -ne $CertDataFile) {
+      foreach ($Cert in $CertDataFile) {
+         try {
+            $CertConverted = New-Object Security.Cryptography.X509Certificates.X509Certificate2 $Cert.FullName; 
+            $CertData += @{
+               Path = $Cert.FullName
+               Cert = $CertConverted
+            }; 
+         } catch {
+            # Not a valid certificate
+            $CertData += @{
+               Path = $Cert.FullName
+               Cert = $null
+            }; 
+         }
+      }
+   }
 
    return $CertData;
 }
@@ -44,57 +69,31 @@ function Get-IcingaCertStoreCertificates()
       $CertStorePath         = '*'
    );
 
-   $CertStoreArray = @{};
+   $CertStoreArray = @();
    $CertStorePath  = [string]::Format('Cert:\{0}\{1}', $CertStore, $CertStorePath);
    $CertStoreCerts = Get-ChildItem -Path $CertStorePath -Recurse;
 
    if ($CertSubject.Count -eq 0 -And $CertThumbprint.Count -eq 0) {
-      foreach ($Cert in $CertStoreCerts) {
-         $CertStoreArray = Add-IcingaCertificateToHashtable -Certificate $Cert -CertCache $CertStoreArray;
-      }
-      return $CertStoreCerts;
+      $CertSubject += '*'
    }
 
-   foreach ($Cert in $CertStoreCerts) {
-      foreach ($Subject in $CertSubject) {
-	     if (($Cert.Subject -Like $Subject) -Or $Subject -eq '*') {
-            $CertStoreArray = Add-IcingaCertificateToHashtable -Certificate $Cert -CertCache $CertStoreArray;
-         }
+   :findCert foreach ($Cert in $CertStoreCerts) {
+      $data = @{
+         Thumbprint = $Cert.Thumbprint
+         Cert       = $Cert
       }
-      if (($CertThumbprint -Contains $Cert.Thumbprint) -Or ($CertThumbprint -Contains '*')) {
-         $CertStoreArray = Add-IcingaCertificateToHashtable -Certificate $Cert -CertCache $CertStoreArray;
+      if (($CertThumbprint -Contains '*') -Or ($CertThumbprint -Contains $Cert.Thumbprint)) {
+         $CertStoreArray += $data;
+         break;
+      }
+
+      foreach ($Subject in $CertSubject) {
+        if ($Subject -eq '*' -Or ($Cert.Subject -Like $Subject)) {
+            $CertStoreArray += $data;
+            break findCert;
+         }
       }
    }
 
    return $CertStoreArray;
-}
-
-function Add-IcingaCertificateToHashtable()
-{
-   param(
-      $Certificate,
-      [hashtable]$CertCache = @{}
-   );
-
-   if ($null -eq $CertCache -or $null -eq $Certificate) {
-      return $CertCache;
-   }
-
-   if ($CertCache.ContainsKey($Certificate.Subject)) {
-      if ($CertCache[$Certificate.Subject].ContainsKey($Certificate.Thumbprint) -eq $FALSE) {
-         $CertCache[$Certificate.Subject].Add(
-            $Certificate.Thumbprint,
-            $Certificate
-         );
-      }
-   } else {
-      $CertCache.Add(
-         $Certificate.Subject,
-         @{
-            $Certificate.Thumbprint = $Certificate
-         }
-      );
-   }
-
-   return $CertCache;
 }
