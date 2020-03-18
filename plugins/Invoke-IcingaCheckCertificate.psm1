@@ -93,14 +93,14 @@ function Invoke-IcingaCheckCertificate()
 
    $CertData         = (Get-IcingaCertificateData -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath);
    $CertPackage      = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity;
-   $ValidCertPackage = New-IcingaCheckPackage -Name 'Valid Certificates' -OperatorAnd -Verbose $Verbosity;
-   $UntrustedPackage = New-IcingaCheckPackage -Name 'Untrusted Certificates' -OperatorAnd -Verbose $Verbosity;
 
    if ($null -ne $CriticalStart) {
-      $CertPackageStart = New-IcingaCheckPackage -Name 'Certificate Start' -OperatorAnd -Verbose $Verbosity;
-   }
-   if (($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
-      $CertPackageEnd   = New-IcingaCheckPackage -Name 'Certificate End' -OperatorAnd -Verbose $Verbosity;
+      try {
+         [datetime]$CritDateTime = $CriticalStart
+      } catch {
+         Write-Host "[UNKNOWN] CriticalStart ${CriticalStart} can not be parsed!"
+         return 3
+      }
    }
 
    foreach ($Subject in $CertData.Keys) {
@@ -110,49 +110,51 @@ function Invoke-IcingaCheckCertificate()
 
          $SpanTilAfter = (New-TimeSpan -Start (Get-Date) -End $Cert.NotAfter);
          if ($Cert.Subject.Contains(',')) {
-            [string]$CertSubject = $Cert.Subject.Split(",")[0];
+            [string]$CertName = $Cert.Subject.Split(",")[0];
          } else {
-            [string]$CertSubject = $Cert.Subject;
+            [string]$CertName = $Cert.Subject;
          }
-         $CertSubject = $CertSubject -ireplace '(cn|ou)=', '';
-         $CertName = ([string]::Format('{0} ({1} : {2}d)', $CertSubject, $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
+
+         $CertName = $CertName -ireplace '(cn|ou)=', '';
+         $CheckNamePrefix = "Certificate '${CertName}'";
+
+         $checks = @();
 
          if ($Trusted) {
             $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
 
-            $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CertValid;
+            $IcingaCheck = New-IcingaCheck -Name "${CheckNamePrefix} trusted" -Value $CertValid;
             $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
-            if ($Trusted) {
-               $ValidCertPackage.AddCheck($IcingaCheck);
-            } else {
-               $UntrustedPackage.AddCheck($IcingaCheck);
-            }
+            $checks += $IcingaCheck;
          }
 
          if ($null -ne $CriticalStart) {
-            [datetime]$CritDateTime=$CriticalStart
-            $CritStart=((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
-            $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CritStart;
+            $CritStart = ((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
+            $IcingaCheck = New-IcingaCheck -Name "${CheckNamePrefix} already valid" -Value $CritStart;
             $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
-            $CertPackageStart.AddCheck($IcingaCheck);
+            $checks += $IcingaCheck;
          }
+
          if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
-            $IcingaCheck = New-IcingaCheck -Name $CertName -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
+            $ValidityInfo = ([string]::Format('valid until {0} : {1}d', $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
+
+            $IcingaCheck = New-IcingaCheck -Name "${CheckNamePrefix} ($ValidityInfo) valid for" -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
             $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
-            $CertPackageEnd.AddCheck($IcingaCheck);
+            $checks += $IcingaCheck;
+         }
+
+         if ($checks.Length -eq 1) {
+            # Only add one check instead of the package
+            # TODO: this should be a feature of the framework (collapsing packages)
+            $CertPackage.AddCheck($checks[0])
+         } else {
+            $CertCheck = New-IcingaCheckPackage -Name $CheckNamePrefix -OperatorAnd;
+            foreach ($check in $checks) {
+               $CertPackage.AddCheck($check)
+            }
          }
       }
    }
-
-   if ($ValidCertPackage.HasChecks()) {
-      $CertPackage.AddCheck($ValidCertPackage);
-   }
-   if ($UntrustedPackage.HasChecks()) {
-      $CertPackage.AddCheck($UntrustedPackage);
-   }
-
-   $CertPackage.AddCheck($CertPackageStart);
-   $CertPackage.AddCheck($CertPackageEnd);
 
    return (New-IcingaCheckResult -Name 'Certificates' -Check $CertPackage -NoPerfData $TRUE -Compile);
 }
