@@ -75,8 +75,8 @@ function Invoke-IcingaCheckCertificate()
       #Checking
       [switch]$Trusted,
       $CriticalStart         = $null,
-      $WarningEnd            = $null,
-      $CriticalEnd           = $null,
+      $WarningEnd            = '@0d:30d',
+      $CriticalEnd           = '@0d:10d',
       #CertStore-Related Param
       [ValidateSet('*', 'LocalMachine', 'CurrentUser', $null)]
       [string]$CertStore     = $null,
@@ -85,10 +85,10 @@ function Invoke-IcingaCheckCertificate()
       $CertStorePath         = '*',
       #Local Certs
       [array]$CertPaths      = $null,
-      [array]$CertName		  = $null,
+      [array]$CertName       = $null,
       #Other
       [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity        = 0
+      [int]$Verbosity        = 3
    );
 
    $CertData         = (Get-IcingaCertificateData -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath);
@@ -130,10 +130,10 @@ function Invoke-IcingaCheckCertificate()
          }
 
          if ($null -ne $CriticalStart) {
-	    [datetime]$CritDateTime=$CriticalStart
-	    $CritStart=((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
+            [datetime]$CritDateTime=$CriticalStart
+            $CritStart=((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
             $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CritStart;
-	    $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
+            $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
             $CertPackageStart.AddCheck($IcingaCheck);
          }
          if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
