@@ -77,20 +77,20 @@ function Get-IcingaCertStoreCertificates()
       $CertSubject += '*'
    }
 
-   :findCert foreach ($Cert in $CertStoreCerts) {
+   foreach ($Cert in $CertStoreCerts) {
       $data = @{
          Thumbprint = $Cert.Thumbprint
          Cert       = $Cert
       }
       if (($CertThumbprint -Contains '*') -Or ($CertThumbprint -Contains $Cert.Thumbprint)) {
          $CertStoreArray += $data;
-         break;
+         continue;
       }
 
       foreach ($Subject in $CertSubject) {
         if ($Subject -eq '*' -Or ($Cert.Subject -Like $Subject)) {
             $CertStoreArray += $data;
-            break findCert;
+            break;
          }
       }
    }
