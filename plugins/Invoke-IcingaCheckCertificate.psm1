@@ -149,8 +149,9 @@ function Invoke-IcingaCheckCertificate()
          } else {
             $CertCheck = New-IcingaCheckPackage -Name $CheckNamePrefix -OperatorAnd;
             foreach ($check in $checks) {
-               $CertPackage.AddCheck($check)
+               $CertCheck.AddCheck($check)
             }
+            $CertPackage.AddCheck($CertCheck)
          }
       }
    }
