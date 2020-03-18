@@ -108,13 +108,6 @@ function Invoke-IcingaCheckCertificate()
       foreach ($cert in $Thumbprints.Keys) {
          $cert = $Thumbprints[$cert];
 
-         $CertValid = $FALSE;
-         if ($Trusted) {
-            $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
-         } else {
-            $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -AllowUntrustedRoot;
-         }
-         $CertName = '';
          $SpanTilAfter = (New-TimeSpan -Start (Get-Date) -End $Cert.NotAfter);
          if ($Cert.Subject.Contains(',')) {
             [string]$CertSubject = $Cert.Subject.Split(",")[0];
@@ -124,12 +117,16 @@ function Invoke-IcingaCheckCertificate()
          $CertSubject = $CertSubject -ireplace '(cn|ou)=', '';
          $CertName = ([string]::Format('{0} ({1} : {2}d)', $CertSubject, $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
 
-         $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CertValid;
-         $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
          if ($Trusted) {
-            $ValidCertPackage.AddCheck($IcingaCheck);
-         } else {
-            $UntrustedPackage.AddCheck($IcingaCheck);
+            $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+
+            $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CertValid;
+            $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
+            if ($Trusted) {
+               $ValidCertPackage.AddCheck($IcingaCheck);
+            } else {
+               $UntrustedPackage.AddCheck($IcingaCheck);
+            }
          }
 
          if ($null -ne $CriticalStart) {
