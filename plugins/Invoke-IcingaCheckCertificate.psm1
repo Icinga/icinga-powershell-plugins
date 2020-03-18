@@ -3,19 +3,18 @@
    Check whether a certificate is still trusted and when it runs out or starts.
 .DESCRIPTION
    Invoke-IcingaCheckCertificate returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-   e.g a certificate will run out in 30 days, WARNING is set to @20d:50d, CRITICAL is set to @0d:50d. In this case the check will return 'WARNING'.
+   e.g a certificate will run out in 30 days, WARNING is set to '20d:', CRITICAL is set to '50d:'. In this case the check will return 'WARNING'.
    
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
    This module is intended to be used to check if a certificate is still valid or about to become valid.
 .EXAMPLE
-   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*' -WarningEnd '@10d:365d' -CriticalEnd '@0d:10d' -Verbosity 3
+   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*' -WarningEnd '30d:' -CriticalEnd '10d:' -Verbosity 3
    [OK] Check package "Certificates" (Match All)
    \_ [OK] Check package "Certificate End" (Match All)
       \_ [OK] Certificate CN=Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8): 313784201.23
-   | 'certificate_cncloudbaseinit_winrmacacbac2a29adc68d710c715da20b036407ba3a8'=313784201.23;@864000:31536000;@0:864000
 .EXAMPLE
-   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -WarningEnd '@0d:10000d' -Verbosity 3
+   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -WarningEnd '10000d:' -Verbosity 3
    [WARNING] Check package "Certificates" (Match All) - [WARNING] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
    \_ [WARNING] Check package "Certificate End" (Match All)
    \_ [WARNING] Certificate test-server(AD147B1AC4EF5B91F7261A7EE517C418844D7756): Value "471323842.25" is between threshold "0:864000000"
@@ -75,8 +74,8 @@ function Invoke-IcingaCheckCertificate()
       #Checking
       [switch]$Trusted,
       $CriticalStart         = $null,
-      $WarningEnd            = '@0d:30d',
-      $CriticalEnd           = '@0d:10d',
+      $WarningEnd            = '30d:',
+      $CriticalEnd           = '10d:',
       #CertStore-Related Param
       [ValidateSet('*', 'LocalMachine', 'CurrentUser', $null)]
       [string]$CertStore     = $null,
