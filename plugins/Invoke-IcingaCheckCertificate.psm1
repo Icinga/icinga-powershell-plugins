@@ -9,25 +9,35 @@
 .FUNCTIONALITY
    This module is intended to be used to check if a certificate is still valid or about to become valid.
 .EXAMPLE
-   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*' -WarningEnd '30d:' -CriticalEnd '10d:' -Verbosity 3
+   You can check certificates in the local certificate store of Windows:
+
+   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertSubject '*' -WarningEnd '30d:' -CriticalEnd '10d:'
    [OK] Check package "Certificates" (Match All)
-   \_ [OK] Check package "Certificate End" (Match All)
-      \_ [OK] Certificate CN=Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8): 313784201.23
+   \_ [OK] Certificate 'test.example.com' (valid until 2033-11-19 : 4993d) valid for: 431464965.59
 .EXAMPLE
-   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -WarningEnd '10000d:' -Verbosity 3
-   [WARNING] Check package "Certificates" (Match All) - [WARNING] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
-   \_ [WARNING] Check package "Certificate End" (Match All)
-   \_ [WARNING] Certificate test-server(AD147B1AC4EF5B91F7261A7EE517C418844D7756): Value "471323842.25" is between threshold "0:864000000"
-   \_ [WARNING] Certificate Cloudbase-Init WinRM(ACACBAC1A29ADC68D710C715DA20B036407BA3A8): Value "313538391.82" is between threshold "0:864000000"
+   Also a directory with a file name pattern is possible:
+
+   PS> Invoke-IcingaCheckCertificate -CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -WarningEnd '10000d:'
+   [WARNING] Check package "Certificates" (Match All) - [WARNING] Certificate 'test.example.com' (valid until 2033-11-19 : 4993d) valid for, Certificate 'Icinga CA' (valid until 2032-09-18 : 4566d) valid for
+   \_ [WARNING] Certificate 'test.example.com' (valid until 2033-11-19 : 4993d) valid for: Value "431464907.76" is lower than threshold "864000000"
+   \_ [WARNING] Certificate 'Icinga CA' (valid until 2032-09-18 : 4566d) valid for: Value "394583054.72" is lower than threshold "864000000"
 .EXAMPLE
-   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -Verbosity 3 -Trusted
-   [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756), Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8)
-   \_ [CRITICAL] Certificate test-server(AD647B1AC4EF5B91F7261A7EE517C418844D7756): Value "False" is not matching threshold "True"
-   \_ [CRITICAL] Certificate Cloudbase-Init WinRM(ACACBAC2A29ADC68D710C715DA20B036407BA3A8): Value "False" is not matching threshold "True"
+   The checks can be combined into a single check:
+
+   PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -Trusted
+   [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate 'test.example.com' trusted, Certificate 'Icinga CA' trusted 
+   \_ [CRITICAL] Check package "Certificate 'test.example.com'" (Match All)
+      \_ [OK] Certificate 'test.example.com' (valid until 2033-11-19 : 4993d) valid for: 431464853.88
+      \_ [CRITICAL] Certificate 'test.example.com' trusted: Value "False" is not matching threshold "True"
+   \_ [CRITICAL] Check package "Certificate 'Icinga CA'" (Match All)
+      \_ [OK] Certificate 'Icinga CA' (valid until 2032-09-18 : 4566d) valid for: 394583000.86
+      \_ [CRITICAL] Certificate 'Icinga CA' trusted: Value "False" is not matching threshold "True"
 
 .PARAMETER Trusted
    Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root.
    Will return Critical in case of untrust.
+
+   Note: it is currently required that the root and intermediate CA is known and trusted by the local system.
 
 .PARAMETER CriticalStart
    Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully.
