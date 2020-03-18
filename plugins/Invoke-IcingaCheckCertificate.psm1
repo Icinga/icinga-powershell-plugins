@@ -115,13 +115,14 @@ function Invoke-IcingaCheckCertificate()
             $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -AllowUntrustedRoot;
          }
          $CertName = '';
+         $SpanTilAfter = (New-TimeSpan -Start (Get-Date) -End $Cert.NotAfter);
          if ($Cert.Subject.Contains(',')) {
-		    $SpanTilAfter = (New-TimeSpan -Start (Get-Date) -End $Cert.NotAfter);
-            $CertName = ([string]::Format('Certificate {0}({1} : {2}d)', $Cert.Subject.Split(",")[0], $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
+            [string]$CertSubject = $Cert.Subject.Split(",")[0];
          } else {
-            $CertName = ([string]::Format('Certificate {0}({1} : {2}d)', $Cert.Subject, $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
+            [string]$CertSubject = $Cert.Subject;
          }
-         $CertName = $CertName.Replace('CN=', '').Replace('cn=', '').Replace('OU=', '').Replace('ou=', '');
+         $CertSubject = $CertSubject -ireplace '(cn|ou)=', '';
+         $CertName = ([string]::Format('{0} ({1} : {2}d)', $CertSubject, $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
 
          $IcingaCheck = New-IcingaCheck -Name $CertName -Value $CertValid;
          $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
