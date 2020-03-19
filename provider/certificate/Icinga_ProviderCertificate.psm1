@@ -28,8 +28,13 @@ function Get-IcingaCertificateData()
                $CertDataFile += $files;
             } else {
                # Remember that pattern didn't match
+               if ($CertPaths.length -eq 1) {
+                  $certPath = $name;
+               } else {
+                  $certPath = "${path}\${name}";
+               }
                $CertData += @{
-                  Path = "${path}\${name}"
+                  Path = $certPath
                   Cert = $null
                };   
             }
@@ -39,16 +44,20 @@ function Get-IcingaCertificateData()
 
    if ($null -ne $CertDataFile) {
       foreach ($Cert in $CertDataFile) {
+         $path = $Cert.FullName
+         if ($CertPaths.length -eq 1) {
+            $path = $path.Replace("${CertPaths}\", '')
+         }
          try {
             $CertConverted = New-Object Security.Cryptography.X509Certificates.X509Certificate2 $Cert.FullName; 
             $CertData += @{
-               Path = $Cert.FullName
+               Path = $path
                Cert = $CertConverted
             }; 
          } catch {
             # Not a valid certificate
             $CertData += @{
-               Path = $Cert.FullName
+               Path = $path
                Cert = $null
             }; 
          }
