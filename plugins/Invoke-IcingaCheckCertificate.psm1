@@ -95,12 +95,15 @@ function Invoke-IcingaCheckCertificate()
       #Local Certs
       [array]$CertPaths      = $null,
       [array]$CertName       = $null,
+      [switch]$Recurse,
       #Other
       [ValidateSet(0, 1, 2, 3)]
       [int]$Verbosity        = 3
    );
 
-   $CertData    = (Get-IcingaCertificateData -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath);
+   $CertData    = Get-IcingaCertificateData `
+      -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject `
+      -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath -Recurse:$Recurse;
    $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity;
 
    if ($null -ne $CriticalStart) {

@@ -9,7 +9,8 @@ function Get-IcingaCertificateData()
       $CertStorePath         = '*',
       #Local Certs
       [array]$CertPaths      = $null,
-      [array]$CertName       = $null
+      [array]$CertName       = $null,
+      [switch]$Recurse
    );
 
    [array]$CertData = @();
@@ -23,7 +24,14 @@ function Get-IcingaCertificateData()
 
       foreach ($path in $CertPaths) {
          foreach ($name in $CertName) {
-            [array]$files = Get-IcingaDirectoryRecurse -Path $path -FileNames $name;
+            $searchPath = $path
+            if (-not $Recurse) {
+               # For Get-ChildItem we need to add the wildcard when not recursing
+               # Please see the docs!
+               $searchPath = "${path}\*"
+            }
+            [array]$files = Get-ChildItem -Recurse:$Recurse -Include $name -Path $searchPath;
+
             if ($null -ne $files) {
                $CertDataFile += $files;
             } else {
