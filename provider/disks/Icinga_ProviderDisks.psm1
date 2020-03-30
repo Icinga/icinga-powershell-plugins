@@ -13,7 +13,23 @@ function Get-IcingaDiskInformation()
     [hashtable]$DiskData = @{};
 
     foreach ($disk in $DiskInformation) {
-        $DiskData.Add($disk.DeviceID.trimstart(".\PHYSICALDRVE"), $disk.$Parameter);
+        $DiskId = $disk.DeviceID.trimstart(".\PHYSICALDRVE");
+        if ([string]::IsNullOrEmpty($Parameter) -eq $FALSE) {
+            $DiskData.Add($DiskId, $disk.$Parameter);
+        } else {
+            $Properties = Get-IcingaPSObjectProperties -Object $disk -Exclude 'CimInstanceProperties', 'CimClass', 'CimSystemProperties';
+            $DiskData.Add(
+                $DiskId,
+                @{}
+            );
+
+            foreach ($property in $Properties.Keys) {
+                $DiskData[$DiskId].Add(
+                    $property,
+                    $Properties[$property]
+                );
+            }
+        }
     }
 
     return $DiskData;
@@ -51,7 +67,7 @@ function Get-IcingaDiskPartitions()
                 continue;
             } 
         }
-        
+
         $DiskArray   = New-IcingaPerformanceCounterStructure -CounterCategory 'LogicalDisk' -PerformanceCounterHash (New-IcingaPerformanceCounterArray @('\LogicalDisk(*)\% free space'));
 
         $diskPartitionSize = (Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='${DriveLetter}:'");
