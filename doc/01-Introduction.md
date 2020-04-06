@@ -4,4 +4,4 @@ This repository provides a wide range of check plugins for the Open Source monit
 
 This repository will be extended whenever there are new plugins available. The separation will ensure updates of plugins are possible without having to upgrade huge elements of the PowerShell Framework itself.
 
-Please have a look at the [Installation Guide](doc/02-Installation.md) to get started.
+Please have a look at the [Installation Guide](02-Installation.md) to get started.
