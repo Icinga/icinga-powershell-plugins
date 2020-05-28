@@ -65,17 +65,17 @@ function Get-IcingaEventLog()
         $filteredEvents = @();
         foreach ($event in $events) {
             # Filter out excluded event IDs
-            if ($ExcludeEventId.Count -ne 0 -And $event.InstanceID -contains $ExcludeEventId) {
+            if ($ExcludeEventId.Count -ne 0 -And $ExcludeEventId -contains $event.InstanceID) {
                 continue;
             }
 
             # Filter out excluded event IDs
-            if ($ExcludeUsername.Count -ne 0 -And $event.UserName -contains $ExcludeUsername) {
+            if ($ExcludeUsername.Count -ne 0 -And $ExcludeUsername -contains $event.UserName) {
                 continue;
             }
 
             # Filter out excluded event IDs
-            if ($ExcludeEntryType.Count -ne 0 -And $event.EntryType -contains $ExcludeEntryType) {
+            if ($ExcludeEntryType.Count -ne 0 -And $ExcludeEntryType -contains $event.EntryType) {
                 continue;
             }
 
@@ -92,18 +92,20 @@ function Get-IcingaEventLog()
                 continue;
             }
 
-            [bool]$skip = $TRUE;
+            if ($IncludeMessage.Count -ne 0) {
+                $skip = $TRUE;
 
-            foreach ($inMessage in $IncludeMessage) {
-                # Filter for specific message content
-                if ([string]$event.Message -like [string]$inMessage) {
-                    $skip = $FALSE;
-                    break;
+                foreach ($inMessage in $IncludeMessage) {
+                    # Filter for specific message content
+                    if ([string]$event.Message -like [string]$inMessage) {
+                        $skip = $FALSE;
+                        break;
+                    }
                 }
-            }
 
-            if ($skip) {
-                continue;
+                if ($skip) {
+                    continue;
+                }
             }
 
             $filteredEvents += $event;
