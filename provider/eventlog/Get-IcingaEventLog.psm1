@@ -65,7 +65,7 @@ function Get-IcingaEventLog()
         $filteredEvents = @();
         foreach ($event in $events) {
             # Filter out excluded event IDs
-            if ($ExcludeEventId.Count -ne 0 -And $ExcludeEventId -contains $event.InstanceID) {
+            if ($ExcludeEventId.Count -ne 0 -And $ExcludeEventId -contains $event.EventId) {
                 continue;
             }
 
@@ -121,7 +121,7 @@ function Get-IcingaEventLog()
 
     foreach ($event in $events) {
         [string]$EventIdentifier = [string]::Format('{0}-{1}',
-            $event.InstanceID,
+            $event.EventId,
             $event.Message
         );
 
@@ -133,7 +133,7 @@ function Get-IcingaEventLog()
                 @{
                     NewestEntry = $event.TimeGenerated;
                     OldestEntry = $event.TimeGenerated;
-                    EventId     = $event.InstanceID;
+                    EventId     = $event.EventId;
                     Message     = $event.Message;
                     Severity    = $event.EntryType;
                     Count       = 1;
@@ -144,10 +144,10 @@ function Get-IcingaEventLog()
             $groupedEvents.eventlog[$EventHash].Count       += 1;
         }
 
-        if ($groupedEvents.events.ContainsKey($event.InstanceID) -eq $FALSE) {
-            $groupedEvents.events.Add($event.InstanceID, 1);
+        if ($groupedEvents.events.ContainsKey($event.EventId) -eq $FALSE) {
+            $groupedEvents.events.Add($event.EventId, 1);
         } else {
-            $groupedEvents.events[$event.InstanceID] += 1;
+            $groupedEvents.events[$event.EventId] += 1;
         }
     }
 
