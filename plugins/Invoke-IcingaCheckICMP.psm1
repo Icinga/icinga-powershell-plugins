@@ -64,52 +64,48 @@
 
 function Invoke-IcingaCheckICMP()
 {
-    param (
-        $Warning            = 100,
-        $Critical           = 200,
-        $WarningPl          = 20,
-        $CriticalPl         = 50,
-        [string]$Hostname,
-        [int]$PacketCount   = 5,
-        [int]$PacketSize    = 64,
-        [switch]$IPv4       = $FALSE,
-        [switch]$IPv6       = $FALSE,
-        [switch]$NoPerfData = $FALSE,
-        [ValidateSet(0, 1, 2)]
-        [int]$Verbosity     = 0
-    );
+   param (
+      $Warning            = 100,
+      $Critical           = 200,
+      $WarningPl          = 20,
+      $CriticalPl         = 50,
+      [string]$Hostname,
+      [int]$PacketCount   = 5,
+      [int]$PacketSize    = 64,
+      [switch]$IPv4       = $FALSE,
+      [switch]$IPv6       = $FALSE,
+      [switch]$NoPerfData = $FALSE,
+      [ValidateSet(0, 1, 2)]
+      [int]$Verbosity     = 0
+   );
 
-    $Result      = Test-IcingaICMPConnection -Hostname $Hostname -PacketCount $PacketCount -PacketSize $PacketSize -IPv4 $IPv4 -IPv6 $IPv6;
-    $ICMPPackage = New-IcingaCheckPackage -Name ([string]::Format('ICMP Check for {0}', $Hostname)) -OperatorAnd -Verbose $Verbosity;
+   $Result      = Test-IcingaICMPConnection -Hostname $Hostname -PacketCount $PacketCount -PacketSize $PacketSize -IPv4 $IPv4 -IPv6 $IPv6;
+   $ICMPPackage = New-IcingaCheckPackage -Name ([string]::Format('ICMP Check for {0}', $Hostname)) -OperatorAnd -Verbose $Verbosity;
 
-    foreach ($entry in $Result.Results.Values) {
-        $ICMPError = $entry.Error;
-        $ICMPValue = $entry.Value;
-        $ICMPCheck = $null;
+   foreach ($entry in $Result.Results.Values) {
+      $ICMPValue = $entry.Value;
 
-        if (-Not $ICMPError) {
-            $ICMPCheck = New-IcingaCheck -Name ([string]::Format('ICMP request to {0} with {1} bytes', $Result.Summary.IPAddress, $PacketSize)) -Value $ICMPValue.ResponseTime -Unit 'ms' -NoPerfData;
-            $ICMPCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-        } else {
-            $ICMPCheck = New-IcingaCheck -Name ([string]::Format('Error during request: {0}', $ICMPValue)) -NoPerfData;
-            $ICMPCheck.SetCritical();
-        }
-        $ICMPPackage.AddCheck($ICMPCheck);
-    }
+      $ICMPCheck = New-IcingaCheck -Name ([string]::Format('ICMP request to {0} with {1} bytes', $Result.Summary.IPAddress, $PacketSize)) -Value $ICMPValue.ResponseTime -Unit 'ms' -NoPerfData;
+      $ICMPCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
-    $PacketLoss = New-IcingaCheck -Name 'Packet Loss' -Value $Result.Summary.PacketLoss -Unit '%';
-    $PacketLoss.WarnOutOfRange($WarningPl).CritOutOfRange($CriticalPl) | Out-Null;
+      $ICMPPackage.AddCheck($ICMPCheck);
+   }
 
-    $ICMPPackage.AddCheck($PacketLoss);
+   $PacketLoss = New-IcingaCheck -Name 'Packet Loss' -Value $Result.Summary.PacketLoss -Unit '%';
+   $PacketLoss.WarnOutOfRange($WarningPl).CritOutOfRange($CriticalPl) | Out-Null;
 
-    $ResponseTime = New-IcingaCheck -Name 'Response Time' -Value $Result.Summary.ResponseTime -Unit 'ms';
-    $ResponseTime.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+   $ICMPPackage.AddCheck($PacketLoss);
 
-    $PerfDataPackage = New-IcingaCheckPackage -Name 'PerfData' -OperatorAnd -Verbose $Verbosity -Hidden -Checks @(
-        $ResponseTime,
-        (New-IcingaCheck -Name 'Packet Count' -Value $Result.Summary.PacketsSend -Unit 'c')
-    );
-    $ICMPPackage.AddCheck($PerfDataPackage);
+   $ResponseTime = New-IcingaCheck -Name 'Average Response Time' -Value $Result.Summary.ResponseTime -Unit 'ms';
+   $ResponseTime.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
-    return (New-IcingaCheckResult -Check $ICMPPackage -NoPerfData $NoPerfData -Compile);
+   $PerfDataPackage = New-IcingaCheckPackage -Name 'PerfData' -OperatorAnd -Verbose $Verbosity -Hidden -Checks @(
+      $ResponseTime,
+      (New-IcingaCheck -Name 'Packet Count' -Value $Result.Summary.PacketsSend -Unit 'c')
+      (New-IcingaCheck -Name 'Minimum Response Time' -Value $Result.Summary.MinResponseTime -Unit 'ms'),
+      (New-IcingaCheck -Name 'Maximum Response Time' -Value $Result.Summary.MaxResponseTime -Unit 'ms')
+   );
+   $ICMPPackage.AddCheck($PerfDataPackage);
+
+   return (New-IcingaCheckResult -Check $ICMPPackage -NoPerfData $NoPerfData -Compile);
 }
