@@ -95,6 +95,8 @@ function Test-IcingaICMPConnection()
     [int]$PacketsLost      = 0;
     [int]$PacketsSend      = 0;
     [int]$ResponseTime     = 0;
+    [int]$MinResponseTime  = 0;
+    [int]$MaxResponseTime  = 0;
     [single]$PacketLoss    = 0;
     [hashtable]$ICMPResult = @{};
     [hashtable]$ICMPResult = @{};
@@ -103,17 +105,21 @@ function Test-IcingaICMPConnection()
     while ($PacketCount -gt 0) {
         $PacketsSend++;
         try {
-            $ICMP          = (Test-Connection -ComputerName $CheckAddress -BufferSize $PacketSize -Count 1 -ErrorAction Stop);
-            $ResponseTime += $ICMP.ResponseTime;
+            $ICMP            = (Test-Connection -ComputerName $CheckAddress -BufferSize $PacketSize -Count 1 -ErrorAction Stop);
+            $ResponseTime   += $ICMP.ResponseTime;
+            if ($MinResponseTime -eq 0) {
+                $MinResponseTime = $ICMP.ResponseTime;
+            }
+            if ($MaxResponseTime -eq 0) {
+                $MaxResponseTime = $ICMP.ResponseTime;
+            }
+            $MinResponseTime = Get-IcingaValue -Value $ICMP.ResponseTime -Compare $MinResponseTime -Minimum;
+            $MaxResponseTime = Get-IcingaValue -Value $ICMP.ResponseTime -Compare $MaxResponseTime -Maximum;
             Add-IcingaHashtableItem -Hashtable $ICMPResult -Key $PacketCount -Value @{
                 'Value' = $ICMP;
                 'Error' = $FALSE;
             } | Out-Null;
         } catch {
-            Add-IcingaHashtableItem -Hashtable $ICMPResult -Key $PacketCount -Value @{
-                'Value' = $_.CategoryInfo.Category;
-                'Error' = $TRUE;
-            } | Out-Null;
             $PacketsLost++;
         }
         $PacketCount--;
@@ -124,10 +130,13 @@ function Test-IcingaICMPConnection()
     return @{
         'Results' = $ICMPResult;
         'Summary' = @{
-            'PacketsSend'  = $PacketsSend;
-            'PacketLoss'   = $PacketLoss;
-            'ResponseTime' = ($ResponseTime / $PacketsSend);
-            'IPAddress'    = $CheckAddress;
+            'PacketsSend'     = $PacketsSend;
+            'PacketLoss'      = $PacketLoss;
+            'PacketsLost'     = $PacketsLost;
+            'ResponseTime'    = ($ResponseTime / $PacketsSend);
+            'MinResponseTime' = $MinResponseTime;
+            'MaxResponseTime' = $MaxResponseTime;
+            'IPAddress'       = $CheckAddress;
         };
     };
 }
