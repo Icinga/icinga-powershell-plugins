@@ -10,7 +10,7 @@ function Get-IcingaCertificateData()
       #Local Certs
       [array]$CertPaths      = $null,
       [array]$CertName       = $null,
-      [switch]$Recurse
+      [bool]$Recurse         = $FALSE
    );
 
    [array]$CertData = @();
@@ -24,13 +24,8 @@ function Get-IcingaCertificateData()
 
       foreach ($path in $CertPaths) {
          foreach ($name in $CertName) {
-            $searchPath = $path
-            if (-not $Recurse) {
-               # For Get-ChildItem we need to add the wildcard when not recursing
-               # Please see the docs!
-               $searchPath = "${path}\*"
-            }
-            [array]$files = Get-ChildItem -Recurse:$Recurse -Include $name -Path $searchPath;
+            $searchPath   = $path;
+            [array]$files = Get-ChildItem -Recurse:$Recurse -Filter $name -Path $searchPath;
 
             if ($null -ne $files) {
                $CertDataFile += $files;
@@ -42,8 +37,8 @@ function Get-IcingaCertificateData()
                   $certPath = "${path}\${name}";
                }
                $CertData += @{
-                  Path = $certPath
-                  Cert = $null
+                  Path = $certPath;
+                  Cert = $null;
                };   
             }
          }
@@ -52,21 +47,23 @@ function Get-IcingaCertificateData()
 
    if ($null -ne $CertDataFile) {
       foreach ($Cert in $CertDataFile) {
-         $path = $Cert.FullName
+         $path = $Cert.FullName;
+
          if ($CertPaths.length -eq 1) {
-            $path = $path.Replace("${CertPaths}\", '')
+            $path = $path.Replace("${CertPaths}\", '');
          }
+
          try {
             $CertConverted = New-Object Security.Cryptography.X509Certificates.X509Certificate2 $Cert.FullName; 
             $CertData += @{
-               Path = $path
-               Cert = $CertConverted
+               Path = $path;
+               Cert = $CertConverted;
             }; 
          } catch {
             # Not a valid certificate
             $CertData += @{
-               Path = $path
-               Cert = $null
+               Path = $path;
+               Cert = $null;
             }; 
          }
       }
@@ -77,10 +74,10 @@ function Get-IcingaCertificateData()
 
 function Get-IcingaCertStoreCertificates()
 {
-   param(
+   param (
       #CertStore-Related Param
       [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
-      [string]$CertStore = '*',
+      [string]$CertStore     = '*',
       [array]$CertThumbprint = @(),
       [array]$CertSubject    = @(),
       $CertStorePath         = '*'
@@ -91,13 +88,13 @@ function Get-IcingaCertStoreCertificates()
    $CertStoreCerts = Get-ChildItem -Path $CertStorePath -Recurse;
 
    if ($CertSubject.Count -eq 0 -And $CertThumbprint.Count -eq 0) {
-      $CertSubject += '*'
+      $CertSubject += '*';
    }
 
    foreach ($Cert in $CertStoreCerts) {
       $data = @{
-         Thumbprint = $Cert.Thumbprint
-         Cert       = $Cert
+         Thumbprint = $Cert.Thumbprint;
+         Cert       = $Cert;
       }
       if (($CertThumbprint -Contains '*') -Or ($CertThumbprint -Contains $Cert.Thumbprint)) {
          $CertStoreArray += $data;

@@ -82,7 +82,7 @@ function Invoke-IcingaCheckCertificate()
 {
    param(
       #Checking
-      [switch]$Trusted,
+      [switch]$Trusted       = $FALSE,
       $CriticalStart         = $null,
       $WarningEnd            = '30d:',
       $CriticalEnd           = '10d:',
@@ -95,7 +95,7 @@ function Invoke-IcingaCheckCertificate()
       #Local Certs
       [array]$CertPaths      = $null,
       [array]$CertName       = $null,
-      [switch]$Recurse,
+      [switch]$Recurse       = $FALSE,
       #Other
       [ValidateSet(0, 1, 2, 3)]
       [int]$Verbosity        = 3
@@ -103,15 +103,16 @@ function Invoke-IcingaCheckCertificate()
 
    $CertData    = Get-IcingaCertificateData `
       -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject `
-      -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath -Recurse:$Recurse;
+      -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath -Recurse $Recurse;
    $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity;
 
    if ($null -ne $CriticalStart) {
       try {
          [datetime]$CritDateTime = $CriticalStart
       } catch {
-         Write-Host "[UNKNOWN] CriticalStart ${CriticalStart} can not be parsed!"
-         return 3
+         Exit-IcingaThrowException -ExceptionType 'Custom' -CustomMessage 'DateTimeParseError' -InputString (
+            [string]::Format('The provided value "{0}" for argument "CriticalStart" could not be parsed as DateTime.', $CriticalStart)
+        ) -Force;
       }
    }
 
@@ -120,7 +121,9 @@ function Invoke-IcingaCheckCertificate()
 
       if ($null -eq $Cert) {
          # Not a valid cert file - unknown check
-         $CertPackage.AddCheck((New-IcingaCheck -Name ("Not a certificate: " + $data.Path) -ObjectExists $null).WarnOutOfRange(1));
+         $CertPackage.AddCheck(
+            (New-IcingaCheck -Name ([string]::Format("Not a certificate: {0}", $data.Path))).SetUnknown()
+         );
          continue;
       }
 
@@ -140,15 +143,14 @@ function Invoke-IcingaCheckCertificate()
       $checks = @();
 
       if ($Trusted) {
-         $CertValid = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
-
+         $CertValid   = Test-Certificate $cert -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
          $IcingaCheck = New-IcingaCheck -Name "${CheckNamePrefix} trusted" -Value $CertValid;
          $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
          $checks += $IcingaCheck;
       }
 
       if ($null -ne $CriticalStart) {
-         $CritStart = ((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
+         $CritStart   = ((New-TimeSpan -Start $Cert.NotBefore -End $CritDateTime) -gt 0)
          $IcingaCheck = New-IcingaCheck -Name "${CheckNamePrefix} already valid" -Value $CritStart;
          $IcingaCheck.CritIfNotMatch($TRUE) | Out-Null;
          $checks += $IcingaCheck;
@@ -156,15 +158,13 @@ function Invoke-IcingaCheckCertificate()
 
       if(($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
          $ValidityInfo = ([string]::Format('valid until {0} : {1}d', $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
-
-         $IcingaCheck = New-IcingaCheck -Name "${CheckNamePrefix} ($ValidityInfo) valid for" -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
+         $IcingaCheck  = New-IcingaCheck -Name "${CheckNamePrefix} ($ValidityInfo) valid for" -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
          $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
          $checks += $IcingaCheck;
       }
 
       if ($checks.Length -eq 1) {
          # Only add one check instead of the package
-         # TODO: this should be a feature of the framework (collapsing packages)
          $CertPackage.AddCheck($checks[0])
       } else {
          $CertCheck = New-IcingaCheckPackage -Name $CheckNamePrefix -OperatorAnd;
