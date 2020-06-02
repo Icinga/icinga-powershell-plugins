@@ -12,6 +12,7 @@ Please take a look at the following content to get to know the extent of the mod
 * [Installation Guide](doc/02-Installation.md)
 * [Icinga Integration](doc/03-Icinga-Integration.md)
 * [Plugin Documentation](doc/10-Icinga-Plugins.md)
+* [Changelog](doc/31-Changelog.md)
 
 ## Contributing
 
