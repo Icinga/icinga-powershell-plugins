@@ -25,6 +25,7 @@ This release adds two new plugins to the collection:
 ### Bugfixes
 
 * [#19](https://github.com/Icinga/icinga-powershell-plugins/issues/19) Fixes exclude of EventLog ids for Invoke-IcingaCheckEventLog
+* [#27](https://github.com/Icinga/icinga-powershell-plugins/issues/27) Fixes User provider to prevent almost infinite loop on AccountDomainSid resolving
 
 ## 1.0.0 (2020-02-19)
 
