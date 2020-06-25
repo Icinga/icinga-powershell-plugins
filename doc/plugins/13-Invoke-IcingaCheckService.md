@@ -15,7 +15,7 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Service | Array | false |  | Used to specify an array of services which should be checked against the status. Seperated with ',' |
+| Service | Array | false |  | Used to specify an array of services which should be checked against the status. Supports `*` as wildcard character. Seperated with ',' |
 | Exclude | Array | false | @() | Allows to exclude services which might come in handy for checking services which are configured to start automatically on Windows but are not running and werent exited properly. Seperated with ',' |
 | Status | String | false | Running | Status for the specified service or services to check against. |
 | Verbosity | Int32 | false | 0 |  |
@@ -57,4 +57,20 @@ Invoke-IcingaCheckService -Exclude icinga2
 
 ```powershell
 [OK] Check package "Services"
+```
+
+### Example Command 4
+
+```powershell
+Invoke-IcingaCheckService -Service '*csv*'
+```
+
+### Example Output 4
+
+```powershell
+[CRITICAL] Check package "Services" - [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)", Service "Windows Update Medic Service (WaaSMedicSvc)", Service "Windows-Ereignissammlung (Wecsvc)"
+\_ [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)": Value "Stopped" is not matching threshold "Running"
+\_ [CRITICAL] Service "Windows Update Medic Service (WaaSMedicSvc)": Value "Stopped" is not matching threshold "Running"
+\_ [CRITICAL] Service "Windows-Ereignissammlung (Wecsvc)": Value "Stopped" is not matching threshold "Running"
+| 'pending_paused_services'=0;; 'running_services'=4;; 'pending_continued_services'=0;; 'stopped_services'=3;; 'pending_started_services'=0;; 'service_count'=7;; 'pending_stopped_services'=0;; 'paused_services'=0;; 'service_sicherheitscenter_wscsvc'=4;;4 'service_synchronisierungshost_1dd0d4_onesyncsvc_1dd0d4'=4;;4 'service_volumetric_audio_compositordienst_vacsvc'=1;;4 'service_windowsereignissammlung_wecsvc'=1;;4 'service_windowssofortverbindung_konfigurationsregistrierungsstelle_wcncsvc'=4;;4 'service_windows_update_medic_service_waasmedicsvc'=1;;4 'service_microsoft_passport_ngcsvc'=4;;4
 ```
