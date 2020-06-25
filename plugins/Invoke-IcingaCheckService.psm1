@@ -21,9 +21,15 @@
 .EXAMPLE
    PS>Invoke-IcingaCheckService -Exclude icinga2
    [OK] Check package "Services"
+.EXAMPLE
+   PS>Invoke-IcingaCheckService -Service '*csv*'
+   [CRITICAL] Check package "Services" - [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)", Service "Windows Update Medic Service (WaaSMedicSvc)", Service "Windows-Ereignissammlung (Wecsvc)"
+    \_ [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)": Value "Stopped" is not matching threshold "Running"
+    \_ [CRITICAL] Service "Windows Update Medic Service (WaaSMedicSvc)": Value "Stopped" is not matching threshold "Running"
+    \_ [CRITICAL] Service "Windows-Ereignissammlung (Wecsvc)": Value "Stopped" is not matching threshold "Running"
 .PARAMETER Service
-   Used to specify an array of services which should be checked against the status.
-   Seperated with ','
+   Used to specify an array of services which should be checked against the status. Supports '*' for
+   wildcards. Seperated with ','
 .PARAMETER Exclude
    Allows to exclude services which might come in handy for checking services which are configured to start automatically
    on Windows but are not running and werent exited properly.
