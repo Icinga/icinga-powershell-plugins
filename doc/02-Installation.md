@@ -78,7 +78,7 @@ C:\Program Files\WindowsPowerShell\Modules\icinga-powershell-plugins
 Once this is done, we might require to unblock the file content to be able to load and execute the module
 
 ```powershell
-Get-Content -Path 'C:\Program Files\WindowsPowerShell\Modules\icinga-powershell-plugins' -Recurse | Unblock-File;
+Get-ChildItem -Path 'C:\Program Files\WindowsPowerShell\Modules\icinga-powershell-plugins' -Recurse | Unblock-File;
 ```
 
 Now we can start a new PowerShell instance and the module should be ready to go. Otherwise we have to import it manually by using
