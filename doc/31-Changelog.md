@@ -11,9 +11,14 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/3?closed=1)
 
+### Enhancements
+
 * [#32](https://github.com/Icinga/icinga-powershell-plugins/issues/32) Improves plugin doc generate to update existing .md files and create new ones only if required
 * [#28](https://github.com/Icinga/icinga-powershell-plugins/issues/28) Adds unknown state for each included service during a service check which was not found on the host
 * [#33](https://github.com/Icinga/icinga-powershell-plugins/issues/33) Adds support to generate plugin docs for different plugin module repos
+
+### Bugfixes
+
 * [#30](https://github.com/Icinga/icinga-powershell-plugins/issues/30) Fixes $null input value for certificate check, causing the Director import to fail
 
 ## 1.1.0 (2020-06-02)
