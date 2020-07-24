@@ -33,13 +33,13 @@ function Import-IcingaPlugins()
 
 function Publish-IcingaPluginDocumentation()
 {
-    [string]$PluginDir = Join-Path -Path $PSScriptRoot -ChildPath 'plugins';
-    [string]$DocDir = Join-Path -Path $PSScriptRoot -ChildPath 'doc';
+    [string]$PluginDir     = Join-Path -Path $PSScriptRoot -ChildPath 'plugins';
+    [string]$DocDir        = Join-Path -Path $PSScriptRoot -ChildPath 'doc';
     [string]$PluginDocFile = Join-Path -Path $PSScriptRoot -ChildPath 'doc/10-Icinga-Plugins.md';
-    [string]$PluginDocDir = Join-Path -Path $PSScriptRoot -ChildPath 'doc/plugins';
-    [int]$Index = 1;
-
-    Remove-Item -Path (Join-Path -Path $PluginDocDir -ChildPath '/*') -Recurse -Force;
+    [string]$PluginDocDir  = Join-Path -Path $PSScriptRoot -ChildPath 'doc/plugins';
+    $MDFiles               = Get-ChildItem -Path $PluginDocDir;
+    [int]$FileCount        = $MDFiles.Count;
+    [string]$FileCountStr  = '';
 
     Set-Content -Path $PluginDocFile -Value '# Icinga Plugins';
     Add-Content -Path $PluginDocFile -Value '';
@@ -60,14 +60,28 @@ function Publish-IcingaPluginDocumentation()
 
     $AvailablePlugins = Get-ChildItem -Path $PluginDir -Recurse -Filter *.psm1;
     foreach ($plugin in $AvailablePlugins) {
-        [string]$PluginName = $plugin.Name.Replace('.psm1', '');
-        $IndexString = $Index;
-        if ($Index -lt 10) {
-            $IndexString = [string]::Format('0{0}', $Index);
+        [string]$PluginName    = $plugin.Name.Replace('.psm1', '');
+        [string]$PluginDocName = '';
+        foreach ($DocFile in $MDFiles) {
+            $DocFileName = $DocFile.Name;
+            if ($DocFileName -Like "*$PluginName*") {
+                $PluginDocName = $DocFile.Name;
+                break;
+            }
         }
-        [string]$PluginDocName = [string]::Format('{0}-{1}.md', $IndexString, $PluginName);
+
+        if ([string]::IsNullOrEmpty($PluginDocName)) {
+            $FileCount += 1;
+            if ($FileCount -lt 10) {
+                $FileCountStr = [string]::Format('0{0}', $FileCount);
+            } else {
+                $FileCountStr = $FileCount;
+            }
+
+            $PluginDocName = [string]::Format('{0}-{1}.md', $FileCountStr, $PluginName);
+        }
         [string]$PluginDescriptionFile = Join-Path -Path $PluginDocDir -ChildPath $PluginDocName;
-        
+
         Add-Content -Path $PluginDocFile -Value ([string]::Format(
             '* [{0}](plugins/{1})',
             $PluginName,
@@ -147,7 +161,5 @@ function Publish-IcingaPluginDocumentation()
                 Add-Content -Path $PluginDescriptionFile -Value $Content[$entry];
             }
         }
-
-        $Index += 1;
     }
 }
