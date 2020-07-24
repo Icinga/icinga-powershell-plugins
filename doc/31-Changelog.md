@@ -7,6 +7,13 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.2.0 (pending)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/3?closed=1)
+
+* [#32](https://github.com/Icinga/icinga-powershell-plugins/issues/32) Improves plugin doc generate to update existing .md files and create new ones only if required
+* [#33](https://github.com/Icinga/icinga-powershell-plugins/issues/33) Adds support to generate plugin docs for different plugin module repos
+
 ## 1.1.0 (2020-06-02)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/2?closed=1)
