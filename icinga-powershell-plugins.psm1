@@ -33,10 +33,14 @@ function Import-IcingaPlugins()
 
 function Publish-IcingaPluginDocumentation()
 {
-    [string]$PluginDir     = Join-Path -Path $PSScriptRoot -ChildPath 'plugins';
-    [string]$DocDir        = Join-Path -Path $PSScriptRoot -ChildPath 'doc';
-    [string]$PluginDocFile = Join-Path -Path $PSScriptRoot -ChildPath 'doc/10-Icinga-Plugins.md';
-    [string]$PluginDocDir  = Join-Path -Path $PSScriptRoot -ChildPath 'doc/plugins';
+    param (
+        [string]$ModulePath = $PSScriptRoot
+    );
+
+    [string]$PluginDir     = Join-Path -Path $ModulePath -ChildPath 'plugins';
+    [string]$DocDir        = Join-Path -Path $ModulePath -ChildPath 'doc';
+    [string]$PluginDocFile = Join-Path -Path $ModulePath -ChildPath 'doc/10-Icinga-Plugins.md';
+    [string]$PluginDocDir  = Join-Path -Path $ModulePath -ChildPath 'doc/plugins';
     $MDFiles               = Get-ChildItem -Path $PluginDocDir;
     [int]$FileCount        = $MDFiles.Count;
     [string]$FileCountStr  = '';
