@@ -2,8 +2,8 @@ function Get-IcingaCertificateData()
 {
    param(
       #CertStore-Related Param
-      [ValidateSet('*', 'LocalMachine', 'CurrentUser', $null)]
-      [string]$CertStore     = $null,
+      [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
+      [string]$CertStore     = '*',
       [array]$CertThumbprint = $null,
       [array]$CertSubject    = $null,
       $CertStorePath         = '*',

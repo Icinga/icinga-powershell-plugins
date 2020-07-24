@@ -18,7 +18,7 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 | CriticalStart | Object | false |  | Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully. Use format like: 'yyyy-MM-dd' |
 | WarningEnd | Object | false | 30d: | Used to specify a Warning range for the end date of an certificate. In this case a string. Allowed units include: ms, s, m, h, d, w, M, y |
 | CriticalEnd | Object | false | 10d: | Used to specify a Critical range for the end date of an certificate. In this case a string. Allowed units include: ms, s, m, h, d, w, M, y |
-| CertStore | String | false |  | Used to specify which CertStore to check. Valid choices are '*', 'LocalMachine', 'CurrentUser', '' |
+| CertStore | String | false | * | Used to specify which CertStore to check. Valid choices are '*', 'LocalMachine', 'CurrentUser' |
 | CertThumbprint | Array | false |  | Used to specify an array of Thumbprints, which are used to determine what certificate to check, within the CertStore. |
 | CertSubject | Array | false |  | Used to specify an array of Subjects, which are used to determine what certificate to check, within the CertStore. |
 | CertStorePath | Object | false | * | Used to specify which path within the CertStore should be checked. |

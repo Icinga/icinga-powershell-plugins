@@ -52,7 +52,7 @@
    Allowed units include: ms, s, m, h, d, w, M, y
    
 .PARAMETER CertStore
-   Used to specify which CertStore to check. Valid choices are '*', 'LocalMachine', 'CurrentUser', ''
+   Used to specify which CertStore to check. Valid choices are '*', 'LocalMachine', 'CurrentUser'
    
  .PARAMETER CertThumbprint
    Used to specify an array of Thumbprints, which are used to determine what certificate to check, within the CertStore.
@@ -87,8 +87,8 @@ function Invoke-IcingaCheckCertificate()
       $WarningEnd            = '30d:',
       $CriticalEnd           = '10d:',
       #CertStore-Related Param
-      [ValidateSet('*', 'LocalMachine', 'CurrentUser', $null)]
-      [string]$CertStore     = $null,
+      [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
+      [string]$CertStore     = '*',
       [array]$CertThumbprint = $null,
       [array]$CertSubject    = $null,
       $CertStorePath         = '*',
