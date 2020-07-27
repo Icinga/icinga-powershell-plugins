@@ -2,7 +2,7 @@ Import-IcingaLib provider\enums;
 
 function Get-IcingaWindows()
 {
-    $WindowsInformations = Get-CimInstance Win32_OperatingSystem;
+    $WindowsInformations = Get-IcingaWindowsInformation Win32_OperatingSystem;
 
     $OSProductSuite = @();
     $ProviderEnums.WindowsOSProductSuite.Keys | Where-Object { 

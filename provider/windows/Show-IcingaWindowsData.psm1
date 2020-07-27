@@ -1,6 +1,6 @@
 function Show-IcingaWindowsData()
 {
-    $WindowsInformations = Get-CimInstance Win32_OperatingSystem;
+    $WindowsInformations = Get-IcingaWindowsInformation Win32_OperatingSystem;
 
     $windows_datails = @{};
     foreach($cpu_core in $WindowsInformations.CimInstanceProperties) {

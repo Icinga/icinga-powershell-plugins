@@ -8,7 +8,7 @@ function Get-IcingaLoggedOnUsers()
     [int]$UserCount      = 0;
     $UserList.Add('users', @{ });
 
-    $Users = Get-CIMInstance Win32_LoggedOnUser | Select-Object Antecedent, Dependent;
+    $Users = Get-IcingaWindowsInformation Win32_LoggedOnUser | Select-Object Antecedent, Dependent;
 
     foreach ($user in $Users) {
         [string]$username = $user.Antecedent.Name;

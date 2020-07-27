@@ -3,7 +3,7 @@ function Get-IcingaMemory()
 {
     <# Collects the most important Memory informations,
     e.g. name, version, manufacturer#>
-    $MEMInformation = Get-CimInstance Win32_PhysicalMemory;
+    $MEMInformation = Get-IcingaWindowsInformation Win32_PhysicalMemory;
     
     [hashtable]$MEMData = @{};
 
@@ -82,7 +82,7 @@ function Get-IcingaMemoryInformation()
     param(
         [string]$Parameter
     );
-    $MEMInformation = Get-CimInstance Win32_PhysicalMemory;
+    $MEMInformation = Get-IcingaWindowsInformation Win32_PhysicalMemory;
     [hashtable]$MEMData = @{};
 
     foreach ($memory in $MEMInformation) {

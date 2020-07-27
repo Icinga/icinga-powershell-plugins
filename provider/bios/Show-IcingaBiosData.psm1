@@ -1,6 +1,6 @@
 function Show-IcingaBiosData()
 {
-    $BIOSInformation = Get-CimInstance Win32_BIOS;
+    $BIOSInformation = Get-IcingaWindowsInformation Win32_BIOS;
     [hashtable]$BIOSData = @{};
 
     foreach ($bios_properties in $BIOSInformation) {

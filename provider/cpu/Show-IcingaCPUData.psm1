@@ -1,7 +1,7 @@
 function Show-IcingaCPUData()
 {
 
-$CPUInformation = Get-CimInstance Win32_Processor;
+$CPUInformation = Get-IcingaWindowsInformation Win32_Processor;
 [hashtable]$PhysicalCPUData = @{};
 
 foreach ($cpu_properties in $CPUInformation) {

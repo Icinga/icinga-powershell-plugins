@@ -3,7 +3,7 @@ function Get-IcingaCPUs()
 {
     <# Collects the most important CPU informations,
     e.g. name, version, manufacturer#>
-    $CPUInformation = Get-CimInstance Win32_Processor;
+    $CPUInformation = Get-IcingaWindowsInformation Win32_Processor;
     [hashtable]$CPUData = @{};
 
     foreach ($cpu in $CPUInformation) {
@@ -89,7 +89,7 @@ function Get-IcingaCPUInformation()
     param(
         [string]$Parameter
     );
-    $CPUInformation = Get-CimInstance Win32_Processor;
+    $CPUInformation = Get-IcingaWindowsInformation Win32_Processor;
     [hashtable]$CPUData = @{};
 
     foreach ($cpu in $CPUInformation) {
@@ -107,7 +107,7 @@ function Get-IcingaCPUInformationWithEnums()
         [string]$Parameter
     );
 
-    $CPUInformation = Get-CimInstance Win32_Processor;
+    $CPUInformation = Get-IcingaWindowsInformation Win32_Processor;
     $Prefix = "CPU";
     
     [hashtable]$CPUData = @{};
@@ -125,7 +125,7 @@ function Get-IcingaCPUInformationWithEnums()
 
 function Get-IcingaCPUErrors()
 {
-    $CPUInformation = Get-CimInstance Win32_Processor;
+    $CPUInformation = Get-IcingaWindowsInformation Win32_Processor;
     [hashtable]$CPUData = @{};
 
     foreach ($cpu in $CPUInformation) {
