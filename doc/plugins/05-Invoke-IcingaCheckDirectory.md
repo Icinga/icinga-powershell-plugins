@@ -58,7 +58,7 @@ Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Criti
 ### Example Command 3
 
 ```powershell
-Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3 -ChangeYoungerThen 20d -ChangeOlderThen 10d
+Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3 -ChangeYoungerThan 20d
 ```
 
 ### Example Output 3
@@ -70,10 +70,22 @@ Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Criti
 ### Example Command 4
 
 ```powershell
-Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -FileNames "*.txt","*.sql" -Warning 20 -Critical 30 -Verbosity 3
+Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3 -ChangeOlderThan 100d
 ```
 
 ### Example Output 4
+
+```powershell
+[OK]: Check package "C:\Users\Icinga\Downloads" is [OK] (Match All) \_ [OK]: C:\Users\Icinga\Downloads is 19
+```
+
+### Example Command 5
+
+```powershell
+Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -FileNames "*.txt","*.sql" -Warning 20 -Critical 30 -Verbosity 3
+```
+
+### Example Output 5
 
 ```powershell
 [OK]: Check package "C:\Users\Icinga\Downloads" is [OK] (Match All) \_ [OK]: C:\Users\Icinga\Downloads is 4

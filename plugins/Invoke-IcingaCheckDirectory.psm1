@@ -17,9 +17,13 @@
    [WARNING]: Check package "C:\Users\Icinga\Downloads" is [WARNING] (Match All)
     \_ [WARNING]: C:\Users\Icinga\Downloads is 24
 .EXAMPLE
-   PS>Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3 -ChangeYoungerThen 20d -ChangeOlderThen 10d
+   PS>Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3 -ChangeYoungerThan 20d
    [OK]: Check package "C:\Users\Icinga\Downloads" is [OK] (Match All)
     \_ [OK]: C:\Users\Icinga\Downloads is 1
+.EXAMPLE
+   PS>Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3 -ChangeOlderThan 100d
+   [OK]: Check package "C:\Users\Icinga\Downloads" is [OK] (Match All)
+    \_ [OK]: C:\Users\Icinga\Downloads is 19
 .EXAMPLE
    PS>Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -FileNames "*.txt","*.sql" -Warning 20 -Critical 30 -Verbosity 3
    [OK]: Check package "C:\Users\Icinga\Downloads" is [OK] (Match All)
