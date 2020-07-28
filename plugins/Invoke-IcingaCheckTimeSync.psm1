@@ -22,7 +22,7 @@
 .PARAMETER IPV4
     Use IPV4 connection. Default $FALSE
 .EXAMPLE
-    PS> Invoke-IcingaCheckTimeSync -Server '0.pool.npt.org' -TimeOffset 10ms -Warning 10ms -Critical 20ms -Verbosity 2
+    PS> Invoke-IcingaCheckTimeSync -Server '0.pool.ntp.org' -TimeOffset 10ms -Warning 10ms -Critical 20ms -Verbosity 2
     \_ [OK] Check package "Time Package" (Match All)
     \_ [OK] Sync Status: NoLeapWarning
     \_ [WARNING] Time Offset: Value "0.02s" is greater than threshold "0.01s"

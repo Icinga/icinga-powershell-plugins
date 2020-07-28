@@ -27,7 +27,7 @@ Selected components of the returned time information are decoded and returned in
 ### Example Command 1
 
 ```powershell
-Invoke-IcingaCheckTimeSync -Server '0.pool.npt.org' -TimeOffset 10ms -Warning 10ms -Critical 20ms -Verbosity 2
+Invoke-IcingaCheckTimeSync -Server '0.pool.ntp.org' -TimeOffset 10ms -Warning 10ms -Critical 20ms -Verbosity 2
 ```
 
 ### Example Output 1
