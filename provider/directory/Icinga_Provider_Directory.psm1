@@ -69,7 +69,14 @@ function Get-IcingaDirectory()
         [array]$FileNames
     );
 
-    $DirectoryData = Get-ChildItem -Include $FileNames -Path $Path;
+    $DirectoryData = Get-ChildItem -Path $Path |
+        Where-Object {
+            foreach ($element in $FileNames) {
+                if ($_.Name -like $element) {
+                    return $_.Name
+                }
+            }
+        }
 
     return $DirectoryData;
 }
