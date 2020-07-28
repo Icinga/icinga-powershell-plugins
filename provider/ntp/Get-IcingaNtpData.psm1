@@ -116,7 +116,7 @@ function Get-IcingaNtpData()
     return @{
         'NtpServer'        = $Server;
         'NtpTime'          = $NtpDateTime;
-        'TimeOffset'       = [Math]::Round($Offset / 1000, 2);
+        'TimeOffset'       = [Math]::Round($Offset / 1000, 3);
         'Delay'            = [Math]::Round($Delay / 1000, 3);
         'CalculatedOffset' = (Get-IcingaValue -Value ([Math]::Round($Offset / 1000, 2) - $TimeOffset) -Compare 0 -Maximum);
         'ServerVersion'    = $VersionN;
