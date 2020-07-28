@@ -16,6 +16,10 @@ function Get-IcingaDirectoryAll()
         [string]$FileSizeSmallerThan
     );
 
+    if ([string]::IsNullOrEmpty($Path)) {
+        Exit-IcingaThrowException -Force -CustomMessage 'Unset argument "-Path"' -ExceptionType 'Configuration' -ExceptionThrown $IcingaExceptions.Configuration.PluginArgumentMissing;
+    }
+
     if ($Recurse -eq $TRUE) {
         $DirectoryData = Get-IcingaDirectoryRecurse -Path $Path -FileNames $FileNames;
     } else {

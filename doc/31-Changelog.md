@@ -20,6 +20,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#30](https://github.com/Icinga/icinga-powershell-plugins/issues/30) Fixes $null input value for certificate check, causing the Director import to fail
+* [#36](https://github.com/Icinga/icinga-powershell-plugins/issues/36) Fixes Ok return value for Invoke-IcingaCheckDirectory while -Path argument is not set
 
 ## 1.1.0 (2020-06-02)
 
