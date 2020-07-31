@@ -266,7 +266,7 @@
     31 = 'This device is not working properly because Windows cannot load the drivers required for this device.';
 }
 
-[hashtable]$CPUAvailability = @{
+[hashtable]$DeviceAvailabilityName = @{
     1  = 'Other';
     2  = 'Unknown';
     3  = 'Running/Full Power';
@@ -289,6 +289,32 @@
     20 = 'Not Configured';
     21 = 'Quiesced';
 }
+
+[hashtable]$DeviceAvailability = @{
+    'Other'                 = 1;
+    'Unknown'               = 2;
+    'RunningFullPower'      = 3;
+    'Warning'               = 4;
+    'InTest'                = 5;
+    'NotApplicable'         = 6;
+    'PowerOff'              = 7;
+    'OffLine'               = 8;
+    'OffDuty'               = 9;
+    'Degraded'              = 10;
+    'NotInstalled'          = 11;
+    'InstallError'          = 12;
+    'PowerSaveUnknown'      = 13;
+    'PowerSaveLowPowerMode' = 14;
+    'PowerSaveStandby'      = 15;
+    'PowerCycle'            = 16;
+    'PoweSaveWarning'       = 17;
+    'Paused'                = 18;
+    'NotReady'              = 19;
+    'NotConfigured'         = 20;
+    'Quiesced'              = 21;
+}
+
+[hashtable]$CPUAvailability = $DeviceAvailabilityName;
 
 [hashtable]$CPUPowerManagementCapabilities = @{
     0  = 'Unknown';
@@ -551,6 +577,102 @@
     {$_ -gt 16}               = 'Reserved';
 }
 
+[hashtable]$DeviceAccessName = @{
+    0  = 'Unknown';
+    1  = 'Readable';
+    2  = 'Writeable';
+    3  = 'Read/Write Supported';
+    4  = 'Write Once'; 
+}
+
+[hashtable]$DeviceAccess = @{
+    'Unknown'              = 0;
+    'Readable'             = 1;
+    'Writeable'            = 2;
+    'Read/Write Supported' = 3;
+    'Write Once'           = 4;
+}
+
+[hashtable]$DeviceTypeName = @{
+    0 = 'Unknown';
+    1 = 'No Root Directory';
+    2 = 'Removable Disk';
+    3 = 'Local Disk';
+    4 = 'Network Drive';
+    5 = 'Compact Disk';
+    6 = 'RAM Disk';
+}
+
+[hashtable]$DeviceType = @{
+    'Unknown'           = 0;
+    'No Root Directory' = 1;
+    'Removable Disk'    = 2;
+    'Local Disk'        = 3;
+    'Network Drive'     = 4;
+    'Compact Disk'      = 5;
+    'RAM Disk'          = 6;
+}
+
+[hashtable]$MediaTypeName = @{
+    0  = 'Format is unknown';
+    1  = '5 -Inch Floppy Disk';
+    2  = '3 -Inch Floppy Disk';
+    3  = '3 -Inch Floppy Disk';
+    4  = '3 -Inch Floppy Disk';
+    5  = '3 -Inch Floppy Disk';
+    6  = '5 -Inch Floppy Disk';
+    7  = '5 -Inch Floppy Disk';
+    8  = '5 -Inch Floppy Disk';
+    9  = '5 -Inch Floppy Disk';
+    10 = '5 -Inch Floppy Disk';
+    11 = 'Removable media other than floppy';
+    12 = 'Fixed hard disk media';
+    13 = '3 -Inch Floppy Disk';
+    14 = '3 -Inch Floppy Disk';
+    15 = '5 -Inch Floppy Disk';
+    16 = '5 -Inch Floppy Disk';
+    17 = '3 -Inch Floppy Disk';
+    18 = '3 -Inch Floppy Disk';
+    19 = '5 -Inch Floppy Disk';
+    20 = '3 -Inch Floppy Disk';
+    21 = '3 -Inch Floppy Disk';
+    22 = '8 -Inch Floppy Disk';
+}
+
+[hashtable]$MediaType = @{
+    'FormatIsUnknown'                     = 0;
+    '5InchFloppyDisk1MB512BytesSector'    = 1;
+    '3InchFloppyDisk14MB512BytesSector'   = 2;
+    '3InchFloppyDisk28MB512BytesSector'   = 3;
+    '3InchFloppyDisk20MB512BytesSector'   = 4;
+    '3InchFloppyDisk720KB512BytesSector'  = 5;
+    '5InchFloppyDisk360KB512BytesSector'  = 6;
+    '5InchFloppyDisk320KB512BytesSector'  = 7;
+    '5InchFloppyDisk320KB1024BytesSector' = 8;
+    '5InchFloppyDisk180KB512BytesSector'  = 9;
+    '5InchFloppyDisk160KB512BytesSector'  = 10;
+    'RemovableMediaOtherThanFloppy'       = 11;
+    'FixedHardDiskMedia'                  = 12;
+    '3InchFloppyDisk120MB512BytesSector'  = 13;
+    '3InchFloppyDisk640KB512BytesSector'  = 14;
+    '5InchFloppyDisk640KB512BytesSector'  = 15;
+    '5InchFloppyDisk720KB512BytesSector'  = 16;
+    '3InchFloppyDisk1MB512BytesSector'    = 17;
+    '3InchFloppyDisk2MB1024BytesSector'   = 18;
+    '5InchFloppyDisk2MB1024BytesSector'   = 19;
+    '3InchFloppyDisk128MB512BytesSector'  = 20;
+    '3InchFloppyDisk230MB512BytesSector'  = 21;
+    '8InchFloppyDisk256KB128BytesSector'  = 22;
+}
+
+[hashtable]$DiskStatusInfo = @{
+    1 = 'Other';
+    2 = 'Unknown';
+    3 = 'Enabled';
+    4 = 'Disabled';
+    5 = 'Not Applicable';
+}
+
 [hashtable]$ProviderEnums = @{
     #/lib/provider/bios
     BiosCharacteristics            = $BiosCharacteristics;
@@ -584,6 +706,16 @@
     ClientModeName                 = $ClientModeName;
     Stratum                        = $Stratum;
     StratumTxt                     = $StratumTxt;
+    #/lib/provider/PhysicalDiskCheck
+    DeviceAccess                   = $DeviceAccess;
+    DeviceAccessName               = $DeviceAccessName;
+    MediaType                      = $MediaType;
+    MediaTypeName                  = $MediaTypeName;
+    DeviceType                     = $DeviceType;
+    DeviceTypeName                 = $DeviceTypeName;
+    DiskStatusInfo                 = $DiskStatusInfo;
+    DeviceAvailability             = $DeviceAvailability;
+    DeviceAvailabilityName         = $DeviceAvailabilityName;
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');
