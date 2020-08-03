@@ -95,7 +95,7 @@ function Get-IcingaNtpData()
     $Delay                   = ($LocalReceiveTime - $LocalSendTime) - ($NtpSendTime - $NtpReceiveTime);
 
     # Convert NTP and local time from Unix timestamp to the local time zone
-    $TimeZoneId              = (Get-TimeZone).Id;
+    $TimeZoneId              = [TimeZoneInfo]::Local.Id;
     $TimeZone                = [System.TimeZoneInfo]::FindSystemTimeZoneById($TimeZoneId);
     $Ntpdate                 = ([datetime]'1/1/1900').AddMilliseconds(($NtpSendTime + $Offset));
     [DateTime]$NtpDateTime   = [System.TimeZoneInfo]::ConvertTimeFromUtc($Ntpdate, $TimeZone);
