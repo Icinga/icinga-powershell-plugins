@@ -48,6 +48,15 @@ function Invoke-IcingaCheckPerfcounter()
 
       $CounterPackage = New-IcingaCheckPackage -Name $counter -OperatorAnd -Verbose $Verbosity;
 
+      if ([string]::IsNullOrEmpty($Counters[$counter].error) -eq $FALSE) {
+         $CheckPackage.AddCheck(
+            (
+               New-IcingaCheck -Name ([string]::Format('{0}: {1}', $counter, $Counters[$counter].error)) -NoPerfData
+            ).SetUnknown()
+         )
+         continue;
+      }
+
       foreach ($instanceName in $Counters[$counter].Keys) {
          $instance = $Counters[$counter][$instanceName];
          if ($instance -isnot [hashtable]) {
