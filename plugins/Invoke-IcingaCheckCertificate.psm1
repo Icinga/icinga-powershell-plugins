@@ -4,7 +4,7 @@
 .DESCRIPTION
    Invoke-IcingaCheckCertificate returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
    e.g a certificate will run out in 30 days, WARNING is set to '20d:', CRITICAL is set to '50d:'. In this case the check will return 'WARNING'.
-   
+
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
    This module is intended to be used to check if a certificate is still valid or about to become valid.
@@ -25,7 +25,7 @@
    The checks can be combined into a single check:
 
    PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' -CertThumbprint '*'-CertPaths "C:\ProgramData\icinga2\var\lib\icinga2\certs" -CertName '*.crt' -Trusted
-   [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate 'test.example.com' trusted, Certificate 'Icinga CA' trusted 
+   [CRITICAL] Check package "Certificates" (Match All) - [CRITICAL] Certificate 'test.example.com' trusted, Certificate 'Icinga CA' trusted
    \_ [CRITICAL] Check package "Certificate 'test.example.com'" (Match All)
       \_ [OK] Certificate 'test.example.com' (valid until 2033-11-19 : 4993d) valid for: 431464853.88
       \_ [CRITICAL] Certificate 'test.example.com' trusted: Value "False" is not matching threshold "True"
@@ -42,7 +42,7 @@
 .PARAMETER CriticalStart
    Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully.
    Use format like: 'yyyy-MM-dd'
-   
+
 .PARAMETER WarningEnd
    Used to specify a Warning range for the end date of an certificate. In this case a string.
    Allowed units include: ms, s, m, h, d, w, M, y
@@ -50,25 +50,25 @@
 .PARAMETER CriticalEnd
    Used to specify a Critical range for the end date of an certificate. In this case a string.
    Allowed units include: ms, s, m, h, d, w, M, y
-   
+
 .PARAMETER CertStore
    Used to specify which CertStore to check. Valid choices are '*', 'LocalMachine', 'CurrentUser'
-   
+
  .PARAMETER CertThumbprint
    Used to specify an array of Thumbprints, which are used to determine what certificate to check, within the CertStore.
 
 .PARAMETER CertSubject
    Used to specify an array of Subjects, which are used to determine what certificate to check, within the CertStore.
-   
+
 .PARAMETER CertStorePath
    Used to specify which path within the CertStore should be checked.
-   
+
 .PARAMETER CertPaths
    Used to specify an array of paths on your system, where certificate files are. Use with CertName.
-   
+
 .PARAMETER CertName
    Used to specify an array of certificate names of certificate files to check. Use with CertPaths.
-   
+
 .INPUTS
    System.String
 .OUTPUTS
