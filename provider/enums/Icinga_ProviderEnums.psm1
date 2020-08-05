@@ -593,78 +593,6 @@
     'Write Once'           = 4;
 }
 
-[hashtable]$DriveTypeName = @{
-    0 = 'Unknown';
-    1 = 'No Root Directory';
-    2 = 'Removable Disk';
-    3 = 'Local Disk';
-    4 = 'Network Drive';
-    5 = 'Compact Disk';
-    6 = 'RAM Disk';
-}
-
-[hashtable]$DriveType = @{
-    'Unknown'         = 0;
-    'NoRootDirectory' = 1;
-    'RemovableDisk'   = 2;
-    'LocalDisk'       = 3;
-    'NetworkDrive'    = 4;
-    'CompactDisk'     = 5;
-    'RAMDisk'         = 6;
-}
-
-[hashtable]$MediaTypeName = @{
-    0  = 'Format is unknown';
-    1  = '5 -Inch Floppy Disk';
-    2  = '3 -Inch Floppy Disk';
-    3  = '3 -Inch Floppy Disk';
-    4  = '3 -Inch Floppy Disk';
-    5  = '3 -Inch Floppy Disk';
-    6  = '5 -Inch Floppy Disk';
-    7  = '5 -Inch Floppy Disk';
-    8  = '5 -Inch Floppy Disk';
-    9  = '5 -Inch Floppy Disk';
-    10 = '5 -Inch Floppy Disk';
-    11 = 'Removable media other than floppy';
-    12 = 'Fixed hard disk media';
-    13 = '3 -Inch Floppy Disk';
-    14 = '3 -Inch Floppy Disk';
-    15 = '5 -Inch Floppy Disk';
-    16 = '5 -Inch Floppy Disk';
-    17 = '3 -Inch Floppy Disk';
-    18 = '3 -Inch Floppy Disk';
-    19 = '5 -Inch Floppy Disk';
-    20 = '3 -Inch Floppy Disk';
-    21 = '3 -Inch Floppy Disk';
-    22 = '8 -Inch Floppy Disk';
-}
-
-[hashtable]$MediaType = @{
-    'FormatIsUnknown'                     = 0;
-    '5InchFloppyDisk1MB512BytesSector'    = 1;
-    '3InchFloppyDisk14MB512BytesSector'   = 2;
-    '3InchFloppyDisk28MB512BytesSector'   = 3;
-    '3InchFloppyDisk20MB512BytesSector'   = 4;
-    '3InchFloppyDisk720KB512BytesSector'  = 5;
-    '5InchFloppyDisk360KB512BytesSector'  = 6;
-    '5InchFloppyDisk320KB512BytesSector'  = 7;
-    '5InchFloppyDisk320KB1024BytesSector' = 8;
-    '5InchFloppyDisk180KB512BytesSector'  = 9;
-    '5InchFloppyDisk160KB512BytesSector'  = 10;
-    'RemovableMediaOtherThanFloppy'       = 11;
-    'FixedHardDiskMedia'                  = 12;
-    '3InchFloppyDisk120MB512BytesSector'  = 13;
-    '3InchFloppyDisk640KB512BytesSector'  = 14;
-    '5InchFloppyDisk640KB512BytesSector'  = 15;
-    '5InchFloppyDisk720KB512BytesSector'  = 16;
-    '3InchFloppyDisk1MB512BytesSector'    = 17;
-    '3InchFloppyDisk2MB1024BytesSector'   = 18;
-    '5InchFloppyDisk2MB1024BytesSector'   = 19;
-    '3InchFloppyDisk128MB512BytesSector'  = 20;
-    '3InchFloppyDisk230MB512BytesSector'  = 21;
-    '8InchFloppyDisk256KB128BytesSector'  = 22;
-}
-
 [hashtable]$DeviceStatus = @{
     'OK'         = 'OK';
     'Erorr'      = 'Error';
@@ -678,26 +606,6 @@
     'NonRecover' = 'NonRecover';
     'NoContact'  = 'NoContact';
     'LostComm'   = 'LostComm';
-}
-
-[hashtable]$IsDeviceOffline = @{
-    'False'  = 'Online';
-    'True'   = 'Offline'
-}
-
-[hashtable]$IsDeviceOfflineName = @{
-    'Online'  = 'False';
-    'Offline' = 'True'
-}
-
-[hashtable]$IsDeviceReadOnly = @{
-    'False'  = 'Nein';
-    'True'   = 'Ja'
-}
-
-[hashtable]$IsDeviceReadOnlyName = @{
-    'Nein' = 'False';
-    'Ja'   = 'True'
 }
 
 [hashtable]$ProviderEnums = @{
@@ -736,17 +644,9 @@
     #/lib/provider/PhysicalDiskCheck
     DeviceAccess                   = $DeviceAccess;
     DeviceAccessName               = $DeviceAccessName;
-    MediaType                      = $MediaType;
-    MediaTypeName                  = $MediaTypeName;
-    DriveType                      = $DriveType;
-    DriveTypeName                  = $DriveTypeName;
     DeviceStatus                   = $DeviceStatus;
     DeviceAvailability             = $DeviceAvailability;
     DeviceAvailabilityName         = $DeviceAvailabilityName;
-    IsDeviceOffline                = $IsDeviceOffline;
-    IsDeviceOfflineName            = $IsDeviceOfflineName;
-    IsDeviceReadOnly               = $IsDeviceReadOnly;
-    IsDeviceReadOnlyName           = $IsDeviceReadOnlyName;
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');
