@@ -85,6 +85,39 @@ function Get-IcingaDiskPartitions()
         return $PartitionDiskByDriveLetter;
 }
 
+function Join-IcingaPhysicalDiskDataPerfCounter()
+{
+    param (
+        [array]$DiskCounter
+    );
+
+    [hashtable]$PhysicalDiskData = @{};
+    $GetDisk                     = Show-IcingaDiskData;
+    $Counters                    = New-IcingaPerformanceCounterArray $DiskCounter; 
+    $SortedDisks                 = New-IcingaPerformanceCounterStructure -CounterCategory 'PhysicalDisk' -PerformanceCounterHash $Counters;
+
+    foreach ($disk in $SortedDisks.Keys) {
+        $CounterObjects = $SortedDisks[$disk];
+        $DiskId         = $disk.Split(' ')[0];
+        $DiskName       = [string]::Format('\\.\PHYSICALDRIVE{0}', $DiskId);
+        $DiskData       = $null;
+
+        if ($GetDisk.ContainsKey($DiskName)) {
+            $DiskData = $GetDisk[$DiskName];
+        }
+
+        $PhysicalDiskData.Add(
+            $DiskId,
+            @{
+                'PerfCounter' = $CounterObjects;
+                'Data'        = $DiskData;
+            }
+        );
+    }
+
+    return $PhysicalDiskData;
+}
+
 function Get-IcingaDiskCapabilities 
 {
     $DiskInformation = Get-CimInstance Win32_DiskDrive;

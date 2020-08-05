@@ -593,7 +593,7 @@
     'Write Once'           = 4;
 }
 
-[hashtable]$DeviceTypeName = @{
+[hashtable]$DriveTypeName = @{
     0 = 'Unknown';
     1 = 'No Root Directory';
     2 = 'Removable Disk';
@@ -603,14 +603,14 @@
     6 = 'RAM Disk';
 }
 
-[hashtable]$DeviceType = @{
-    'Unknown'           = 0;
-    'No Root Directory' = 1;
-    'Removable Disk'    = 2;
-    'Local Disk'        = 3;
-    'Network Drive'     = 4;
-    'Compact Disk'      = 5;
-    'RAM Disk'          = 6;
+[hashtable]$DriveType = @{
+    'Unknown'         = 0;
+    'NoRootDirectory' = 1;
+    'RemovableDisk'   = 2;
+    'LocalDisk'       = 3;
+    'NetworkDrive'    = 4;
+    'CompactDisk'     = 5;
+    'RAMDisk'         = 6;
 }
 
 [hashtable]$MediaTypeName = @{
@@ -665,12 +665,39 @@
     '8InchFloppyDisk256KB128BytesSector'  = 22;
 }
 
-[hashtable]$DiskStatusInfo = @{
-    1 = 'Other';
-    2 = 'Unknown';
-    3 = 'Enabled';
-    4 = 'Disabled';
-    5 = 'Not Applicable';
+[hashtable]$DeviceStatus = @{
+    'OK'         = 'OK';
+    'Erorr'      = 'Error';
+    'Degraded'   = 'Degraded';
+    'Unknown'    = 'Unknown';
+    'PredFail'   = 'PredFail';
+    'Starting'   = 'Starting';
+    'Stopping'   = 'Stopping';
+    'Service'    = 'Service';
+    'Stressed'   = 'Stressed';
+    'NonRecover' = 'NonRecover';
+    'NoContact'  = 'NoContact';
+    'LostComm'   = 'LostComm';
+}
+
+[hashtable]$IsDeviceOffline = @{
+    'False'  = 'Online';
+    'True'   = 'Offline'
+}
+
+[hashtable]$IsDeviceOfflineName = @{
+    'Online'  = 'False';
+    'Offline' = 'True'
+}
+
+[hashtable]$IsDeviceReadOnly = @{
+    'False'  = 'Nein';
+    'True'   = 'Ja'
+}
+
+[hashtable]$IsDeviceReadOnlyName = @{
+    'Nein' = 'False';
+    'Ja'   = 'True'
 }
 
 [hashtable]$ProviderEnums = @{
@@ -711,11 +738,15 @@
     DeviceAccessName               = $DeviceAccessName;
     MediaType                      = $MediaType;
     MediaTypeName                  = $MediaTypeName;
-    DeviceType                     = $DeviceType;
-    DeviceTypeName                 = $DeviceTypeName;
-    DiskStatusInfo                 = $DiskStatusInfo;
+    DriveType                      = $DriveType;
+    DriveTypeName                  = $DriveTypeName;
+    DeviceStatus                   = $DeviceStatus;
     DeviceAvailability             = $DeviceAvailability;
     DeviceAvailabilityName         = $DeviceAvailabilityName;
+    IsDeviceOffline                = $IsDeviceOffline;
+    IsDeviceOfflineName            = $IsDeviceOfflineName;
+    IsDeviceReadOnly               = $IsDeviceReadOnly;
+    IsDeviceReadOnlyName           = $IsDeviceReadOnlyName;
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');

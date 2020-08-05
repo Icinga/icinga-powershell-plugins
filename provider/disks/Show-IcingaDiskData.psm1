@@ -22,7 +22,7 @@ function Show-IcingaDiskData {
             PartitionStyle    = 'NotSupported';
         }
 
-        $GetPhysicalDiskInfo    = $DiskObject;
+        $GetPhysicalDiskInfo  = $DiskObject;
     }
     
     foreach ($disk_properties in $DisksInformations) {

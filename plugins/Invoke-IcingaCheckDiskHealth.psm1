@@ -21,7 +21,6 @@ function Invoke-IcingaCheckDiskHealth()
         $DiskAvgReadSecCritical   = $null,
         $DiskAvgWriteSecWarning   = $null,
         $DiskAvgWriteSecCritical  = $null,
-        [switch]$NetworkDevice    = $False,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2)]
         [int]$Verbosity           = 0
@@ -31,8 +30,7 @@ function Invoke-IcingaCheckDiskHealth()
         -Name 'Physicaldisk Package' `
         -OperatorAnd `
         -Verbose $Verbosity;
-    $GetDisk = Show-IcingaDiskData;
-    $Counters = New-IcingaPerformanceCounterArray `
+    $SortedDisks = Join-IcingaPhysicalDiskDataPerfCounter `
         '\PhysicalDisk(*)\disk read bytes/sec', `
         '\PhysicalDisk(*)\disk write bytes/sec', `
         '\PhysicalDisk(*)\disk reads/sec', `
@@ -41,115 +39,170 @@ function Invoke-IcingaCheckDiskHealth()
         '\PhysicalDisk(*)\avg. disk sec/write', `
         '\PhysicalDisk(*)\avg. disk sec/transfer', `
         '\PhysicalDisk(*)\current disk queue length'; 
-    $SortedDisks = New-IcingaPerformanceCounterStructure -CounterCategory 'PhysicalDisk' -PerformanceCounterHash $Counters;
     
-    for ($i = 0; $i -lt $GetDisk.Count; $i++) {
-        if ($GetDisk.Values.DriveType[$i] -eq 4 -And $NetworkDevice -eq $False) {
-            continue;
-        }
+    foreach ($DiskPart in $SortedDisks.Keys) {
+        $DiskObjects      = $SortedDisks[$DiskPart];
+        if ($DiskPart -ne '_Total') {
+            $PartCheckPackage = New-IcingaCheckPackage `
+            -Name $DiskPart `
+            -OperatorAnd `
+            -Verbose $Verbosity;
+            
         # Check for Disk Availability
-        $CheckAvial = New-IcingaCheck `
-            -Name ([string]::Format('{0} Availability', $GetDisk.Values.DeviceId[$i])) `
-            -Value $GetDisk.Values.Availability[$i]  `
-            -Translation $ProviderEnums.DeviceAvailabilityName `
-            -NoPerfData;
-
-        $CheckAvial.WarnIfMatch($ProviderEnums.DeviceAvailability.OffLine).CritIfMatch($ProviderEnums.DeviceAvailabilityName.PowerOff) | Out-Null;
-        $CheckPackage.AddCheck($CheckAvial);
-
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} Availability', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.Data.Availability  `
+                -Translation $ProviderEnums.DeviceAvailabilityName `
+                -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.DeviceAvailability.OffLine
+            ).CritIfMatch(
+                $ProviderEnums.DeviceAvailabilityName.PowerOff
+            )
+        );
+    
         # Check for Disk Accessibility
-        $CheckAccess = New-IcingaCheck `
-            -Name ([string]::Format('{0} Accessibility', $GetDisk.Values.DeviceId[$i])) `
-            -Value $GetDisk.Values.Access[$i] `
-            -Translation $ProviderEnums.DeviceAccessName `
-            -NoPerfData;
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} Accessibility', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.Data.Access `
+                -Translation $ProviderEnums.DeviceAccessName `
+                -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.DeviceAccess.Unknown
+            )
+        );
 
-        $CheckAccess.WarnIfMatch($ProviderEnums.DeviceAccess.Unknown) | Out-Null;
-        $CheckPackage.AddCheck($CheckAccess);
-
-        # Check for Disk MediaType
-        $CheckMType = New-IcingaCheck `
-            -Name ([string]::Format('{0} MediaType', $GetDisk.Values.DeviceId[$i])) `
-            -Value $GetDisk.Values.MediaType[$i] `
-            -Translation $ProviderEnums.MediaTypeName `
-            -NoPerfData;
-
-        $CheckMType.WarnIfMatch($ProviderEnums.MediaType.FormatIsUnknown) | Out-Null;
-        $CheckPackage.AddCheck($CheckMType);
-
-        # Check for Drive Type
-        $DriveCheck = New-IcingaCheck `
-            -Name ([string]::Format('{0} DriveType', $GetDisk.Values.DeviceId[$i])) `
-            -Value $GetDisk.Values.DriveType[$i] `
-            -Translation $ProviderEnums.DeviceTypeName `
-            -NoPerfData;
-
-        $DriveCheck.WarnIfMatch($ProviderEnums.DeviceType.Unknown) | Out-Null;
-        $CheckPackage.AddCheck($DriveCheck);
-
+        # Check for Disk HealthStatus
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} Healthiness', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.Data.HealthStatus `
+                -NoPerfData
+            )
+        );
+    
         # Check for Disk Status
-        $StatusCheck = New-IcingaCheck `
-            -Name ([string]::Format('{0} FileSystem', $GetDisk.Values.DeviceId[$i])) `
-            -Value $GetDisk.Values.FileSystem[$i] `
-            -NoPerfData;
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} Status', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.Data.Status `
+                -NoPerfData
+            ).WarnIfNotMatch(
+                $ProviderEnums.DeviceStatus.OK
+            )
+        );
 
-        $CheckPackage.AddCheck($StatusCheck);
+        # Check for Disk OperationalStatus
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} OperationalStatus', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.Data.OperationalStatus `
+                -NoPerfData
+            ).WarnIfMatch('Offline')
+        );
 
-        foreach ($Disk in $SortedDisks.Keys) {
-            $DiskObjects = $SortedDisks[$Disk];
-            $Disk = $Disk -Replace '0 ', '';
-            foreach ($Counter in $DiskObjects.Keys) {
-                $DiskObject = $DiskObjects[$Counter];
-                if ($Disk -eq $GetDisk.Values.DeviceId[$i] -And $i -eq ($GetDisk.Count - 1)) {
-                    $PerfCheck = New-IcingaCheck `
-                        -Name ([string]::Format('{0} {1}', $GetDisk.Values.DeviceId[$i], $Counter)) `
-                        -Value $DiskObject.value;
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} IsReadOnly', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.Data.IsReadOnly `
+                -Translation $ProviderEnums.IsDeviceReadOnlyName `
+                -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.IsDeviceReadOnly.True
+            )
+        );
 
-                    if ($Counter -eq 'avg. disk sec/read') {
-                        $PerfCheck.WarnOutOfRange($DiskAvgReadSecWarning).CritOutOfRange($DiskAvgReadSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'avg. disk sec/write') {
-                        $PerfCheck.WarnOutOfRange($DiskAvgWriteSecWarning).CritOutOfRange($DiskAvgWriteSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'avg. disk sec/transfer') {
-                        $PerfCheck.WarnOutOfRange($DiskAvgTransSecWarning).CritOutOfRange($DiskAvgTransSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'current disk queue length') {
-                        $PerfCheck.WarnOutOfRange($DiskQueueLenWarning).CritOutOfRange($DiskQueueLenCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk read bytes/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskReadByteSecWarning).CritOutOfRange($DiskReadByteSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk write bytes/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskWriteByteSecWarning).CritOutOfRange($DiskWriteByteSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk reads/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskReadSecWarning).CritOutOfRange($DiskReadSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk writes/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskWriteSecWarning).CritOutOfRange($DiskWriteSecCritical) | Out-Null;
-                    }
-                    
-                    $CheckPackage.AddCheck($PerfCheck);
-                } elseif ($Disk -ne $GetDisk.Values.DeviceId[$i] -And $i -eq ($GetDisk.Count - 1)) {
-                    $PerfCheck = New-IcingaCheck `
-                        -Name ([string]::Format('{0} {1}', $Disk, $Counter)) `
-                        -Value $DiskObject.value;
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} avg. disk sec/read', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['avg. disk sec/read'].value
+            ).WarnOutOfRange(
+                $DiskAvgReadSecWarning
+            ).CritOutOfRange(
+                $DiskAvgReadSecCritical
+            )
+        );
 
-                    if ($Counter -eq 'avg. disk sec/read') {
-                        $PerfCheck.WarnOutOfRange($DiskAvgReadSecWarning).CritOutOfRange($DiskAvgReadSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'avg. disk sec/write') {
-                        $PerfCheck.WarnOutOfRange($DiskAvgWriteSecWarning).CritOutOfRange($DiskAvgWriteSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'avg. disk sec/transfer') {
-                        $PerfCheck.WarnOutOfRange($DiskAvgTransSecWarning).CritOutOfRange($DiskAvgTransSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'current disk queue length') {
-                        $PerfCheck.WarnOutOfRange($DiskQueueLenWarning).CritOutOfRange($DiskQueueLenCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk read bytes/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskReadByteSecWarning).CritOutOfRange($DiskReadByteSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk write bytes/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskWriteByteSecWarning).CritOutOfRange($DiskWriteByteSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk reads/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskReadSecWarning).CritOutOfRange($DiskReadSecCritical) | Out-Null;
-                    } elseif ($Counter -eq 'disk writes/sec') {
-                        $PerfCheck.WarnOutOfRange($DiskWriteSecWarning).CritOutOfRange($DiskWriteSecCritical) | Out-Null;
-                    }
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} avg. disk sec/write', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['avg. disk sec/write'].value
+            ).WarnOutOfRange(
+                $DiskAvgWriteSecWarning
+            ).CritOutOfRange(
+                $DiskAvgWriteSecCritical
+            )
+        );
 
-                    $CheckPackage.AddCheck($PerfCheck);
-                }
-            }
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} avg. disk sec/transfer', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['avg. disk sec/transfer'].value
+            ).WarnOutOfRange(
+                $DiskAvgTransSecWarning
+            ).CritOutOfRange(
+                $DiskAvgTransSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} current disk queue length', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['current disk queue length'].value
+            ).WarnOutOfRange(
+                $DiskQueueLenWarning
+            ).CritOutOfRange(
+                $DiskQueueLenCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk read bytes/sec', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['disk read bytes/sec'].value
+            ).WarnOutOfRange(
+                $DiskReadByteSecWarning
+            ).CritOutOfRange(
+                $DiskReadByteSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk write bytes/sec', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['disk write bytes/sec'].value
+            ).WarnOutOfRange(
+                $DiskWriteByteSecWarning
+            ).CritOutOfRange(
+                $DiskWriteByteSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk reads/sec', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['disk reads/sec'].value
+            ).WarnOutOfRange(
+                $DiskReadSecWarning
+            ).CritOutOfRange(
+                $DiskReadSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk writes/sec', $DiskObjects.Data.DriveReference)) `
+                -Value $DiskObjects.PerfCounter['disk writes/sec'].value
+            ).WarnOutOfRange(
+                $DiskWriteSecWarning
+            ).CritOutOfRange(
+                $DiskWriteSecCritical
+            )
+        );
+
+        $CheckPackage.AddCheck($PartCheckPackage);
         }
     }
 
