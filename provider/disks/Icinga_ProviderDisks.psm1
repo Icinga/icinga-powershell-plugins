@@ -92,18 +92,17 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
     );
 
     [hashtable]$PhysicalDiskData = @{};
-    $GetDisk                     = Show-IcingaDiskData;
+    $GetDisk                     = Get-IcingaPhysicalDiskInfo;
     $Counters                    = New-IcingaPerformanceCounterArray $DiskCounter; 
     $SortedDisks                 = New-IcingaPerformanceCounterStructure -CounterCategory 'PhysicalDisk' -PerformanceCounterHash $Counters;
 
     foreach ($disk in $SortedDisks.Keys) {
         $CounterObjects = $SortedDisks[$disk];
         $DiskId         = $disk.Split(' ')[0];
-        $DiskName       = [string]::Format('\\.\PHYSICALDRIVE{0}', $DiskId);
         $DiskData       = $null;
 
-        if ($GetDisk.ContainsKey($DiskName)) {
-            $DiskData = $GetDisk[$DiskName];
+        if ($GetDisk.ContainsKey($DiskId)) {
+            $DiskData = $GetDisk[$DiskId];
         }
 
         $PhysicalDiskData.Add(

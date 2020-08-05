@@ -4,47 +4,10 @@ function Show-IcingaDiskData {
 
     [hashtable]$PhysicalDiskData = @{};
     
-    if (Get-Command Get-Disk -ErrorAction SilentlyContinue) {
-        $GetPhysicalDiskInfo = Get-Disk;
-    } else {
-        $GetPhysicalDiskInfo    = @();
-        $DiskObject = New-Object PSObject -Property @{
-            IsReadOnly        = 'NotSupported';
-            IsOffline         = 'NotSupported';
-            IsSystem          = 'NotSupported';
-            IsBoot            = 'NotSupported';
-            BusType           = 'NotSupported';
-            IsHighlyAvailable = 'NotSupported';
-            IsScaleOut        = 'NotSupported';
-            IsClustered       = 'NotSupported';
-            HealthStatus      = 'NotSupported';
-            OperationalStatus = 'NotSupported';
-            PartitionStyle    = 'NotSupported';
-        }
-
-        $GetPhysicalDiskInfo  = $DiskObject;
-    }
-    
     foreach ($disk_properties in $DisksInformations) {
         $disk_datails = @{};
         foreach($disk in $disk_properties.CimInstanceProperties) {
             $disk_datails.Add($disk.Name, $disk.Value);
-        }
-
-        foreach($Index in $GetPhysicalDiskInfo) {
-            if ($disk_properties.Index -eq $Index.DiskNumber) {
-                $disk_datails.Add('IsReadOnly', $Index.IsReadOnly);
-                $disk_datails.Add('IsOffline', $Index.IsOffline);
-                $disk_datails.Add('IsSystem', $Index.IsSystem);
-                $disk_datails.Add('IsBoot', $Index.IsBoot);
-                $disk_datails.Add('BusType', $Index.BusType);
-                $disk_datails.Add('IsHighlyAvailable', $Index.IsHighlyAvailable);
-                $disk_datails.Add('IsScaleOut', $Index.IsScaleOut);
-                $disk_datails.Add('IsClustered', $Index.IsClustered);
-                $disk_datails.Add('HealthStatus', $Index.HealthStatus);
-                $disk_datails.Add('OperationalStatus', $Index.OperationalStatus);
-                $disk_datails.Add('PartitionStyle', $Index.PartitionStyle);
-            }
         }
 
         $disk_datails.Add('DriveReference', @());

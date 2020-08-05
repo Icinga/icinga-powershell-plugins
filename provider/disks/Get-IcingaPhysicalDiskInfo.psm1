@@ -55,7 +55,7 @@ function Get-IcingaPhysicalDiskInfo()
             'Description'                 = $disk.Description;
             'PartitionStyle'              = ''; # Set later on partition check
             'PartitionLayout'             = @{};
-            'DriveReference'              = $PartitionInformation[$DiskId].DriveLetters;
+            'DriveReference'              = @{}; # Set later on partition check
             'Caption'                     = $disk.Caption;
             'IsSystem'                    = $disk.IsSystem;
             'TotalHeads'                  = $disk.TotalHeads;
@@ -125,7 +125,8 @@ function Get-IcingaPhysicalDiskInfo()
                 }
                 $DiskInfo.HealthStatus      = $msft_disk.HealthStatus;
                 $DiskInfo.OperationalStatus = ($msft_disk.OperationalStatus | ForEach-Object {
-                        return @{ $_ = $ProviderEnums.DiskOperationalStatus[[int]$_]; };
+                        [int]$Key = $_;
+                        return @{ $Key = $ProviderEnums.DiskOperationalStatus[[int]$_]; };
                     }
                 );
                 $DiskInfo.Add(
@@ -164,6 +165,10 @@ function Get-IcingaPhysicalDiskInfo()
 
             if ($PartitionInformation.ContainsKey($DiskId) -And $PartitionInformation[$DiskId].Partitions.ContainsKey($PartitionIndex)) {
                 $DriveLetter = $PartitionInformation[$DiskId].Partitions[$PartitionIndex];
+
+                $DiskInfo.DriveReference.Add(
+                    $DriveLetter, $partition.Index
+                );
             }
 
             $DiskInfo.PartitionLayout.Add(
