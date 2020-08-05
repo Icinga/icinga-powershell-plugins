@@ -30,6 +30,9 @@ function Get-IcingaPhysicalDiskInfo()
     $PhysicalDisks        = Get-IcingaWindowsInformation Win32_DiskDrive;
 
     # Fetch our disk info only for local disks and do not include network drives
+    # Filter additional details for disks
+    $MSFT_Disks           = Get-IcingaWindowsInformation MSFT_PhysicalDisk -Namespace 'root\Microsoft\Windows\Storage';
+    # Load additional logical disk information
     $LogicalDisk          = Get-IcingaWindowsInformation Win32_LogicalDisk -Filter 'DriveType = 3';
     $PartitionInformation = Get-IcingaDiskPartitionAssignment;
     $PhysicalDiskData     = @{ };
@@ -60,14 +63,14 @@ function Get-IcingaPhysicalDiskInfo()
             'MaxMediaSize'                = $disk.MaxMediaSize;
             'ConfigManagerUserConfig'     = $disk.ConfigManagerUserConfig;
             'Model'                       = $disk.Model;
-            'BusType'                     = $disk.BusType;
+            'BusType'                     = $null; # Set later on MSFT
             'PowerManagementCapabilities' = $disk.PowerManagementCapabilities;
             'TracksPerCylinder'           = $disk.TracksPerCylinder;
             'IsHighlyAvailable'           = $disk.IsHighlyAvailable;
             'DeviceID'                    = $disk.DeviceID;
             'NeedsCleaning'               = $disk.NeedsCleaning;
             'Index'                       = $disk.Index;
-            'OperationalStatus'           = $disk.OperationalStatus;
+            'OperationalStatus'           = $null; # Set later on MSFT
             'MediaLoaded'                 = $disk.MediaLoaded;
             'LastErrorCode'               = $disk.LastErrorCode;
             'Size'                        = $disk.Size;
@@ -113,16 +116,54 @@ function Get-IcingaPhysicalDiskInfo()
             'SectorsPerTrack'             = $disk.SectorsPerTrack;
         }
 
+        # Add MSFT disk data to your return value
+        foreach ($msft_disk in $MSFT_Disks) {
+            if ([int]$msft_disk.DeviceId -eq [int]$DiskId) {
+                $DiskInfo.BusType           = @{
+                    'value' = $msft_disk.BusType;
+                    'name'  = $ProviderEnums.DiskBusType[[int]$msft_disk.BusType];
+                }
+                $DiskInfo.HealthStatus      = $msft_disk.HealthStatus;
+                $DiskInfo.OperationalStatus = ($msft_disk.OperationalStatus | ForEach-Object {
+                        return @{ $_ = $ProviderEnums.DiskOperationalStatus[[int]$_]; };
+                    }
+                );
+                $DiskInfo.Add(
+                    'SpindleSpeed', $msft_disk.SpindleSpeed
+                );
+                $DiskInfo.Add(
+                    'PhysicalLocation', $msft_disk.PhysicalLocation
+                );
+                $DiskInfo.Add(
+                    'AdapterSerialNumber', $msft_disk.AdapterSerialNumber
+                );
+                $DiskInfo.Add(
+                    'PhysicalSectorSize', $msft_disk.PhysicalSectorSize
+                );
+                $DiskInfo.Add(
+                    'CanPool', $msft_disk.CanPool
+                );
+                $DiskInfo.Add(
+                    'CannotPoolReason', $msft_disk.CannotPoolReason
+                );
+                $DiskInfo.Add(
+                    'IsPartial', $msft_disk.IsPartial
+                );
+                $DiskInfo.Add(
+                    'UniqueId', $msft_disk.UniqueId
+                );
+                break;
+            }
+        }
+
         $MaxBlocks = 0;
 
         foreach ($partition in $Partitions) {
             $DriveLetter            = $null;
-            $LogicalDisk            = $null;
             [string]$PartitionIndex = $partition.Index;
 
             if ($PartitionInformation.ContainsKey($DiskId) -And $PartitionInformation[$DiskId].Partitions.ContainsKey($PartitionIndex)) {
                 $DriveLetter = $PartitionInformation[$DiskId].Partitions[$PartitionIndex];
-                $LogicalDisk = Get-IcingaWindowsInformation Win32_LogicalDisk -Filter "DeviceId = '$DriveLetter'";
             }
 
             $DiskInfo.PartitionLayout.Add(
@@ -144,34 +185,40 @@ function Get-IcingaPhysicalDiskInfo()
                 }
             )
 
-            if ($null -ne $LogicalDisk) {
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'FreeSpace', $LogicalDisk.FreeSpace
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'VolumeName', $LogicalDisk.VolumeName
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'FileSystem', $LogicalDisk.FileSystem
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'VolumeSerialNumber', $LogicalDisk.VolumeSerialNumber
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'Description', $LogicalDisk.Description
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'Access', $LogicalDisk.Access
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'SupportsFileBasedCompression', $LogicalDisk.SupportsFileBasedCompression
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'SupportsDiskQuotas', $LogicalDisk.SupportsDiskQuotas
-                );
-                $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                    'Compressed', $LogicalDisk.Compressed
-                );
+            foreach ($logical_disk in $LogicalDisk) {
+                if ($logical_disk.DeviceId -eq $DriveLetter) {
+                    if ($null -ne $LogicalDisk) {
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'FreeSpace', $logical_disk.FreeSpace
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'VolumeName', $logical_disk.VolumeName
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'FileSystem', $logical_disk.FileSystem
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'VolumeSerialNumber', $logical_disk.VolumeSerialNumber
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'Description', $logical_disk.Description
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'Access', $logical_disk.Access
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'SupportsFileBasedCompression', $logical_disk.SupportsFileBasedCompression
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'SupportsDiskQuotas', $logical_disk.SupportsDiskQuotas
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'Compressed', $logical_disk.Compressed
+                        );
+                    }
+
+                    break;
+                }
             }
 
             $MaxBlocks += $Partition.NumberOfBlocks;
