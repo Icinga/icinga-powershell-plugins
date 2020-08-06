@@ -108,162 +108,163 @@ function Invoke-IcingaCheckDiskHealth()
 
     foreach ($DiskPart in $SortedDisks.Keys) {
         $DiskObjects      = $SortedDisks[$DiskPart];
-        if ($DiskPart -ne '_Total') {
-            $PartCheckPackage = New-IcingaCheckPackage `
-                -Name ([string]::Format('Disk #{0}', $DiskPart)) `
-                -OperatorAnd `
-                -Verbose $Verbosity;
 
-            [string]$Partition = $DiskPart;
+        $PartCheckPackage = New-IcingaCheckPackage `
+            -Name ([string]::Format('Disk #{0}', $DiskPart)) `
+            -OperatorAnd `
+            -Verbose $Verbosity;
 
-            if ($null -ne $DiskObjects.Data) {
-                # Check for Disk Availability
+        [string]$Partition = $DiskPart;
+
+        if ($null -ne $DiskObjects.Data) {
+            # Check for Disk Availability
+            if ($DiskObjects.Data.DriveReference.Count -ne 0) {
                 $Partition = $DiskObjects.Data.DriveReference.Keys;
-                $OperationalStatus = $DiskObjects.Data.OperationalStatus;
-                $OperCount = $OperationalStatus.Count;
+            }
+            $OperationalStatus = $DiskObjects.Data.OperationalStatus;
+            $OperCount = $OperationalStatus.Count;
 
-                if (($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Ok)) -or ($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Online))) {
-                    $PartCheckPackage.AddCheck(
-                        (New-IcingaCheck `
-                            -Name ([string]::Format('{0} Operational Status', $Partition)) `
-                            -Value 'OK' `
-                            -NoPerfData
-                        )
-                    )
-                } else {
-                    $PartCheckPackage.AddCheck(
-                        (New-IcingaCheck `
-                            -Name ([string]::Format('{0} Operational Status', $Partition)) `
-                            -Value ([string]::Join(',', $OperationalStatus.Values)) `
-                            -NoPerfData
-                        ).SetCritical()
-                    )
-                }
-
-                # Check for Disk Status
+            if (($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Ok)) -or ($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Online))) {
                 $PartCheckPackage.AddCheck(
                     (New-IcingaCheck `
-                        -Name ([string]::Format('{0} Status', $Partition)) `
-                        -Value $DiskObjects.Data.Status `
+                        -Name ([string]::Format('{0} Operational Status', $Partition)) `
+                        -Value 'OK' `
                         -NoPerfData
-                    ).WarnIfNotMatch(
-                        $ProviderEnums.DeviceStatus.OK
                     )
-                );
-
-                # Check for Disk OperationalStatus
+                )
+            } else {
                 $PartCheckPackage.AddCheck(
                     (New-IcingaCheck `
-                        -Name ([string]::Format('{0} Is Offline', $Partition)) `
-                        -Value $DiskObjects.Data.IsOffline `
+                        -Name ([string]::Format('{0} Operational Status', $Partition)) `
+                        -Value ([string]::Join(',', $OperationalStatus.Values)) `
                         -NoPerfData
-                    ).WarnIfMatch('True')
-                );
-
-                $PartCheckPackage.AddCheck(
-                    (New-IcingaCheck `
-                        -Name ([string]::Format('{0} Is ReadOnly', $Partition)) `
-                        -Value $DiskObjects.Data.IsReadOnly `
-                        -NoPerfData
-                    ).WarnIfMatch('True')
-                );
+                    ).SetCritical()
+                )
             }
 
+            # Check for Disk Status
             $PartCheckPackage.AddCheck(
                 (New-IcingaCheck `
-                    -Name ([string]::Format('{0} avg. disk sec/read', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['avg. disk sec/read'].value `
-                    -Unit 's'
-                ).WarnOutOfRange(
-                    $DiskAvgReadSecWarning
-                ).CritOutOfRange(
-                    $DiskAvgReadSecCritical
+                    -Name ([string]::Format('{0} Status', $Partition)) `
+                    -Value $DiskObjects.Data.Status `
+                    -NoPerfData
+                ).WarnIfNotMatch(
+                    $ProviderEnums.DeviceStatus.OK
                 )
+            );
+
+            # Check for Disk OperationalStatus
+            $PartCheckPackage.AddCheck(
+                (New-IcingaCheck `
+                    -Name ([string]::Format('{0} Is Offline', $Partition)) `
+                    -Value $DiskObjects.Data.IsOffline `
+                    -NoPerfData
+                ).WarnIfMatch('True')
             );
 
             $PartCheckPackage.AddCheck(
                 (New-IcingaCheck `
-                    -Name ([string]::Format('{0} avg. disk sec/write', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['avg. disk sec/write'].value `
-                    -Unit 's'
-                ).WarnOutOfRange(
-                    $DiskAvgWriteSecWarning
-                ).CritOutOfRange(
-                    $DiskAvgWriteSecCritical
-                )
+                    -Name ([string]::Format('{0} Is ReadOnly', $Partition)) `
+                    -Value $DiskObjects.Data.IsReadOnly `
+                    -NoPerfData
+                ).WarnIfMatch('True')
             );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} avg. disk sec/transfer', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['avg. disk sec/transfer'].value `
-                    -Unit 's'
-                ).WarnOutOfRange(
-                    $DiskAvgTransSecWarning
-                ).CritOutOfRange(
-                    $DiskAvgTransSecCritical
-                )
-            );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} current disk queue length', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['current disk queue length'].value
-                ).WarnOutOfRange(
-                    $DiskQueueLenWarning
-                ).CritOutOfRange(
-                    $DiskQueueLenCritical
-                )
-            );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} disk read bytes/sec', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['disk read bytes/sec'].value `
-                    -Unit 'B'
-                ).WarnOutOfRange(
-                    $DiskReadByteSecWarning
-                ).CritOutOfRange(
-                    $DiskReadByteSecCritical
-                )
-            );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} disk write bytes/sec', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['disk write bytes/sec'].value `
-                    -Unit 'B'
-                ).WarnOutOfRange(
-                    $DiskWriteByteSecWarning
-                ).CritOutOfRange(
-                    $DiskWriteByteSecCritical
-                )
-            );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} disk reads/sec', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['disk reads/sec'].value
-                ).WarnOutOfRange(
-                    $DiskReadSecWarning
-                ).CritOutOfRange(
-                    $DiskReadSecCritical
-                )
-            );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} disk writes/sec', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['disk writes/sec'].value
-                ).WarnOutOfRange(
-                    $DiskWriteSecWarning
-                ).CritOutOfRange(
-                    $DiskWriteSecCritical
-                )
-            );
-
-            $CheckPackage.AddCheck($PartCheckPackage);
         }
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} avg. disk sec/read', $Partition)) `
+                -Value $DiskObjects.PerfCounter['avg. disk sec/read'].value `
+                -Unit 's'
+            ).WarnOutOfRange(
+                $DiskAvgReadSecWarning
+            ).CritOutOfRange(
+                $DiskAvgReadSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} avg. disk sec/write', $Partition)) `
+                -Value $DiskObjects.PerfCounter['avg. disk sec/write'].value `
+                -Unit 's'
+            ).WarnOutOfRange(
+                $DiskAvgWriteSecWarning
+            ).CritOutOfRange(
+                $DiskAvgWriteSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} avg. disk sec/transfer', $Partition)) `
+                -Value $DiskObjects.PerfCounter['avg. disk sec/transfer'].value `
+                -Unit 's'
+            ).WarnOutOfRange(
+                $DiskAvgTransSecWarning
+            ).CritOutOfRange(
+                $DiskAvgTransSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} current disk queue length', $Partition)) `
+                -Value $DiskObjects.PerfCounter['current disk queue length'].value
+            ).WarnOutOfRange(
+                $DiskQueueLenWarning
+            ).CritOutOfRange(
+                $DiskQueueLenCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk read bytes/sec', $Partition)) `
+                -Value $DiskObjects.PerfCounter['disk read bytes/sec'].value `
+                -Unit 'B'
+            ).WarnOutOfRange(
+                $DiskReadByteSecWarning
+            ).CritOutOfRange(
+                $DiskReadByteSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk write bytes/sec', $Partition)) `
+                -Value $DiskObjects.PerfCounter['disk write bytes/sec'].value `
+                -Unit 'B'
+            ).WarnOutOfRange(
+                $DiskWriteByteSecWarning
+            ).CritOutOfRange(
+                $DiskWriteByteSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk reads/sec', $Partition)) `
+                -Value $DiskObjects.PerfCounter['disk reads/sec'].value
+            ).WarnOutOfRange(
+                $DiskReadSecWarning
+            ).CritOutOfRange(
+                $DiskReadSecCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (New-IcingaCheck `
+                -Name ([string]::Format('{0} disk writes/sec', $Partition)) `
+                -Value $DiskObjects.PerfCounter['disk writes/sec'].value
+            ).WarnOutOfRange(
+                $DiskWriteSecWarning
+            ).CritOutOfRange(
+                $DiskWriteSecCritical
+            )
+        );
+
+        $CheckPackage.AddCheck($PartCheckPackage);
     }
 
     return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
