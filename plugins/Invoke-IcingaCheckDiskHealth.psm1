@@ -86,7 +86,7 @@ function Invoke-IcingaCheckDiskHealth()
     )
 
     $CheckPackage = New-IcingaCheckPackage `
-        -Name 'Physicaldisk Package' `
+        -Name 'Physical Disk Package' `
         -OperatorAnd `
         -Verbose $Verbosity;
     $SortedDisks = Join-IcingaPhysicalDiskDataPerfCounter `
@@ -110,60 +110,64 @@ function Invoke-IcingaCheckDiskHealth()
         $DiskObjects      = $SortedDisks[$DiskPart];
         if ($DiskPart -ne '_Total') {
             $PartCheckPackage = New-IcingaCheckPackage `
-            -Name $DiskObjects.Data.Name `
-            -OperatorAnd `
-            -Verbose $Verbosity;
+                -Name ([string]::Format('Disk #{0}', $DiskPart)) `
+                -OperatorAnd `
+                -Verbose $Verbosity;
 
-            # Check for Disk Availability
-            [string]$Partition = $DiskObjects.Data.DriveReference.Keys | Out-String -Stream;
-            $OperationalStatus = $DiskObjects.Data.OperationalStatus;
-            $OperCount = $OperationalStatus.Count;
+            [string]$Partition = $DiskPart;
 
-            if ($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Ok) -or ($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Online))) {
-                $PartCheckPackage.AddCheck(
-                    (New-IcingaCheck `
-                        -Name ([string]::Format('{0} OperationalStatus', $Partition)) `
-                        -Value 'OK' `
-                        -NoPerfData
+            if ($null -ne $DiskObjects.Data) {
+                # Check for Disk Availability
+                $Partition = $DiskObjects.Data.DriveReference.Keys;
+                $OperationalStatus = $DiskObjects.Data.OperationalStatus;
+                $OperCount = $OperationalStatus.Count;
+
+                if (($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Ok)) -or ($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Online))) {
+                    $PartCheckPackage.AddCheck(
+                        (New-IcingaCheck `
+                            -Name ([string]::Format('{0} Operational Status', $Partition)) `
+                            -Value 'OK' `
+                            -NoPerfData
+                        )
                     )
-                )
-            } else {
+                } else {
+                    $PartCheckPackage.AddCheck(
+                        (New-IcingaCheck `
+                            -Name ([string]::Format('{0} Operational Status', $Partition)) `
+                            -Value ([string]::Join(',', $OperationalStatus.Values)) `
+                            -NoPerfData
+                        ).SetCritical()
+                    )
+                }
+
+                # Check for Disk Status
                 $PartCheckPackage.AddCheck(
                     (New-IcingaCheck `
-                        -Name ([string]::Format('{0} OperationalStatus', $Partition)) `
-                        -Value ([string]::Join(',', $OperationalStatus.Values)) `
+                        -Name ([string]::Format('{0} Status', $Partition)) `
+                        -Value $DiskObjects.Data.Status `
                         -NoPerfData
-                    ).SetCritical()
-                )
+                    ).WarnIfNotMatch(
+                        $ProviderEnums.DeviceStatus.OK
+                    )
+                );
+
+                # Check for Disk OperationalStatus
+                $PartCheckPackage.AddCheck(
+                    (New-IcingaCheck `
+                        -Name ([string]::Format('{0} Is Offline', $Partition)) `
+                        -Value $DiskObjects.Data.IsOffline `
+                        -NoPerfData
+                    ).WarnIfMatch('True')
+                );
+
+                $PartCheckPackage.AddCheck(
+                    (New-IcingaCheck `
+                        -Name ([string]::Format('{0} Is ReadOnly', $Partition)) `
+                        -Value $DiskObjects.Data.IsReadOnly `
+                        -NoPerfData
+                    ).WarnIfMatch('True')
+                );
             }
-
-            # Check for Disk Status
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} Status', $Partition)) `
-                    -Value $DiskObjects.Data.Status `
-                    -NoPerfData
-                ).WarnIfNotMatch(
-                    $ProviderEnums.DeviceStatus.OK
-                )
-            );
-
-            # Check for Disk OperationalStatus
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} IsOffline', $Partition)) `
-                    -Value $DiskObjects.Data.IsOffline `
-                    -NoPerfData
-                ).WarnIfMatch('True')
-            );
-
-            $PartCheckPackage.AddCheck(
-                (New-IcingaCheck `
-                    -Name ([string]::Format('{0} IsReadOnly', $Partition)) `
-                    -Value $DiskObjects.Data.IsReadOnly `
-                    -NoPerfData
-                ).WarnIfMatch('True')
-            );
 
             $PartCheckPackage.AddCheck(
                 (New-IcingaCheck `
