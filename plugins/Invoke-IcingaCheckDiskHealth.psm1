@@ -6,6 +6,14 @@
     of 8 PerfCounter checks that represent the usage of a physical disk, and each of 
     them has its own threshold value, i.e. you cannot use only one threshold value to check 
     how fast a disk is writing and reading.
+.PARAMETER IncludeDisk
+    Specify the index id of disks you want to include for checks. Example 0, 1
+.PARAMETER ExcludeDisk
+    Specify the index id of disks you want to exclude from checks. Example 0, 1
+.PARAMETER IncludePartition
+    Specify the partition drive letters for disks to include for checks. Example C:, D:
+.PARAMETER ExcludePartition
+    Specify the partition drive letters for disks to exclude from checks. Example C:, D:
 .PARAMETER DiskReadSecWarning
     Used to specify a 'disk read/sec' threshold in Warning status
 .PARAMETER DiskReadSecCritical
@@ -38,6 +46,8 @@
     Used to specify a 'avg. disk sec/write' threshold in Warning status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
 .PARAMETER DiskAvgWriteSecCritical
     Used to specify a 'avg. disk sec/write' threshold in Critical status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+.PARAMETER CheckLogicalOnly
+    Set this to include only disks that have drive letters like C:, D:, amd so on assigned to them. Can be combined with include/exclude filters
 .EXAMPLE
     PS> Invoke-IcingaCheckDiskHealth  -DiskReadSecWarning 0 -DiskReadSecCritical 1 -DiskAvgTransSecWarning 5s -DiskAvgTransSecCritical 10s -DiskReadByteSecWarning 3000 -DiskReadByteSecCritical 5000 -Verbosity 2
     [CRITICAL] Check package "Physicaldisk Package" (Match All) - [CRITICAL] C: F: disk read bytes/sec 
@@ -64,6 +74,10 @@ function Invoke-IcingaCheckDiskHealth()
 {
     param
     (
+        [array]$IncludeDisk       = @(),
+        [array]$ExcludeDisk       = @(),
+        [array]$IncludePartition  = @(),
+        [array]$ExcludePartition  = @(),
         $DiskReadSecWarning       = $null,
         $DiskReadSecCritical      = $null,
         $DiskWriteSecWarning      = $null,
@@ -80,6 +94,7 @@ function Invoke-IcingaCheckDiskHealth()
         $DiskAvgReadSecCritical   = $null,
         $DiskAvgWriteSecWarning   = $null,
         $DiskAvgWriteSecCritical  = $null,
+        [switch]$CheckLogicalOnly = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2)]
         [int]$Verbosity           = 0
@@ -89,15 +104,20 @@ function Invoke-IcingaCheckDiskHealth()
         -Name 'Physical Disk Package' `
         -OperatorAnd `
         -Verbose $Verbosity;
-    $SortedDisks = Join-IcingaPhysicalDiskDataPerfCounter `
-        '\PhysicalDisk(*)\disk read bytes/sec', `
-        '\PhysicalDisk(*)\disk write bytes/sec', `
-        '\PhysicalDisk(*)\disk reads/sec', `
-        '\PhysicalDisk(*)\disk writes/sec', `
-        '\PhysicalDisk(*)\avg. disk sec/read', `
-        '\PhysicalDisk(*)\avg. disk sec/write', `
-        '\PhysicalDisk(*)\avg. disk sec/transfer', `
-        '\PhysicalDisk(*)\current disk queue length';
+    $SortedDisks = Join-IcingaPhysicalDiskDataPerfCounter -DiskCounter @(
+            '\PhysicalDisk(*)\disk read bytes/sec',
+            '\PhysicalDisk(*)\disk write bytes/sec',
+            '\PhysicalDisk(*)\disk reads/sec',
+            '\PhysicalDisk(*)\disk writes/sec',
+            '\PhysicalDisk(*)\avg. disk sec/read',
+            '\PhysicalDisk(*)\avg. disk sec/write',
+            '\PhysicalDisk(*)\avg. disk sec/transfer',
+            '\PhysicalDisk(*)\current disk queue length'
+        ) `
+        -IncludeDisk $IncludeDisk `
+        -ExcludeDisk $ExcludeDisk `
+        -IncludePartition $IncludePartition `
+        -ExcludePartition $ExcludePartition;
 
     $DiskAvgReadSecWarning   = ConvertTo-SecondsFromIcingaThresholds $DiskAvgReadSecWarning;
     $DiskAvgReadSecCritical  = ConvertTo-SecondsFromIcingaThresholds $DiskAvgReadSecCritical;
@@ -169,6 +189,10 @@ function Invoke-IcingaCheckDiskHealth()
                     -NoPerfData
                 ).WarnIfMatch('True')
             );
+        } else {
+            if ($CheckLogicalOnly) {
+                continue;
+            }
         }
 
         $PartCheckPackage.AddCheck(

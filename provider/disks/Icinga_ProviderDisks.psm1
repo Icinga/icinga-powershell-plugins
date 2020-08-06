@@ -88,7 +88,11 @@ function Get-IcingaDiskPartitions()
 function Join-IcingaPhysicalDiskDataPerfCounter()
 {
     param (
-        [array]$DiskCounter
+        [array]$DiskCounter,
+        [array]$IncludeDisk      = @(),
+        [array]$ExcludeDisk      = @(),
+        [array]$IncludePartition = @(),
+        [array]$ExcludePartition = @()
     );
 
     [hashtable]$PhysicalDiskData = @{};
@@ -99,7 +103,20 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
     foreach ($disk in $SortedDisks.Keys) {
         $CounterObjects = $SortedDisks[$disk];
         $DiskId         = $disk.Split(' ')[0];
+        $DriveLetter    = $disk.Split(' ')[1];
         $DiskData       = $null;
+
+        if ($IncludeDisk.Count -ne 0 -Or $IncludePartition.Count -ne 0) {
+            if (($IncludeDisk -Contains $DiskId) -eq $FALSE -And ($IncludePartition -Contains $DriveLetter) -eq $FALSE) {
+                continue;
+            }
+        }
+
+        if ($ExcludeDisk.Count -ne 0 -Or $ExcludePartition.Count -ne 0) {
+            if (($ExcludeDisk -Contains $DiskId) -Or ($ExcludePartition -Contains $DriveLetter)) {
+                continue;
+            }
+        }
 
         if ($GetDisk.ContainsKey($DiskId)) {
             $DiskData = $GetDisk[$DiskId];
