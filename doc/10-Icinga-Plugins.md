@@ -26,6 +26,7 @@ To test thresholds with different input values, you can use the Framework Cmdlet
 * [Invoke-IcingaCheckNLA](plugins/10-Invoke-IcingaCheckNLA.md)
 * [Invoke-IcingaCheckPerfcounter](plugins/11-Invoke-IcingaCheckPerfcounter.md)
 * [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md)
+* [Invoke-IcingaCheckScheduledTask](plugins/19-Invoke-IcingaCheckScheduledTask.md)
 * [Invoke-IcingaCheckService](plugins/13-Invoke-IcingaCheckService.md)
 * [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md)
 * [Invoke-IcingaCheckUpdates](plugins/14-Invoke-IcingaCheckUpdates.md)
