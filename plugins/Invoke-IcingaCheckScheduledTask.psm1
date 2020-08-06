@@ -52,47 +52,30 @@ function Invoke-IcingaCheckScheduledTask()
 
     $TaskPackages  = New-IcingaCheckPackage -Name 'Scheduled Tasks' -OperatorAnd -Verbose $Verbosity;
     $Tasks         = Get-IcingaScheduledTask -TaskName $TaskName;
-    $CheckPackages = @{};
 
-    foreach ($task in $Tasks) {
+    foreach ($taskpath in $Tasks.Keys) {
+        $TaskArray = $Tasks[$taskpath];
 
-        $CheckPackage  = $null;
+        $CheckPackage = New-IcingaCheckPackage -Name $taskpath -OperatorAnd -Verbose $Verbosity;
 
-        if ($CheckPackages.ContainsKey($task.TaskPath)) {
-            $CheckPackage = $CheckPackages[$task.TaskPath];
-        } else {
-            $CheckPackage = New-IcingaCheckPackage -Name $task.TaskPath -OperatorAnd -Verbose $Verbosity;
-            $CheckPackages.Add(
-                $task.TaskPath,
-                $CheckPackage
-            );
-        }
-
-        $CheckPackage.AddCheck(
-            (
-                New-IcingaCheck -Name ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath)) -Value $task.State
-            ).CritIfNotMatch($State)
-        )
-    }
-
-    foreach ($check in $CheckPackages.Values) {
-        $TaskPackages.AddCheck($check);
-    }
-
-    if ($TaskName.Count -ne 0) {
-        $UnknownPackage  = New-IcingaCheckPackage -Name 'Unknown Tasks' -OperatorAnd -Verbose $Verbosity;
-        foreach ($task in $TaskName) {
-            if ($null -eq $Tasks -Or -Not ($Tasks.TaskName -Contains $task)) {
-                $UnknownPackage.AddCheck(
+        foreach ($task in $TaskArray) {
+            if ($taskpath -eq 'Unknown Tasks') {
+                $CheckPackage.AddCheck(
                     (
                         New-IcingaCheck -Name ([string]::Format('{0}: Task not found', $task))
                     ).SetUnknown()
                 )
+            } else {
+                $CheckPackage.AddCheck(
+                    (
+                        New-IcingaCheck -Name ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath)) -Value $task.State
+                    ).CritIfNotMatch($State)
+                )
             }
         }
 
-        if ($UnknownPackage.HasChecks()) {
-            $TaskPackages.AddCheck($UnknownPackage);
+        if ($CheckPackage.HasChecks()) {
+            $TaskPackages.AddCheck($CheckPackage);
         }
     }
 
