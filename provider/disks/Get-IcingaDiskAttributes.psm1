@@ -22,7 +22,7 @@
 function Get-IcingaDiskAttributes()
 {
     param (
-       [string]$DiskId
+        [string]$DiskId
     );
 
     if ([string]::IsNullOrEmpty($DiskId)) {
