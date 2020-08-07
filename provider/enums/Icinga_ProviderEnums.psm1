@@ -692,6 +692,11 @@
     DiskBusType                    = $DiskBusType;
     DiskOperationalStatus          = $DiskOperationalStatus;
     DiskOperationalStatusName      = $DiskOperationalStatusName;
+    DeviceAccess                   = $DeviceAccess;
+    DeviceAccessName               = $DeviceAccessName;
+    DeviceStatus                   = $DeviceStatus;
+    DeviceAvailability             = $DeviceAvailability;
+    DeviceAvailabilityName         = $DeviceAvailabilityName;
     #/lib/provider/cpu
     CPUArchitecture                = $CPUArchitecture;
     CPUProcessorType               = $CPUProcessorType;
@@ -719,13 +724,7 @@
     ClientMode                     = $ClientMode;
     ClientModeName                 = $ClientModeName;
     Stratum                        = $Stratum;
-    StratumTxt                     = $StratumTxt;
-    #/lib/provider/PhysicalDiskCheck
-    DeviceAccess                   = $DeviceAccess;
-    DeviceAccessName               = $DeviceAccessName;
-    DeviceStatus                   = $DeviceStatus;
-    DeviceAvailability             = $DeviceAvailability;
-    DeviceAvailabilityName         = $DeviceAvailabilityName;
+    StratumTxt                     = $StratumTxt;    
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');
