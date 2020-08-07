@@ -260,20 +260,22 @@ function Get-IcingaCPUNumberOfLogicalProcessors()
 
 function Get-IcingaCPUCount()
 {
-    <# Compares whether NumberofLogicalCores, NumberofCores or Threadcount across all CPUs is the highest,
-    this function is used in provider/memory/Icinga_ProviderMemory.psm1#>
-    $CPUInformation = Get-CimInstance Win32_Processor;
+    param (
+        $CounterArray = $null
+    );
 
-    foreach ($cpu in $CPUInformation) {
-        $NumberOfCoresValue += $cpu.NumberOfCores;
-        $NumberOfLogicalProcessorsValue += $cpu.NumberOfLogicalProcessors;
-        $ThreadCountValue += $cpu.ThreadCount;
+    if ($null -eq $CounterArray) {
+        $CounterArray = Show-IcingaPerformanceCounterInstances -Counter '\Processor(*)\% processor time';
     }
 
-    If (($NumberOfCoresValue -ge $NumberOfLogicalProcessorsValue) -and ($NumberOfCoresValue -ge $ThreadCountValue)) {
-        return $NumberOfCoresValue;
-    } elseif ($NumberOfLogicalProcessorsValue -ge $ThreadCountValue) {
-        return $NumberOfLogicalProcessorsValue;
-    }
-    return $ThreadCountValue;
+    [int]$CpuCount = 0;
+
+    foreach ($core in $CounterArray.Keys) {
+        if ((Test-Numeric $core)) {
+           $CpuCount = Get-IcingaValue -Value ([int]$core) -Compare $CpuCount -Maximum;
+        }
+     }
+     $CpuCount += 1;
+
+     return $CpuCount;
 }

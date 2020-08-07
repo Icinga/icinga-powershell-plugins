@@ -23,6 +23,7 @@ This release adds the following new plugins:
 * [#28](https://github.com/Icinga/icinga-powershell-plugins/issues/28) Adds unknown state for each included service during a service check which was not found on the host
 * [#33](https://github.com/Icinga/icinga-powershell-plugins/issues/33) Adds support to generate plugin docs for different plugin module repos
 * [#39](https://github.com/Icinga/icinga-powershell-plugins/issues/39) Fixes Performance Counters check plugin to throw error in case Performance Counter do not exist or a simply not present
+* [#42](https://github.com/Icinga/icinga-powershell-plugins/issues/42) Improves performance of `Invoke-IcingaCheckCPU` for multi socket systems and optimises the code
 
 ### Bugfixes
 

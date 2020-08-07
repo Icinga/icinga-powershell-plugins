@@ -33,30 +33,32 @@
 
 function Invoke-IcingaCheckCPU()
 {
-    param(
-        $Warning            = $null,
-        $Critical           = $null,
-        [string]$Core       = '*',
-        [switch]$NoPerfData,
-        [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity     = 0
-    );
+   param(
+      $Warning            = $null,
+      $Critical           = $null,
+      [string]$Core       = '*',
+      [switch]$NoPerfData,
+      [ValidateSet(0, 1, 2, 3)]
+      [int]$Verbosity     = 0
+   );
 
-    $CpuCounter  = New-IcingaPerformanceCounter -Counter ([string]::Format('\Processor({0})\% processor time', $Core));
-    $CpuPackage  = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
-    $CpuCount    = ([string](Get-IcingaCpuCount)).Length;
+   $CpuCounter       = New-IcingaPerformanceCounterArray '\Processor(*)\% processor time';
+   $CounterStructure = New-IcingaPerformanceCounterStructure -CounterCategory 'Processor' -PerformanceCounterHash $CpuCounter;
+   $CpuPackage       = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
+   [int]$CpuCount    = ([string](Get-IcingaCpuCount -CounterArray $CounterStructure)).Length;
 
-    if ($CpuCounter.Counters.Count -ne 0) {
-        foreach ($counter in $CpuCounter.Counters) {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Core {0}', (Format-IcingaDigitCount $counter.Instance.Replace('_', '') -Digits $CpuCount -Symbol ' '))) -Value $counter.Value().Value -Unit '%';
-            $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-            $CpuPackage.AddCheck($IcingaCheck);
-        }
-    } else {
-        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Core {0}', (Format-IcingaDigitCount $Core.Replace('_', '') -Digits $CpuCount -Symbol ' '))) -Value $CpuCounter.Value().Value -Unit '%';
-        $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-        $CpuPackage.AddCheck($IcingaCheck);
-    }
+   foreach ($counter in $CounterStructure.Keys) {
+      if ($Core -ne '*' -And $counter -ne $Core) {
+         continue;
+      }
+      $IcingaCheck = (New-IcingaCheck `
+         -Name ([string]::Format('Core {0}', (Format-IcingaDigitCount $counter.Replace('_', '') `
+         -Digits $CpuCount -Symbol ' '))) `
+         -Value $CounterStructure[$counter]['% processor time'].value `
+         -Unit '%').WarnOutOfRange($Warning).CritOutOfRange($Critical);
 
-    return (New-IcingaCheckResult -Name 'CPU Load' -Check $CpuPackage -NoPerfData $NoPerfData -Compile);
+      $CpuPackage.AddCheck($IcingaCheck);
+   }
+
+   return (New-IcingaCheckResult -Name 'CPU Load' -Check $CpuPackage -NoPerfData $NoPerfData -Compile);
 }
