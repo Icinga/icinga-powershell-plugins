@@ -50,21 +50,32 @@
     Set this to include only disks that have drive letters like C:, D:, amd so on assigned to them. Can be combined with include/exclude filters
 .EXAMPLE
     PS> Invoke-IcingaCheckDiskHealth  -DiskReadSecWarning 0 -DiskReadSecCritical 1 -DiskAvgTransSecWarning 5s -DiskAvgTransSecCritical 10s -DiskReadByteSecWarning 3000 -DiskReadByteSecCritical 5000 -Verbosity 2
-    [CRITICAL] Check package "Physicaldisk Package" (Match All) - [CRITICAL] C: F: disk read bytes/sec
-    \_ [CRITICAL] Check package "\\.\PHYSICALDRIVE0" (Match All)
-       \_ [OK] C: F: avg. disk sec/read: 0s
-       \_ [OK] C: F: avg. disk sec/transfer: 0s
-       \_ [OK] C: F: avg. disk sec/write: 0s
-       \_ [OK] C: F: current disk queue length: 0
-       \_ [CRITICAL] C: F: disk read bytes/sec: Value "934031B" is greater than threshold "5000B"
-       \_ [OK] C: F: disk reads/sec: 0
-       \_ [OK] C: F: disk write bytes/sec: 0B
-       \_ [OK] C: F: disk writes/sec: 0
-       \_ [OK] C: F: IsOffline: False
-       \_ [OK] C: F: IsReadOnly: False
-       \_ [OK] C: F: Status: OK
-    | 'c_f_disk_write_bytessec'=0B;; 'c_f_current_disk_queue_length'=0;; 'c_f_avg_disk_secread'=0s;; 'c_f_avg_disk_secwrite'=0s;; 'c_f_disk_read_bytessec'=934031;3000;5000 'c_f_avg_disk_sectransfer'=0S;5;10 'c_f_disk_writessec'=0;; 'c_f_disk_readssec'=0;0;1
-    1
+    [CRITICAL] Check package "Physical Disk Package" (Match All) - [CRITICAL] _Total disk read bytes/sec 
+    \_ [CRITICAL] Check package "Disk #_Total" (Match All)
+       \_ [OK] _Total avg. disk sec/read: 0s
+       \_ [OK] _Total avg. disk sec/transfer: 0s  
+       \_ [OK] _Total avg. disk sec/write: 0s     
+       \_ [OK] _Total current disk queue length: 0
+       \_ [CRITICAL] _Total disk read bytes/sec: Value "808675.12B" is greater than threshold "5000B"
+       \_ [OK] _Total disk reads/sec: 0
+       \_ [OK] _Total disk write bytes/sec: 6679.13B
+       \_ [OK] _Total disk writes/sec: 1.68
+    \_ [OK] Check package "Disk #0" (Match All)
+       \_ [OK] F: C: avg. disk sec/read: 0s
+       \_ [OK] F: C: avg. disk sec/transfer: 0s
+       \_ [OK] F: C: avg. disk sec/write: 0s
+       \_ [OK] F: C: current disk queue length: 0
+       \_ [OK] F: C: disk read bytes/sec: 0B
+       \_ [OK] F: C: disk reads/sec: 0
+       \_ [OK] F: C: disk write bytes/sec: 6680.76B
+       \_ [OK] F: C: disk writes/sec: 1.64
+       \_ [OK] F: C: Is Offline: False
+       \_ [OK] F: C: Is ReadOnly: False
+       \_ [OK] F: C: Operational Status: OK
+       \_ [OK] F: C: Status: OK
+    | 'f_c_avg_disk_sectransfer'=0s;5;10 'f_c_disk_write_bytessec'=6680.76B;; 'f_c_disk_read_bytessec'=0B;3000;5000 'f_c_avg_disk_secwrite'=0s;; 
+'f_c_avg_disk_secread'=0s;; 'f_c_disk_readssec'=0;0;1 'f_c_current_disk_queue_length'=0;; 'f_c_disk_writessec'=1.64;; '_total_disk_readssec'=0;0;1 '_total_avg_disk_sectransfer'=0s;5;10 '_total_disk_read_bytessec'=808675.12B;3000;5000 '_total_disk_write_bytessec'=6679.13B;; '_total_avg_disk_secread'=0s;; '_total_disk_writessec'=1.68;; '_total_current_disk_queue_length'=0;; '_total_avg_disk_secwrite'=0s;;
+    2
 .LINK
    https://github.com/Icinga/icinga-powershell-framework
    https://github.com/Icinga/icinga-powershell-plugins
