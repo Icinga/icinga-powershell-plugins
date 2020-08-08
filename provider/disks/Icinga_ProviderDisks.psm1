@@ -85,6 +85,55 @@ function Get-IcingaDiskPartitions()
         return $PartitionDiskByDriveLetter;
 }
 
+function Join-IcingaPhysicalDiskDataPerfCounter()
+{
+    param (
+        [array]$DiskCounter,
+        [array]$IncludeDisk      = @(),
+        [array]$ExcludeDisk      = @(),
+        [array]$IncludePartition = @(),
+        [array]$ExcludePartition = @()
+    );
+
+    [hashtable]$PhysicalDiskData = @{};
+    $GetDisk                     = Get-IcingaPhysicalDiskInfo;
+    $Counters                    = New-IcingaPerformanceCounterArray $DiskCounter; 
+    $SortedDisks                 = New-IcingaPerformanceCounterStructure -CounterCategory 'PhysicalDisk' -PerformanceCounterHash $Counters;
+
+    foreach ($disk in $SortedDisks.Keys) {
+        $CounterObjects = $SortedDisks[$disk];
+        $DiskId         = $disk.Split(' ')[0];
+        $DriveLetter    = $disk.Split(' ')[1];
+        $DiskData       = $null;
+
+        if ($IncludeDisk.Count -ne 0 -Or $IncludePartition.Count -ne 0) {
+            if (($IncludeDisk -Contains $DiskId) -eq $FALSE -And ($IncludePartition -Contains $DriveLetter) -eq $FALSE) {
+                continue;
+            }
+        }
+
+        if ($ExcludeDisk.Count -ne 0 -Or $ExcludePartition.Count -ne 0) {
+            if (($ExcludeDisk -Contains $DiskId) -Or ($ExcludePartition -Contains $DriveLetter)) {
+                continue;
+            }
+        }
+
+        if ($GetDisk.ContainsKey($DiskId)) {
+            $DiskData = $GetDisk[$DiskId];
+        }
+
+        $PhysicalDiskData.Add(
+            $DiskId,
+            @{
+                'PerfCounter' = $CounterObjects;
+                'Data'        = $DiskData;
+            }
+        );
+    }
+
+    return $PhysicalDiskData;
+}
+
 function Get-IcingaDiskCapabilities 
 {
     $DiskInformation = Get-CimInstance Win32_DiskDrive;

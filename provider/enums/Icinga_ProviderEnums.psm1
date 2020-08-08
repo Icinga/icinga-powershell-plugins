@@ -90,6 +90,82 @@
     12 = 'Predismount Eject Not Required';
 }
 
+# https://docs.microsoft.com/en-us/previous-versions/windows/desktop/stormgmt/msft-disk
+[hashtable]$DiskBusType = @{
+    0  = 'Unknown';
+    1  = 'SCSI';
+    2  = 'ATAPI';
+    3  = 'ATA';
+    4  = '1394';
+    5  = 'SSA';
+    6  = 'Fibre Channel';
+    7  = 'USB';
+    8  = 'RAID';
+    9  = 'iSCSI';
+    10 = 'SAS';
+    11 = 'SATA';
+    12 = 'SD';
+    13 = 'MMC';
+    14 = 'Virtual';
+    15 = 'File Backed Virtual';
+    16 = 'Storage Spaces';
+    17 = 'NVMe';
+}
+
+# https://docs.microsoft.com/en-us/previous-versions/windows/desktop/stormgmt/msft-disk
+[hashtable]$DiskOperationalStatus = @{
+    0      = 'Unknown';
+    1      = 'Other';
+    2      = 'OK';
+    3      = 'Degraded';
+    4      = 'Stressed';
+    5      = 'Predictive Failure';
+    6      = 'Error';
+    7      = 'Non-Recoverable Error';
+    8      = 'Starting';
+    9      = 'Stopping';
+    10     = 'Stopped';
+    11     = 'In Service';
+    12     = 'No Contact';
+    13     = 'Lost Communication';
+    14     = 'Aborted';
+    15     = 'Dormant';
+    16     = 'Supporting Entity in Error';
+    17     = 'Completed';
+    0xD010 = 'Online';
+    0xD011 = 'Not Ready';
+    0xD012 = 'No Media';
+    0xD013 = 'Offline';
+    0xD014 = 'Failed';
+}
+
+# https://docs.microsoft.com/en-us/previous-versions/windows/desktop/stormgmt/msft-disk
+[hashtable]$DiskOperationalStatusName = @{
+    'Unknown'                    = 0;
+    'Other'                      = 1;
+    'OK'                         = 2;
+    'Degraded'                   = 3;
+    'Stressed'                   = 4;
+    'Predictive Failure'         = 5;
+    'Error'                      = 6;
+    'Non-Recoverable Error'      = 7;
+    'Starting'                   = 8;
+    'Stopping'                   = 9;
+    'Stopped'                    = 10;
+    'In Service'                 = 11;
+    'No Contact'                 = 12;
+    'Lost Communication'         = 13;
+    'Aborted'                    = 14;
+    'Dormant'                    = 15;
+    'Supporting Entity in Error' = 16;
+    'Completed'                  = 17;
+    'Online'                     = 0xD010;
+    'Not Ready'                  = 0xD011;
+    'No Media'                   = 0xD012;
+    'Offline'                    = 0xD013;
+    'Failed'                     = 0xD014;
+}
+
 <##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
@@ -266,7 +342,7 @@
     31 = 'This device is not working properly because Windows cannot load the drivers required for this device.';
 }
 
-[hashtable]$CPUAvailability = @{
+[hashtable]$DeviceAvailabilityName = @{
     1  = 'Other';
     2  = 'Unknown';
     3  = 'Running/Full Power';
@@ -289,6 +365,32 @@
     20 = 'Not Configured';
     21 = 'Quiesced';
 }
+
+[hashtable]$DeviceAvailability = @{
+    'Other'                 = 1;
+    'Unknown'               = 2;
+    'RunningFullPower'      = 3;
+    'Warning'               = 4;
+    'InTest'                = 5;
+    'NotApplicable'         = 6;
+    'PowerOff'              = 7;
+    'OffLine'               = 8;
+    'OffDuty'               = 9;
+    'Degraded'              = 10;
+    'NotInstalled'          = 11;
+    'InstallError'          = 12;
+    'PowerSaveUnknown'      = 13;
+    'PowerSaveLowPowerMode' = 14;
+    'PowerSaveStandby'      = 15;
+    'PowerCycle'            = 16;
+    'PoweSaveWarning'       = 17;
+    'Paused'                = 18;
+    'NotReady'              = 19;
+    'NotConfigured'         = 20;
+    'Quiesced'              = 21;
+}
+
+[hashtable]$CPUAvailability = $DeviceAvailabilityName;
 
 [hashtable]$CPUPowerManagementCapabilities = @{
     0  = 'Unknown';
@@ -551,11 +653,50 @@
     {$_ -gt 16}               = 'Reserved';
 }
 
+[hashtable]$DeviceAccessName = @{
+    0  = 'Unknown';
+    1  = 'Readable';
+    2  = 'Writeable';
+    3  = 'Read/Write Supported';
+    4  = 'Write Once'; 
+}
+
+[hashtable]$DeviceAccess = @{
+    'Unknown'              = 0;
+    'Readable'             = 1;
+    'Writeable'            = 2;
+    'Read/Write Supported' = 3;
+    'Write Once'           = 4;
+}
+
+[hashtable]$DeviceStatus = @{
+    'OK'         = 'OK';
+    'Erorr'      = 'Error';
+    'Degraded'   = 'Degraded';
+    'Unknown'    = 'Unknown';
+    'PredFail'   = 'PredFail';
+    'Starting'   = 'Starting';
+    'Stopping'   = 'Stopping';
+    'Service'    = 'Service';
+    'Stressed'   = 'Stressed';
+    'NonRecover' = 'NonRecover';
+    'NoContact'  = 'NoContact';
+    'LostComm'   = 'LostComm';
+}
+
 [hashtable]$ProviderEnums = @{
     #/lib/provider/bios
     BiosCharacteristics            = $BiosCharacteristics;
     #/lib/provider/disks
     DiskCapabilities               = $DiskCapabilities;
+    DiskBusType                    = $DiskBusType;
+    DiskOperationalStatus          = $DiskOperationalStatus;
+    DiskOperationalStatusName      = $DiskOperationalStatusName;
+    DeviceAccess                   = $DeviceAccess;
+    DeviceAccessName               = $DeviceAccessName;
+    DeviceStatus                   = $DeviceStatus;
+    DeviceAvailability             = $DeviceAvailability;
+    DeviceAvailabilityName         = $DeviceAvailabilityName;
     #/lib/provider/cpu
     CPUArchitecture                = $CPUArchitecture;
     CPUProcessorType               = $CPUProcessorType;
@@ -583,7 +724,7 @@
     ClientMode                     = $ClientMode;
     ClientModeName                 = $ClientModeName;
     Stratum                        = $Stratum;
-    StratumTxt                     = $StratumTxt;
+    StratumTxt                     = $StratumTxt;    
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');
