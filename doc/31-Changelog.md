@@ -15,13 +15,16 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 This release adds the following new plugins:
 
+* [Invoke-IcingaCheckTimeSync](https://icinga.com/docs/windows/latest/plugins/doc/plugins/18-Invoke-IcingaChecTimeSync/): Allows to compare local machine time with a time server to check for possible time missmatch
 * [Invoke-IcingaCheckScheduledTask](https://icinga.com/docs/windows/latest/plugins/doc/plugins/19-Invoke-IcingaCheckScheduledTask/): Allows to check the current state for a list of provided scheduled tasks
+* [Invoke-IcingaCheckDiskHealth](https://icinga.com/docs/windows/latest/plugins/doc/plugins/20-Invoke-IcingaCheckDiskHealth/): Allows to check for several disk Performance Counters and the disk health in general
 
 ### Enhancements
 
 * [#32](https://github.com/Icinga/icinga-powershell-plugins/issues/32) Improves plugin doc generate to update existing .md files and create new ones only if required
 * [#28](https://github.com/Icinga/icinga-powershell-plugins/issues/28) Adds unknown state for each included service during a service check which was not found on the host
 * [#33](https://github.com/Icinga/icinga-powershell-plugins/issues/33) Adds support to generate plugin docs for different plugin module repos
+* [#38](https://github.com/Icinga/icinga-powershell-plugins/issues/38) Adds new plugin `Invoke-IcingaCheckDiskHealth`
 * [#39](https://github.com/Icinga/icinga-powershell-plugins/issues/39) Fixes Performance Counters check plugin to throw error in case Performance Counter do not exist or a simply not present
 * [#42](https://github.com/Icinga/icinga-powershell-plugins/issues/42) Improves performance of `Invoke-IcingaCheckCPU` for multi socket systems and optimises the code
 
