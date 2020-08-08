@@ -15,46 +15,56 @@
 .PARAMETER ExcludePartition
     Specify the partition drive letters for disks to exclude from checks. Example C:, D:
 .PARAMETER DiskReadSecWarning
-    Used to specify a 'disk read/sec' threshold in Warning status
+    Warning threshold for disk Reads/sec is the rate of read operations on the disk.
 .PARAMETER DiskReadSecCritical
-    Used to specify a 'disk read/sec' threshold in Critical status
+    Critical treshold for disk Reads/sec is the rate of read operations on the disk.
 .PARAMETER DiskWriteSecWarning
-    Used to specify a 'disk write/sec' threshold in Warning status
+    Warning theeshold for disk Writes/sec is the rate of write operations on the disk.
 .PARAMETER DiskWriteSecCritical
-    Used to specify a 'disk write/sec' threshold in Critical status
+    Critical threshold for disk Writes/sec is the rate of write operations on the disk.
 .PARAMETER DiskQueueLenWarning
-    Used to specify a 'current disk queue length' threshold in Warning status
+    Warning threshold for current Disk Queue Length is the number of requests outstanding on the disk at the time the performance data is collected.
+    It also includes requests in service at the time of the collection. This is a instantaneous snapshot, not an average over the
+    time interval. Multi-spindle disk devices can have multiple requests that are active at one time, but other concurrent requests
+    are awaiting service. This counter might reflect a transitory high or low queue length, but if there is a sustained load on the
+    disk drive, it is likely that this will be consistently high. Requests experience delays proportional to the length of this queue
+    minus the number of spindles on the disks. For good performance, this difference should average less than two.
 .PARAMETER DiskQueueLenCritical
-    Used to specify a 'current disk queue length' threshold in Critical status
+    Critical threshold for current Disk Queue Length is the number of requests outstanding on the disk at the time the performance data is collected.
+    It also includes requests in service at the time of the collection. This is a instantaneous snapshot, not an average over the
+    time interval. Multi-spindle disk devices can have multiple requests that are active at one time, but other concurrent requests
+    are awaiting service. This counter might reflect a transitory high or low queue length, but if there is a sustained load on the
+    disk drive, it is likely that this will be consistently high. Requests experience delays proportional to the length of this queue
+    minus the number of spindles on the disks. For good performance, this difference should average less than two.
 .PARAMETER DiskReadByteSecWarning
-    Used to specify a 'disk read bytes/sec' threshold in Warning status. Here no unit must be entered but the threshold value is always in Byte.
+    Warning threshold for disk Read Bytes/sec is the rate at which bytes are transferred from the disk during read operations.
 .PARAMETER DiskReadByteSecCritical
-    Used to specify a 'disk read bytes/sec' threshold in Critical status. Here no unit must be entered but the threshold value is always in Byte.
+    Critical threshold for disk Read Bytes/sec is the rate at which bytes are transferred from the disk during read operations.
 .PARAMETER DiskWriteByteSecWarning
-    Used to specify a 'disk write bytes/sec' threshold in Warning status. Here no unit must be entered but the threshold value is always in Byte.
+    Warning threshold for disk Write Bytes/sec is rate at which bytes are transferred to the disk during write operations.
 .PARAMETER DiskWriteByteSecCritical
-    Used to specify a 'disk write bytes/sec' threshold in Critical status. Here no unit must be entered but the threshold value is always in Byte.
+    Critical threshold for disk Write Bytes/sec is rate at which bytes are transferred to the disk during write operations.
 .PARAMETER DiskAvgTransSecWarning
-    Used to specify a 'avg. disk sec/transfer' threshold in Warning status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+    Warning threshold for avg. Disk sec/Transfer is the time, in seconds, of the average disk transfer. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER DiskAvgTransSecCritical
-    Used to specify a 'avg. disk sec/transfer' threshold in Critical status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+    Critical threshold for avg. Disk sec/Transfer is the time, in seconds, of the average disk transfer. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER DiskAvgReadSecWarning
-    Used to specify a 'avg. disk sec/read' threshold in Warning status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+    Warning threshold for avg. Disk sec/Read is the average time, in seconds, of a read of data from the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER DiskAvgReadSecCritical
-    Used to specify a 'avg. disk sec/read' threshold in Critical status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+    Critical threshold for avg. Disk sec/Read is the average time, in seconds, of a read of data from the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER DiskAvgWriteSecWarning
-    Used to specify a 'avg. disk sec/write' threshold in Warning status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+    Warning threshold for Avg. Disk sec/Write is the average time, in seconds, of a write of data to the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER DiskAvgWriteSecCritical
-    Used to specify a 'avg. disk sec/write' threshold in Critical status. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h etc.)
+    Critical threshold for Avg. Disk sec/Write is the average time, in seconds, of a write of data to the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER CheckLogicalOnly
-    Set this to include only disks that have drive letters like C:, D:, amd so on assigned to them. Can be combined with include/exclude filters
+    Set this to include only disks that have drive letters like C:, D:, ..., assigned to them. Can be combined with include/exclude filters
 .EXAMPLE
     PS> Invoke-IcingaCheckDiskHealth  -DiskReadSecWarning 0 -DiskReadSecCritical 1 -DiskAvgTransSecWarning 5s -DiskAvgTransSecCritical 10s -DiskReadByteSecWarning 3000 -DiskReadByteSecCritical 5000 -Verbosity 2
-    [CRITICAL] Check package "Physical Disk Package" (Match All) - [CRITICAL] _Total disk read bytes/sec 
+    [CRITICAL] Check package "Physical Disk Package" (Match All) - [CRITICAL] _Total disk read bytes/sec
     \_ [CRITICAL] Check package "Disk #_Total" (Match All)
        \_ [OK] _Total avg. disk sec/read: 0s
-       \_ [OK] _Total avg. disk sec/transfer: 0s  
-       \_ [OK] _Total avg. disk sec/write: 0s     
+       \_ [OK] _Total avg. disk sec/transfer: 0s
+       \_ [OK] _Total avg. disk sec/write: 0s
        \_ [OK] _Total current disk queue length: 0
        \_ [CRITICAL] _Total disk read bytes/sec: Value "808675.12B" is greater than threshold "5000B"
        \_ [OK] _Total disk reads/sec: 0
