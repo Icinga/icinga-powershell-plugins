@@ -19,6 +19,7 @@ To test thresholds with different input values, you can use the Framework Cmdlet
 * [Invoke-IcingaCheckCheckSum](plugins/03-Invoke-IcingaCheckCheckSum.md)
 * [Invoke-IcingaCheckCPU](plugins/04-Invoke-IcingaCheckCPU.md)
 * [Invoke-IcingaCheckDirectory](plugins/05-Invoke-IcingaCheckDirectory.md)
+* [Invoke-IcingaCheckDiskHealth](plugins/20-Invoke-IcingaCheckDiskHealth.md)
 * [Invoke-IcingaCheckEventlog](plugins/06-Invoke-IcingaCheckEventlog.md)
 * [Invoke-IcingaCheckFirewall](plugins/07-Invoke-IcingaCheckFirewall.md)
 * [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md)
