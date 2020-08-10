@@ -166,6 +166,166 @@
     'Failed'                     = 0xD014;
 }
 
+<#################################################################################################
+################### /lib/provider/Networkdevices #################################################
+#################################################################################################>
+
+[hashtable]$InterfaceAdminStatus = @{
+    1 = 'Up';
+    2 = 'Down';
+    3 = 'Testing';
+}
+
+[hashtable]$InterfaceAdminStatusName = @{
+    'Up'      = 1;
+    'Down'    = 2;
+    'Testing' = 3;
+}
+
+[hashtable]$InterfaceOperationalStatus = @{
+    1 = 'Up';
+    2 = 'Down';
+    3 = 'Testing';
+    4 = 'Unknown';
+    5 = 'Dormant';
+    6 = 'Not Present';
+    7 = 'Lower layer down';
+}
+
+[hashtable]$InterfaceOperationalStatusName = @{
+    'Up'             = 1;
+    'Down'           = 2;
+    'Testing'        = 3;
+    'Unknown'        = 4;
+    'Dormant'        = 5;
+    'NotPresent'     = 6;
+    'LowerLayerDown' = 7;
+}
+
+[hashtable]$NetConnectionStatus = @{
+    0  = 'Disconnected';
+    1  = 'Connecting';
+    2  = 'Connected';
+    3  = 'Disconnecting';
+    4  = 'Hardware Not Present';
+    5  = 'Hardware Disabled';
+    6  = 'Hardware Malfunction';
+    7  = 'Media Disconnected';
+    8  = 'Authenticating';
+    9  = 'Authentication Succeeded';
+    10 = 'Authentication Failed';
+    11 = 'Invalid Address';
+    12 = 'Credentials Required';
+    13 = 'Other';
+}
+
+[hashtable]$NetConnectionStatusName = @{
+    'Disconnected'            = 0;
+    'Connecting'              = 1;
+    'Connected'               = 2;
+    'Disconnecting'           = 3;
+    'HardwareNotPresent'      = 4;
+    'HardwareDisabled'        = 5;
+    'HardwareMalfunction'     = 6;
+    'MediaDisconnected'       = 7;
+    'Authenticating'          = 8;
+    'AuthenticationSucceeded' = 9;
+    'AuthenticationFailed'    = 10;
+    'InvalidAddress'          = 11;
+    'CredentialsRequired'     = 12;
+    'Other'                   = 12;
+}
+
+[hashtable]$LoadBalancingAlgorithm = @{
+    0 = 'TransportPorts';
+    2 = 'IPAddresses';
+    3 = 'MacAddresses';
+    4 = 'HyperVPort';
+    5 = 'Dynamic';
+}
+
+[hashtable]$LoadBalancingAlgorithmName = @{
+    'TransportPorts' = 0;
+    'IPAddresses'    = 2;
+    'MacAddresses'   = 3;
+    'HyperVPort'     = 4;
+    'Dynamic'        = 5;
+}
+
+[hashtable]$TeamingMode = @{
+    0 = 'Static';
+    1 = 'SwitchIndependent';
+    2 = 'Lacp';
+}
+
+[hashtable]$TeamingModeName = @{
+    'Static'            = 0;
+    'SwitchIndependent' = 1;
+    'Lacp'              = 2;
+}
+
+[hashtable]$InterfaceTeamStatus = @{
+    0 = 'Up';
+    1 = 'Down';
+    2 = 'Degraded';
+}
+
+[hashtable]$InterfaceTeamStatusName = @{
+    'Up'       = 0;
+    'Down'     = 1;
+    'Degraded' = 2;
+}
+
+[hashtable]$AdministrativeMode = @{
+    0 = 'Active';
+    1 = 'Standby';
+}
+
+[hashtable]$AdministrativeModeName = @{
+    'Active'  = 0;
+    'Standby' = 1;
+}
+
+[hashtable]$OperationalMode = @{
+    0    = 'Active';
+    1    = 'Standby';
+    4096 = 'Failed';
+}
+
+[hashtable]$OperationalModeName = @{
+    'Active'  = 0;
+    'Standby' = 1;
+    'Failed'  = 4096;
+}
+
+[hashtable]$SlaveEnabledState = @{
+    0  = 'Unknown';
+    1  = 'Other';
+    2  = 'Enabled';
+    3  = 'Disabled';
+    4  = 'Shutting Down';
+    5  = 'Not Applicable';
+    6  = 'Enabled but Offline';
+    7  = 'In Test';
+    8  = 'Deferred';
+    9  = 'Quiesce';
+    10 = 'Starting';
+}
+
+[hashtable]$SlaveEnabledStateName = @{
+    'Unknown'           = 0;
+    'Other'             = 1;
+    'Enabled'           = 2;
+    'Disabled'          = 3;
+    'ShuttingDown'      = 4;
+    'NotApplicable'     = 5;
+    'EnabledButOffline' = 6;
+    'InTest'            = 7;
+    'Deferred'          = 8;
+    'Quiesce'           = 9;
+    'Starting'          = 10;
+}
+
 <##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
@@ -724,7 +884,26 @@
     ClientMode                     = $ClientMode;
     ClientModeName                 = $ClientModeName;
     Stratum                        = $Stratum;
-    StratumTxt                     = $StratumTxt;    
+    StratumTxt                     = $StratumTxt;
+    #/lib/provider/NetworkDevices
+    OperationalMode                = $OperationalMode;
+    OperationalModeName            = $OperationalModeName;
+    AdministrativeMode             = $AdministrativeMode;
+    AdministrativeModeName         = $AdministrativeModeName;
+    SlaveEnabledState              = $SlaveEnabledState;
+    SlaveEnabledStateName          = $SlaveEnabledStateName;
+    TeamingMode                    = $TeamingMode;
+    TeamingModeName                = $TeamingModeName;
+    InterfaceTeamStatus            = $InterfaceTeamStatus;
+    InterfaceTeamStatusName        = $InterfaceTeamStatusName;
+    InterfaceAdminStatus           = $InterfaceAdminStatus;
+    InterfaceAdminStatusName       = $InterfaceAdminStatusName;
+    InterfaceOperationalStatus     = $InterfaceOperationalStatus;
+    InterfaceOperationalStatusName = $InterfaceOperationalStatusName;
+    NetConnectionStatus            = $NetConnectionStatus;
+    NetConnectionStatusName        = $NetConnectionStatusName;
+    LoadBalancingAlgorithm         = $LoadBalancingAlgorithm;
+    LoadBalancingAlgorithmName     = $LoadBalancingAlgorithmName;
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');
