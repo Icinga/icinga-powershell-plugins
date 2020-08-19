@@ -52,6 +52,8 @@
    Switch to disable the time cache on a check. If this parameter is set the time cache is disabled.
    After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended.
    This is due to the time cache, when disabled the whole eventlog is checked instead.
+.PARAMETER NoPerfData
+   Used to disable PerfData.
 .INPUTS
    System.String
 .OUTPUTS
