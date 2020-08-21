@@ -18,8 +18,8 @@ function Get-IcingaProcessData {
         [array]$Process
     );
 
-    $ProcessInformation     = Get-WmiObject Win32_Process;
-    $ProcessPerfDataList    = Get-WmiObject Win32_PerfFormattedData_PerfProc_Process;
+    $ProcessInformation     = Get-IcingaWindowsInformation Win32_Process -ForceWMI;
+    $ProcessPerfDataList    = Get-IcingaWindowsInformation Win32_PerfFormattedData_PerfProc_Process -ForceWMI;
     $CPUCoreCount           = Get-IcingaCPUCount;
     
     

@@ -1,6 +1,6 @@
 function Get-IcingaMemoryUsage()
 {
-    $MEMUsageInformations = Get-CimInstance Win32_OperatingSystem;
+    $MEMUsageInformations = Get-IcingaWindowsInformation Win32_OperatingSystem;
 
     [hashtable]$MEMUsageData = @{
         'FreePhysicalMemory'     = $MEMUsageInformations.FreePhysicalMemory;

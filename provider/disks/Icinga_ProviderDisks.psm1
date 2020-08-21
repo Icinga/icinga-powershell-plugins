@@ -9,7 +9,7 @@ function Get-IcingaDiskInformation()
         # The value to fetch from Win32_DiskDrive
         [string]$Parameter
     );
-    $DiskInformation = Get-CimInstance Win32_DiskDrive;
+    $DiskInformation = Get-IcingaWindowsInformation Win32_DiskDrive;
     [hashtable]$DiskData = @{};
 
     foreach ($disk in $DiskInformation) {
@@ -42,7 +42,7 @@ function Get-IcingaDiskPartitions()
     <# Fetches all the most important informations regarding partitions
     e.g. physical disk; partition, size
     , also collects partition information for Get-IcingaDisks #>
-    $LogicalDiskInfo = Get-WmiObject Win32_LogicalDiskToPartition;
+    $LogicalDiskInfo = Get-IcingaWindowsInformation Win32_LogicalDiskToPartition -ForceWMI;
     [hashtable]$PartitionDiskByDriveLetter = @{};
 
     foreach ($item in $LogicalDiskInfo) {
@@ -70,7 +70,7 @@ function Get-IcingaDiskPartitions()
 
         $DiskArray   = New-IcingaPerformanceCounterStructure -CounterCategory 'LogicalDisk' -PerformanceCounterHash (New-IcingaPerformanceCounterArray @('\LogicalDisk(*)\% free space'));
 
-        $diskPartitionSize = (Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='${DriveLetter}:'");
+        $diskPartitionSize = (Get-IcingaWindowsInformation Win32_LogicalDisk -Filter "DeviceID='${DriveLetter}:'" -ForceWMI);
 
         $PartitionDiskByDriveLetter.Add(
             $driveLetter,
@@ -136,7 +136,7 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
 
 function Get-IcingaDiskCapabilities 
 {
-    $DiskInformation = Get-CimInstance Win32_DiskDrive;
+    $DiskInformation = Get-IcingaWindowsInformation Win32_DiskDrive;
     [hashtable]$DiskCapabilities = @{};
 
     foreach ($capabilities in $DiskInformation.Capabilities) {
@@ -187,7 +187,7 @@ function Get-IcingaDisks {
     <# Collects all the most important Disk-Informations,
     e.g. size, model, sectors, cylinders
     Is dependent on Get-IcingaDiskPartitions#>
-    $DiskInformation = Get-CimInstance Win32_DiskDrive;
+    $DiskInformation = Get-IcingaWindowsInformation Win32_DiskDrive;
     [hashtable]$DiskData = @{};
 
     foreach ($disk in $DiskInformation) {

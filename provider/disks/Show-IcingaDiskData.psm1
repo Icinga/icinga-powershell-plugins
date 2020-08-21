@@ -1,6 +1,6 @@
 function Show-IcingaDiskData {
 
-    $DisksInformations = Get-CimInstance Win32_DiskDrive;
+    $DisksInformations = Get-IcingaWindowsInformation Win32_DiskDrive;
 
     [hashtable]$PhysicalDiskData = @{};
 
@@ -13,9 +13,9 @@ function Show-IcingaDiskData {
         $disk_datails.Add('DriveReference', @());
         $PhysicalDiskData.Add($disk_datails.DeviceID, $disk_datails);
     }
-
-    $DiskPartitionInfo = Get-WmiObject Win32_DiskDriveToDiskPartition;
-
+    
+    $DiskPartitionInfo = Get-IcingaWindowsInformation Win32_DiskDriveToDiskPartition -ForceWMI;
+    
     [hashtable]$MapDiskPartitionToLogicalDisk = @{};
 
     foreach ($item in $DiskPartitionInfo) {
@@ -33,9 +33,9 @@ function Show-IcingaDiskData {
 
         $MapDiskPartitionToLogicalDisk.Add($diskPartition, $physicalDrive);
     }
-
-    $LogicalDiskInfo = Get-WmiObject Win32_LogicalDiskToPartition;
-
+    
+    $LogicalDiskInfo = Get-IcingaWindowsInformation Win32_LogicalDiskToPartition -ForceWMI;
+    
     foreach ($item in $LogicalDiskInfo) {
         [string]$driveLetter = $item.Dependent.SubString(
             $item.Dependent.LastIndexOf('=') + 1,
