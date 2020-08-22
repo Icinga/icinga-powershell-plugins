@@ -54,11 +54,10 @@ function Get-IcingaEventLog()
     }
 
     try {
-        $events = Get-EventLog @EventLogArguments;
+        $events = Get-EventLog @EventLogArguments -ErrorAction Stop;
     } catch {
         Exit-IcingaThrowException -InputString $_.Exception -StringPattern 'ParameterBindingValidationException' -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLog;
         Exit-IcingaThrowException -InputString $_.Exception -StringPattern 'System.InvalidOperationException' -CustomMessage (-Join $LogName) -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLogLogName;
-        Exit-IcingaThrowException -InputString $_.Exception -ExceptionType 'Unhandled' -Force;
     }
 
     if ($null -ne $ExcludeEventId -Or $null -ne $ExcludeUsername -Or $null -ne $ExcludeEntryType -Or $null -ne $ExcludeMessage -Or $null -ne $IncludeMessage) {
