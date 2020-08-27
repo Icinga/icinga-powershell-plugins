@@ -327,6 +327,111 @@
 }
 
 <##################################################################################################
+######################### /lib/provider/storage ###################################################
+###################################################################################################>
+
+[hashtable]$StorageHealthStatus = @{
+    0 = 'Healthy';
+    1 = 'Warning';
+    2 = 'Unhealthy';
+    5 = 'Unknown';
+}
+
+[hashtable]$StorageHealthStatusName = @{
+    'Healthy'   = 0;
+    'Warning'   = 1;
+    'Unhealthy' = 2;
+    'Unknown'   = 5;
+}
+
+[hashtable]$StorageOperationalStatus = @{
+    0  = 'Unknown';
+    1  = 'Other';
+    2  = 'OK';
+    3  = 'Degraded';
+    4  = 'Stressed';
+    5  = 'Predictive Failure';
+    6  = 'Error';
+    7  = 'Non-Recoverable Error';
+    8  = 'Starting';
+    9  = 'Stopping';
+    10 = 'Stopped';
+    11 = 'In Service';
+    12 = 'No Contact';
+    13 = 'Lost Communication';
+    14 = 'Aborted';
+    15 = 'Dormant';
+    16 = 'Supporting Entity in Error';
+    17 = 'Completed';
+    18 = 'Power Mode';
+    19 = 'Relocating';
+}
+
+[hashtable]$StorageOperationalStatusName = @{
+    'Unknown'                    = 0;
+    'Other'                      = 1;
+    'OK'                         = 2;
+    'Degraded'                   = 3;
+    'Stressed'                   = 4;
+    'Predictive Failure'         = 5;
+    'Error'                      = 6;
+    'Non-Recoverable Error'      = 7;
+    'Starting'                   = 8;
+    'Stopping'                   = 9;
+    'Stopped'                    = 10;
+    'In Service'                 = 11;
+    'No Contact'                 = 12;
+    'Lost Communication'         = 13;
+    'Aborted'                    = 14;
+    'Dormant'                    = 15;
+    'Supporting Entity in Error' = 16;
+    'Completed'                  = 17;
+    'Power Mode'                 = 18;
+    'Relocating'                 = 19;
+}
+
+[hashtable]$StoragePoolUsage = @{
+    0 = 'Unknown';
+    1 = 'Ohter';
+    2 = 'Unrestricted';
+    3 = 'Reserved for ComputerSystem (the block server';
+    4 = 'Reserved as a Delta Replica Container';
+    5 = 'Reserved for Migration Services';
+    6 = 'Reserved for Local Replication Services';
+    7 = 'Reserved for Remote Replication Services';
+    8 = 'Reserved for Sparing';
+}
+
+[hashtable]$StoragePoolUsageName = @{
+    'Unknown'                                        = 0;
+    'Ohter'                                          = 1;
+    'Unrestricted'                                   = 2;
+    'Reserved for ComputerSystem (the block server)' = 3;
+    'Reserved as a Delta Replica Container'          = 4;
+    'Reserved for Migration Services'                = 5;
+    'Reserved for Local Replication Services'        = 6;
+    'Reserved for Remote Replication Services'       = 7;
+    'Reserved for Sparing'                           = 8;
+}
+
+[hashtable]$RetireMissingPhysicalDisks = @{
+    1 = 'Auto';
+    2 = 'Always';
+    3 = 'Never';
+}
+
+[hashtable]$RetireMissingPhysicalDisksName = @{
+    'Auto'   = 1;
+    'Always' = 2;
+    'Never'  = 3;
+}
+
+[hashtable]$ThinProvisioningAlertThresholds = @{
+    'MinValue' = 0;
+    'MaxValue' = 100;
+}
+
+<##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
 
@@ -877,6 +982,16 @@
     DeviceStatus                   = $DeviceStatus;
     DeviceAvailability             = $DeviceAvailability;
     DeviceAvailabilityName         = $DeviceAvailabilityName;
+    #/lib/provider/storage
+    StoragePoolUsage               = $StoragePoolUsage;
+    StoragePoolUsageName           = $StoragePoolUsageName;
+    StorageHealthStatus            = $StorageHealthStatus
+    StorageHealthStatusName        = $StorageHealthStatusName
+    StorageOperationalStatus       = $StorageOperationalStatus;
+    StorageOperationalStatusName   = $StorageOperationalStatusName;
+    RetireMissingPhysicalDisks     = $RetireMissingPhysicalDisks;
+    RetireMissingPhysicalDisksName = $RetireMissingPhysicalDisksName;
+    ThinProvisioningAlertThresholds = $ThinProvisioningAlertThresholds;
     #/lib/provider/cpu
     CPUArchitecture                = $CPUArchitecture;
     CPUProcessorType               = $CPUProcessorType;
