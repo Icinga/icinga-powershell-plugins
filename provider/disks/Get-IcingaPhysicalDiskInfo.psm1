@@ -70,7 +70,7 @@ function Get-IcingaPhysicalDiskInfo()
             'DeviceID'                    = $disk.DeviceID;
             'NeedsCleaning'               = $disk.NeedsCleaning;
             'Index'                       = $disk.Index;
-            'OperationalStatus'           = $null; # Set later on MSFT
+            'OperationalStatus'           = @{ 0 = 'Unknown'; };
             'MediaLoaded'                 = $disk.MediaLoaded;
             'LastErrorCode'               = $disk.LastErrorCode;
             'Size'                        = $disk.Size;
@@ -124,11 +124,15 @@ function Get-IcingaPhysicalDiskInfo()
                     'name'  = $ProviderEnums.DiskBusType[[int]$msft_disk.BusType];
                 }
                 $DiskInfo.HealthStatus      = $msft_disk.HealthStatus;
-                $DiskInfo.OperationalStatus = ($msft_disk.OperationalStatus | ForEach-Object {
-                        [int]$Key = $_;
-                        return @{ $Key = $ProviderEnums.DiskOperationalStatus[[int]$_]; };
+                if ($null -ne $msft_disk.OperationalStatus) {
+                    $OperationalStatus = @{ };
+                    foreach ($entry in $msft_disk.OperationalStatus) {
+                        Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value ($ProviderEnums.DiskOperationalStatus[[int]$entry]) | Out-Null;
                     }
-                );
+                    $DiskInfo.OperationalStatus = $OperationalStatus;
+                } else {
+                    $DiskInfo.OperationalStatus  = @{ 0 = 'Unknown'; };
+                }
                 $DiskInfo.Add(
                     'SpindleSpeed', $msft_disk.SpindleSpeed
                 );

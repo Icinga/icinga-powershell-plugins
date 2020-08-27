@@ -6,6 +6,11 @@
     of 8 PerfCounter checks that represent the usage of a physical disk, and each of
     them has its own threshold value, i.e. you cannot use only one threshold value to check
     how fast a disk is writing and reading.
+.ROLE
+    ### WMI Permissions
+
+    * root\cimv2
+    * root\Microsoft\Windows\Storage
 .PARAMETER IncludeDisk
     Specify the index id of disks you want to include for checks. Example 0, 1
 .PARAMETER ExcludeDisk
@@ -162,6 +167,7 @@ function Invoke-IcingaCheckDiskHealth()
             if ($DiskObjects.Data.DriveReference.Count -ne 0) {
                 $Partition = $DiskObjects.Data.DriveReference.Keys;
             }
+
             $OperationalStatus = $DiskObjects.Data.OperationalStatus;
             $OperCount = $OperationalStatus.Count;
 

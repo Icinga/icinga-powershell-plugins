@@ -10,6 +10,15 @@ of 8 PerfCounter checks that represent the usage of a physical disk, and each of
 them has its own threshold value, i.e. you cannot use only one threshold value to check
 how fast a disk is writing and reading.
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### WMI Permissions
+
+* root\cimv2
+* root\Microsoft\Windows\Storage
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |
