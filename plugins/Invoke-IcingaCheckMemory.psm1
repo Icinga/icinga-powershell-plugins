@@ -20,33 +20,25 @@
    1
 .PARAMETER Warning
    Used to specify a Warning threshold. In this case an string value.
-
    The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"
+   This is using the default Icinga threshold handling.
 .PARAMETER Critical
    Used to specify a Critical threshold. In this case an string value.
-
    The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"
-
+   This is using the default Icinga threshold handling.
 .PARAMETER Pagefile
    Switch which determines whether the pagefile should be used instead.
    If not set memory will be checked.
-
+.PARAMETER WarningPercent
+   Used to specify a Warning threshold for the memory usage in percent, like 30 for 30%.
+   This is using the default Icinga threshold handling.
 .PARAMETER CriticalPercent
-   Used to specify a Critical threshold. In this case an integer value.
-
-   Like 30 for 30%. If memory usage is below 30%, the check will return CRITICAL.
-
-.PARAMETER CriticalPercent
-   Used to specify a Critical threshold. In this case an integer value.
-
-   Like 30 for 30%. If memory usage is below 30%, the check will return Warning.
-
+   Used to specify a Critical threshold for the memory usage in percent, like 30 for 30%.
+   This is using the default Icinga threshold handling.
 .INPUTS
    System.String
-
 .OUTPUTS
    System.String
-
 .LINK
    https://github.com/Icinga/icinga-powershell-plugins
 .NOTES

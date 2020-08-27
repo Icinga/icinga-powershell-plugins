@@ -14,10 +14,10 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Critical | String | false |  | Used to specify a Critical threshold. In this case an string value.  The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" |
-| Warning | String | false |  | Used to specify a Warning threshold. In this case an string value.  The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" |
-| CriticalPercent | Object | false |  | Used to specify a Critical threshold. In this case an integer value.  Like 30 for 30%. If memory usage is below 30%, the check will return CRITICAL. |
-| WarningPercent | Object | false |  |  |
+| Critical | String | false |  | Used to specify a Critical threshold. In this case an string value. The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" This is using the default Icinga threshold handling. |
+| Warning | String | false |  | Used to specify a Warning threshold. In this case an string value. The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" This is using the default Icinga threshold handling. |
+| CriticalPercent | Object | false |  | Used to specify a Critical threshold for the memory usage in percent, like 30 for 30%. This is using the default Icinga threshold handling. |
+| WarningPercent | Object | false |  | Used to specify a Warning threshold for the memory usage in percent, like 30 for 30%. This is using the default Icinga threshold handling. |
 | Verbosity | Int32 | false | 0 |  |
 | NoPerfData | SwitchParameter | false | False |  |
 

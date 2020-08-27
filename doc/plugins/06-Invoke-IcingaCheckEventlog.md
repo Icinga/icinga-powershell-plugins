@@ -3,10 +3,10 @@
 
 ## Description
 
-Checks how many eventlog occurences of a given type there are.
+Checks how many eventlog occurrences of a given type there are.
 
 Invoke-IcingaCheckEventlog returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-e.g Eventlog returns 500 entrys with the specified parameters, WARNING is set to 200, CRITICAL is set to 800. Thereby the check will return WARNING.
+e.g Eventlog returns 500 entries with the specified parameters, WARNING is set to 200, CRITICAL is set to 800. Thereby the check will return WARNING.
 
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
@@ -28,7 +28,7 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 | After | Object | false |  | Used to specify a date like dd.mm.yyyy and every eventlog entry after that date will be considered. |
 | Before | Object | false |  | Used to specify a date like dd.mm.yyyy and every eventlog entry before that date will be considered. |
 | DisableTimeCache | SwitchParameter | false | False | Switch to disable the time cache on a check. If this parameter is set the time cache is disabled. After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended. This is due to the time cache, when disabled the whole eventlog is checked instead. |
-| NoPerfData | SwitchParameter | false | False |  |
+| NoPerfData | SwitchParameter | false | False | Used to disable PerfData. |
 | Verbosity | Int32 | false | 0 |  |
 
 ## Examples
@@ -42,17 +42,17 @@ Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warni
 ### Example Output 1
 
 ```powershell
-[WARNING]: Check package "EventLog" is [WARNING]| 'EventId_508'=2c;; 'EventId_2002'=586c;; 'EventId_63'=6c;; 'EventId_2248216578'=1364c;; 'EventId_1008'=1745c;; 'EventId_2147489653'=1c;; 'EventId_636'=3c;; 'EventId_2147484656'=1c;; 'EventId_2147489654'=1c;; 'EventId_640'=3c;; 'EventId_533'=1c;;PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000[OK]: Check package "EventLog" is [OK]|
+[CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)." \_ [WARNING] EventId 2002: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occured 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occured 391 event(s)." \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occured 391 event(s)." \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 15:51:00] - [17.08.2020 19:41:00] there occured 298 event(s)." \_ [WARNING] EventId 642: Value "298" is greater than threshold "100"\_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occured 3539 event(s)." \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"\_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occured 3539 event(s)." \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"\_ [CRITICAL] Check package "Between: [17.08.2020 20:03:07] - [27.08.2020 09:56:35] there occured 2757 event(s)." \_ [CRITICAL] EventId 642: Value "2757" is greater than threshold "1000"
 ```
 
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000
+Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000 -IncludeEventId 1008
 ```
 
 ### Example Output 2
 
 ```powershell
-[WARNING]: Check package "EventLog" is [WARNING]| 'EventId_508'=2c;; 'EventId_2002'=586c;; 'EventId_63'=6c;; 'EventId_2248216578'=1364c;; 'EventId_1008'=1745c;; 'EventId_2147489653'=1c;; 'EventId_636'=3c;; 'EventId_2147484656'=1c;; 'EventId_2147489654'=1c;; 'EventId_640'=3c;; 'EventId_533'=1c;;PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000 -DisableTimeCache[WARNING]: Check package "EventLog" is [WARNING]| 'EventId_508'=2c;; 'EventId_2002'=586c;; 'EventId_63'=6c;; 'EventId_2248216578'=1364c;; 'EventId_1008'=1745c;; 'EventId_2147489653'=1c;; 'EventId_636'=3c;; 'EventId_2147484656'=1c;; 'EventId_2147489654'=1c;; 'EventId_640'=3c;; 'EventId_533'=1c;;
+[WARNING] Check package "EventLog" - [WARNING] EventId 1008\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occured 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"| 'eventid_1008'=726c;;
 ```
