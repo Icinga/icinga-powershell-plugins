@@ -264,6 +264,10 @@ function Get-IcingaCPUCount()
         $CounterArray = $null
     );
 
+    if ((Test-IcingaPerformanceCounterCategory -Category 'Processor') -eq $FALSE) {
+        Exit-IcingaThrowException -ExceptionType 'Configuration' -ExceptionThrown $IcingaExceptions.Configuration.PerfCounterCategoryMissing -CustomMessage 'Category "Processor" not found' -Force;
+    }
+
     if ($null -eq $CounterArray) {
         $CounterArray = Show-IcingaPerformanceCounterInstances -Counter '\Processor(*)\% processor time';
     }
