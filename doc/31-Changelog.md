@@ -18,6 +18,7 @@ This release adds the following new plugins:
 * [Invoke-IcingaCheckTimeSync](https://icinga.com/docs/windows/latest/plugins/doc/plugins/18-Invoke-IcingaChecTimeSync/): Allows to compare local machine time with a time server to check for possible time missmatch
 * [Invoke-IcingaCheckScheduledTask](https://icinga.com/docs/windows/latest/plugins/doc/plugins/19-Invoke-IcingaCheckScheduledTask/): Allows to check the current state for a list of provided scheduled tasks
 * [Invoke-IcingaCheckDiskHealth](https://icinga.com/docs/windows/latest/plugins/doc/plugins/20-Invoke-IcingaCheckDiskHealth/): Allows to check for several disk Performance Counters and the disk health in general
+
 ### Notes
 
 * [#34](https://github.com/Icinga/icinga-powershell-plugins/issues/34) Replaces plugin CIM/WMI calls for new Framework wrapper function `Get-IcingaWindowsInformation` to properly handle config/permission errors
@@ -30,6 +31,7 @@ This release adds the following new plugins:
 * [#38](https://github.com/Icinga/icinga-powershell-plugins/issues/38) Adds new plugin `Invoke-IcingaCheckDiskHealth`
 * [#39](https://github.com/Icinga/icinga-powershell-plugins/issues/39) Fixes Performance Counters check plugin to throw error in case Performance Counter do not exist or a simply not present
 * [#42](https://github.com/Icinga/icinga-powershell-plugins/issues/42) Improves performance of `Invoke-IcingaCheckCPU` for multi socket systems and optimises the code
+* [#44](https://github.com/Icinga/icinga-powershell-plugins/issues/44) Adds check for Performance Counter categories 'Memory' and 'Processor' if they are present on a system, throwing an 'Unknown' if not
 
 ### Bugfixes
 

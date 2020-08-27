@@ -1,5 +1,10 @@
 function Get-IcingaMemoryPerformanceCounter()
 {
+
+    if ((Test-IcingaPerformanceCounterCategory -Category 'Memory') -eq $FALSE) {
+        Exit-IcingaThrowException -ExceptionType 'Configuration' -ExceptionThrown $IcingaExceptions.Configuration.PerfCounterCategoryMissing -CustomMessage 'Category "Memory" not found' -Force;
+    }
+
     $MemoryPercent = New-IcingaPerformanceCounterArray -Counter "\Memory\% committed bytes in use","\Memory\Available Bytes","\Paging File(_Total)\% usage"
     [hashtable]$Initial = @{};
     [hashtable]$MemoryData = @{};
