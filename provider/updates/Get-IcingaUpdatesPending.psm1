@@ -3,9 +3,14 @@ function Get-IcingaUpdatesPending ()
 
     [hashtable]$PendingUpdates         = @{};
     [hashtable]$PendingUpdateNameCache = @{};
+
     # Fetch all informations about installed updates and add them
-    $WindowsUpdates            = New-Object -ComObject "Microsoft.Update.Session";
-    $SearchIndex               = $WindowsUpdates.CreateUpdateSearcher();
+    try {
+        $WindowsUpdates = New-Object -ComObject "Microsoft.Update.Session" -ErrorAction Stop;
+        $SearchIndex    = $WindowsUpdates.CreateUpdateSearcher();
+    } catch {
+        Exit-IcingaThrowException -ExceptionType 'Permission' -ExceptionThrown $IcingaExceptions.Permission.WindowsUpdate -Force;
+    }
 
     try {
         # Get a list of current pending updates which are not yet installed on the system
