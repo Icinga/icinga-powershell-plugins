@@ -4,6 +4,10 @@ Upgrading Icinga PowerShell Plugins is usually quite straightforward.
 
 Specific version upgrades are described below. Please note that version updates are incremental.
 
+## Upgrading to v1.2.0 (2020-08-28)
+
+*No special steps required*
+
 ## Upgrading to v1.1.0 (2020-06-02)
 
 ### Icinga PowerShell Framework dependency
