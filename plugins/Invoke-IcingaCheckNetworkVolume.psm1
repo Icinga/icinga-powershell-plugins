@@ -17,20 +17,21 @@ function Invoke-IcingaCheckNetworkVolume()
         $VolumeObj = $GetVolumes[$volume];
         $VolumeCheckPackage = New-IcingaCheckPackage -Name $volume -OperatorAnd -Verbose $Verbosity;
 
-        $VolumeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} FreeSpace', $volume)) `
-                    -Value (
-                    Get-IcingaVolumeAvgCalculator -TotalSize $VolumeObj.Size -FreeSpace $VolumeObj.FreeSpace
-                ) `
-                    -Unit '%'
-            ).WarnIfLowerEqualThan(
-                $FreeSpaceWarning
-            ).CritIfLowerEqualThan(
-                $FreeSpaceCritical
-            )
-        );
+        foreach ($partition in $VolumeObj.Disk.Keys) {
+            $PartObject = $VolumeObj.Disk[$partition];
+            $VolumeCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('vol_ {0} {1} FreeSpace', $volume, $partition)) `
+                        -Value $PartObject.PercentFree `
+                        -Unit '%'
+                ).WarnIfLowerEqualThan(
+                    $FreeSpaceWarning
+                ).CritIfLowerEqualThan(
+                    $FreeSpaceCritical
+                )
+            );
+        }
 
         $CheckPackage.AddCheck($VolumeCheckPackage);
     }
