@@ -21,7 +21,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('vol_ {0} State', $volume)) `
-                    -Value $PartObject.State `
+                    -Value $VolumeObj.State `
                     -NoPerfData
             )
         );
@@ -30,7 +30,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('vol_ {0} FreeSpace', $volume)) `
-                    -Value $PartObject.SharedVolumeInfo.Partition.PercentFree `
+                    -Value $VolumeObj.SharedVolumeInfo.Partition.PercentFree `
                     -Unit '%'
             ).WarnIfLowerEqualThan(
                 $FreeSpaceWarning
@@ -43,7 +43,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('vol_ {0} Capacity', $volume)) `
-                    -Value ($PartObject.SharedVolumeInfo.Partition.Size / 1GB) `
+                    -Value ($VolumeObj.SharedVolumeInfo.Partition.Size / 1GB) `
                     -Unit 'GB'
             )
         );
@@ -52,7 +52,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('vol_ {0} TotalUsed', $volume)) `
-                    -Value ($PartObject.SharedVolumeInfo.Partition.UsedSpace / 1GB) `
+                    -Value ($VolumeObj.SharedVolumeInfo.Partition.UsedSpace / 1GB) `
                     -Unit 'GB'
             )
         );
@@ -61,7 +61,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('vol_ {0} Fault State', $volume)) `
-                    -Value $PartObject.SharedVolumeInfo.FaultState `
+                    -Value $VolumeObj.SharedVolumeInfo.FaultState `
                     -NoPerfData
             )
         );
@@ -70,7 +70,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('vol_ {0} RedirectedAccess', $volume)) `
-                    -Value $PartObject.SharedVolumeInfo.RedirectedAccess `
+                    -Value $VolumeObj.SharedVolumeInfo.RedirectedAccess `
                     -NoPerfData
             )
         );
