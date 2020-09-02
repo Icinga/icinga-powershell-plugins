@@ -15,7 +15,7 @@ function Invoke-IcingaCheckNetworkVolume()
 
     foreach ($volume in $GetVolumes.Keys) {
         $VolumeObj = $GetVolumes[$volume];
-        $VolumeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('SharedVolume {0} (Node: {1})', $volume, $volume.OwnerNode)) -OperatorAnd -Verbose $Verbosity;
+        $VolumeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('SharedVolume {0} (Node: {1})', $volume, $volume.OwnerNode.Name)) -OperatorAnd -Verbose $Verbosity;
 
         $VolumeCheckPackage.AddCheck(
             (

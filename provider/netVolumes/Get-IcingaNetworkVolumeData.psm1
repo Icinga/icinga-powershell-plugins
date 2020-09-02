@@ -41,9 +41,17 @@ function Get-IcingaNetworkVolumeData()
         }
 
         $details.Add('Id', $volume.Caption);
-        $details.Add('OwnerNode', $volume.OwnerNode);
         $details.Add('State', $volume.State);
         $details.Add('Name', $volume.Name);
+
+        if ($volume.OwnerNode.Count -ne 0) {
+            $details.Add('OwnerNode', @{
+                    'Name'  = $volume.OwnerNode.Name;
+                    'State' = $volume.OwnerNode.State;
+                    'Type'  = $volume.OwnerNode.Type;
+                }
+            );
+        }
 
         foreach ($item in $VolumeInfo) {
             $details.SharedVolumeInfo.Add('FaultState', $item.FaultState);
