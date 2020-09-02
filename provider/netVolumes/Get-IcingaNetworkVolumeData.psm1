@@ -11,7 +11,12 @@ function Get-IcingaNetworkVolumeData()
         $GetSharedVolume = Get-ClusterSharedVolume;
         if (Get-Command $GetSharedVolume -ErrorAction Stop) {
             foreach ($volume in $GetSharedVolume) {
-                $details = @{'Disk' = @{}; };
+                $details = @{'SharedVolumeInfo' = @{
+                        'Partition' = @{
+                            'MountPoints' = @{ };
+                        };
+                    };
+                };
                 $VolumeInfo = $volume | Select-Object -ExpandProperty 'SharedVolumeInfo';
 
                 if ($IncludeVolumes.Count -ne 0) {
@@ -26,37 +31,48 @@ function Get-IcingaNetworkVolumeData()
                     }
                 }
 
-                $details.Add('Caption', $volume.Caption);
-                $details.Add('Description', $volume.Description);
-                $details.Add('InstallDate', $volume.InstallDate);
+                $details.Add('Id', $volume.Caption);
+                $details.Add('OwnerNode', $volume.OwnerNode);
+                $details.Add('State', $volume.State);
                 $details.Add('Name', $volume.Name);
-                $details.Add('Status', $volume.Stus);
-                $details.Add('Flags', $volume.Flags);
-                $details.Add('Characteristics', $volume.Characteristics);
-                $details.Add('VolumeName', $volume.VolumeName);
-                $details.Add('FaultState', $volume.FaultState);
-                $details.Add('VolumeOffset', $volume.VolumeOffset);
-                $details.Add('BackupState', $volume.BackupState);
-                $details.Add('PSComputerName', $volume.PSComputerName);
 
                 foreach ($item in $VolumeInfo) {
-                    $details.Disk.Add(
-                        $item.Name, @{
-                            'Name'        = $item.Name;
-                            'Path'        = $item.FriendlyVolumeName;
-                            'Size'        = $item.Partition.Size;
-                            'FreeSpace'   = $item.Partition.FreeSpace;
-                            'UsedSpace'   = $item.Partition.UsedSpace;
-                            'PercentFree' = $item.Partition.PercentFree;
-                        }
-                    );
+                    $details.SharedVolumeInfo.Add('FaultState', $item.FaultState);
+                    $details.SharedVolumeInfo.Add('FriendlyVolumeName', $item.FriendlyVolumeName);
+                    $details.SharedVolumeInfo.Add('MaintenanceMode', $item.MaintenanceMode);
+                    $details.SharedVolumeInfo.Add('PartitionNumber', $item.PartitionNumber);
+                    $details.SharedVolumeInfo.Add('RedirectedAccess', $item.RedirectedAccess);
+                    $details.SharedVolumeInfo.Add('VolumeOffset', $item.VolumeOffset);
+
+                    $details.SharedVolumeInfo.Partition.Add('DriveLetter', $item.Partition.DriveLetter);
+                    $details.SharedVolumeInfo.Partition.Add('DriveLetterMask', $item.Partition.DriveLetterMask);
+                    $details.SharedVolumeInfo.Partition.Add('FileSystem', $item.Partition.FileSystem);
+                    $details.SharedVolumeInfo.Partition.Add('FreeSpace', $item.Partition.FreeSpace);
+                    $details.SharedVolumeInfo.Partition.Add('HasDriveLetter', $item.Partition.HasDriveLetter);
+                    $details.SharedVolumeInfo.Partition.Add('IsCompressed', $item.Partition.IsCompressed);
+                    $details.SharedVolumeInfo.Partition.Add('IsDirty', $item.Partition.IsDirty);
+                    $details.SharedVolumeInfo.Partition.Add('IsFormatted', $item.Partition.IsFormatted);
+                    $details.SharedVolumeInfo.Partition.Add('IsNtfs', $item.Partition.IsNtfs);
+                    $details.SharedVolumeInfo.Partition.Add('IsPartitionNumberValid', $item.Partition.IsPartitionNumberValid);
+                    $details.SharedVolumeInfo.Partition.Add('Name', $item.Partition.Name);
+                    $details.SharedVolumeInfo.Partition.Add('PartitionNumber', $item.Partition.PartitionNumber);
+                    $details.SharedVolumeInfo.Partition.Add('PercentFree', $item.Partition.PercentFree);
+                    $details.SharedVolumeInfo.Partition.Add('Size', $item.Partition.Size);
+                    $details.SharedVolumeInfo.Partition.Add('UsedSpace', $item.Partition.UsedSpace);
+                    $details.SharedVolumeInfo.Partition.MountPoints = $item.Partition.MountPoints;
                 }
 
                 $ClusterDetails.Add($volume.Name, $details);
             }
         }
     } catch {
-        Exit-IcingaThrowException -ExceptionType 'Custom' -CustomMessage 'NotFoundError' -InputString 'The classes used for the plugin could not be found on your server';
+        Exit-IcingaThrowException `
+            -CustomMessage 'Null-Command: Class "Get-ClusterSharedVolume": Error "InvalidCmdlet"' `
+            -InputString ([string]::Format(
+                'The already mentioned class could not be found on your system. {0}{1}',
+                "`r`n",
+                'The class is only available on Windows Server 2012 and later.'
+            ));
     }
 
     return $ClusterDetails;
