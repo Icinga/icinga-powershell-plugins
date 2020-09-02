@@ -13,25 +13,67 @@ function Invoke-IcingaCheckNetworkVolume()
     $CheckPackage = New-IcingaCheckPackage -Name 'Network Volumes Package' -OperatorAnd -Verbose $Verbosity;
     $GetVolumes   = Get-IcingaNetworkVolumeData -IncludeVolumes $IncludeVolumes -ExcludeVolumes $ExcludeVolumes;
 
-    foreach ($volume in $GetVolumes.keys) {
+    foreach ($volume in $GetVolumes.Keys) {
         $VolumeObj = $GetVolumes[$volume];
-        $VolumeCheckPackage = New-IcingaCheckPackage -Name $volume -OperatorAnd -Verbose $Verbosity;
+        $VolumeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('SharedVolume {0} (Node: {1})', $volume, $volume.OwnerNode)) -OperatorAnd -Verbose $Verbosity;
 
-        foreach ($partition in $VolumeObj.Disk.Keys) {
-            $PartObject = $VolumeObj.Disk[$partition];
-            $VolumeCheckPackage.AddCheck(
-                (
-                    New-IcingaCheck `
-                        -Name ([string]::Format('vol_ {0} {1} FreeSpace', $volume, $partition)) `
-                        -Value $PartObject.PercentFree `
-                        -Unit '%'
-                ).WarnIfLowerEqualThan(
-                    $FreeSpaceWarning
-                ).CritIfLowerEqualThan(
-                    $FreeSpaceCritical
-                )
-            );
-        }
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('vol_ {0} State', $volume)) `
+                    -Value $PartObject.State `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('vol_ {0} FreeSpace', $volume)) `
+                    -Value $PartObject.SharedVolumeInfo.Partition.PercentFree `
+                    -Unit '%'
+            ).WarnIfLowerEqualThan(
+                $FreeSpaceWarning
+            ).CritIfLowerEqualThan(
+                $FreeSpaceCritical
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('vol_ {0} Capacity', $volume)) `
+                    -Value ($PartObject.SharedVolumeInfo.Partition.Size / 1GB) `
+                    -Unit 'GB'
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('vol_ {0} TotalUsed', $volume)) `
+                    -Value ($PartObject.SharedVolumeInfo.Partition.UsedSpace / 1GB) `
+                    -Unit 'GB'
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('vol_ {0} Fault State', $volume)) `
+                    -Value $PartObject.SharedVolumeInfo.FaultState `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('vol_ {0} RedirectedAccess', $volume)) `
+                    -Value $PartObject.SharedVolumeInfo.RedirectedAccess `
+                    -NoPerfData
+            )
+        );
 
         $CheckPackage.AddCheck($VolumeCheckPackage);
     }
