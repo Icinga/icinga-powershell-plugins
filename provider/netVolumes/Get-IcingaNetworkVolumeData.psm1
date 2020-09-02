@@ -19,13 +19,14 @@ function Get-IcingaNetworkVolumeData()
 
     $GetSharedVolume = Get-ClusterSharedVolume;
     foreach ($volume in $GetSharedVolume) {
-        $details = @{'SharedVolumeInfo' = @{
+        $details = @{
+            'SharedVolumeInfo' = @{
                 'Partition' = @{
                     'MountPoints' = @{ };
                 };
-
-                'OwnerNode' = @{ };
             };
+
+            'OwnerNode'        = @{};
         };
 
         $VolumeInfo = $volume | Select-Object -Expand SharedVolumeInfo;
