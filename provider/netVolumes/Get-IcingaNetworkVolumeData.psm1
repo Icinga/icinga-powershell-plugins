@@ -23,6 +23,8 @@ function Get-IcingaNetworkVolumeData()
                 'Partition' = @{
                     'MountPoints' = @{ };
                 };
+
+                'OwnerNode' = @{ };
             };
         };
 
@@ -45,12 +47,15 @@ function Get-IcingaNetworkVolumeData()
         $details.Add('Name', $volume.Name);
 
         if ($volume.OwnerNode.Count -ne 0) {
-            $details.Add('OwnerNode', @{
-                    'Name'  = $volume.OwnerNode.Name;
-                    'State' = $volume.OwnerNode.State;
-                    'Type'  = $volume.OwnerNode.Type;
-                }
-            );
+            foreach ($node in $volume.OwnerNode) {
+                $details.OwnerNode.Add(
+                    $node.Name, @{
+                        'Name'  = $node.Name;
+                        'State' = $node.State;
+                        'Type'  = $node.Type;
+                    }
+                );
+            }
         }
 
         foreach ($item in $VolumeInfo) {
