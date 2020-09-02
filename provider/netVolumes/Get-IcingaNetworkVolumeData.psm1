@@ -10,7 +10,7 @@ function Get-IcingaNetworkVolumeData()
 
     foreach ($volume in $GetSharedVolume) {
         $details    = @{'Disk' = @{}; };
-        $VolumeInfo = $volume | Select-Object -Property Name -ExpandProperty SharedVolumeInfo;
+        $VolumeInfo = $volume | Select-Object -ExpandProperty 'SharedVolumeInfo';
 
         if ($IncludeVolumes.Count -ne 0) {
             if ($IncludeVolumes.Contains($volume.Name) -eq $FALSE) {
@@ -34,6 +34,8 @@ function Get-IcingaNetworkVolumeData()
         $details.Add('VolumeName', $volume.VolumeName);
         $details.Add('FaultState', $volume.FaultState);
         $details.Add('VolumeOffset', $volume.VolumeOffset);
+        $details.Add('BackupState', $volume.BackupState);
+        $details.Add('PSComputerName', $volume.PSComputerName);
 
         foreach ($item in $VolumeInfo) {
             $details.Disk.Add(
