@@ -17,19 +17,19 @@ function Get-IcingaNetworkVolumeData()
             ));
     }
 
-    $GetSharedVolume = Get-ClusterSharedVolume;
+    $GetSharedVolume      = Get-ClusterSharedVolume;
+
     foreach ($volume in $GetSharedVolume) {
-        $details = @{
+        $SharedVolumeState         = Get-ClusterSharedVolume -Name $volume.Name | Get-ClusterSharedVolumeState;
+        $VolumeInfo                = $volume | Select-Object -Expand SharedVolumeInfo;
+        [string]$SharedVolume      = '';
+        $details                   = @{
             'SharedVolumeInfo' = @{
                 'Partition' = @{
                     'MountPoints' = @{ };
                 };
             };
-
-            'OwnerNode'        = @{};
         };
-
-        $VolumeInfo = $volume | Select-Object -Expand SharedVolumeInfo;
 
         if ($IncludeVolumes.Count -ne 0) {
             if ($IncludeVolumes.Contains($volume.Name) -eq $FALSE) {
@@ -47,14 +47,17 @@ function Get-IcingaNetworkVolumeData()
         $details.Add('State', $volume.State);
         $details.Add('Name', $volume.Name);
 
-        if ($volume.OwnerNode.Count -ne 0) {
-            $details.OwnerNode.Add(
-                $volume.OwnerNode.Name, @{
-                    'Name'  = $volume.OwnerNode.Name;
-                    'State' = $volume.OwnerNode.State;
-                    'Type'  = $volume.OwnerNode.Type;
-                }
-            );
+        foreach ($item in $SharedVolumeState) {
+            if ($SharedVolume -ne $item.Name) {
+                $details.Add('OwnerNode', $item.Node);
+                $details.Add('BlockRedirectedIOReason', $item.BlockRedirectedIOReason);
+                $details.Add('FileSystemRedirectedIOReason', $item.FileSystemRedirectedIOReason);
+                $details.Add('StateInfo', $item.StateInfo);
+                $details.Add('VolumeFriendlyName', $item.VolumeFriendlyName);
+                $details.Add('VolumeName', $item.VolumeName);
+
+                $SharedVolume = $item.Name;
+            }
         }
 
         foreach ($item in $VolumeInfo) {
