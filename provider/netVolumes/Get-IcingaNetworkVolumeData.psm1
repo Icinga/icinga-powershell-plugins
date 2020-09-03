@@ -5,19 +5,18 @@ function Get-IcingaNetworkVolumeData()
         [array]$ExcludeVolumes = @()
     );
 
-    $ClusterDetails = @{ };
-
     if (-Not (Get-Command Get-ClusterSharedVolume -ErrorAction SilentlyContinue)) {
         Exit-IcingaThrowException `
             -CustomMessage 'Null-Command: Class "Get-ClusterSharedVolume": Error "InvalidCmdlet"' `
             -InputString ([string]::Format(
                 'The already mentioned class could not be found on your system. {0}{1}',
                 "`r`n",
-                'The class is only available on Windows Server 2012 and later.'
+                '"Get-ClusterSharedVolume" is only available on Windows Server 2012 and later.'
             ));
     }
 
-    $GetSharedVolume      = Get-ClusterSharedVolume;
+    $GetSharedVolume = Get-ClusterSharedVolume;
+    $ClusterDetails  = @{ };
 
     foreach ($volume in $GetSharedVolume) {
         $SharedVolumeState         = Get-ClusterSharedVolume -Name $volume.Name | Get-ClusterSharedVolumeState;
