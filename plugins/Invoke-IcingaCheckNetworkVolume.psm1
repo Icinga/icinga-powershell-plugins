@@ -24,22 +24,32 @@
 .EXAMPLE
     PS> Invoke-IcingaCheckNetworkVolume -Verbosity 2
     [OK] Check package "Network Volumes Package" (Match All)
-    \_ [OK] Check package "SharedVolume Cluster disk 2 (Node: lcontreras-wind)" (Match All)
-        \_ [OK] Cluster disk 2 Block RedirectedIOReason: NotBlockRedirected
-        \_ [OK] Cluster disk 2 Fault State: NoFaults
-        \_ [OK] Cluster disk 2 FileSystem RedirectedIOReason: NotFileSystemRedirected
-        \_ [OK] Cluster disk 2 FreeSpace: 89.06%
-        \_ [OK] Cluster disk 2 RedirectedAccess: False
-        \_ [OK] Cluster disk 2 State: Online
-        \_ [OK] Cluster disk 2 StateInfo: Direct
-    \_ [OK] Check package "SharedVolume Cluster disk 3 (Node: lcontreras-wind)" (Match All)
-        \_ [OK] Cluster disk 3 Block RedirectedIOReason: NotBlockRedirected
-        \_ [OK] Cluster disk 3 Fault State: NoFaults
-        \_ [OK] Cluster disk 3 FileSystem RedirectedIOReason: NotFileSystemRedirected
-        \_ [OK] Cluster disk 3 FreeSpace: 89.01%
-        \_ [OK] Cluster disk 3 RedirectedAccess: False
-        \_ [OK] Cluster disk 3 State: Online
-        \_ [OK] Cluster disk 3 StateInfo: Direct
+    \_ [OK] Check package "SharedVolume Cluster disk 2" (Match All)
+       \_ [OK] Cluster disk 2 Fault State: NoFaults
+       \_ [OK] Cluster disk 2 FreeSpace: 89.06%
+       \_ [OK] Cluster disk 2 RedirectedAccess: False
+       \_ [OK] Cluster disk 2 State: Online
+       \_ [OK] Check package "SharedVolume Cluster disk 2 (Node: lcontreras-wind)" (Match All)
+          \_ [OK] Cluster disk 2 Block RedirectedIOReason: NotBlockRedirected
+          \_ [OK] Cluster disk 2 FileSystem RedirectedIOReason: NotFileSystemRedirected
+          \_ [OK] Cluster disk 2 StateInfo: Direct
+       \_ [OK] Check package "SharedVolume Cluster disk 2 (Node: yhabteab-window)" (Match All)
+          \_ [OK] Cluster disk 2 Block RedirectedIOReason: NotBlockRedirected
+          \_ [OK] Cluster disk 2 FileSystem RedirectedIOReason: NotFileSystemRedirected
+          \_ [OK] Cluster disk 2 StateInfo: Direct
+    \_ [OK] Check package "SharedVolume Cluster disk 3" (Match All)
+       \_ [OK] Cluster disk 3 Fault State: NoFaults
+       \_ [OK] Cluster disk 3 FreeSpace: 89.01%
+       \_ [OK] Cluster disk 3 RedirectedAccess: False
+       \_ [OK] Cluster disk 3 State: Online
+       \_ [OK] Check package "SharedVolume Cluster disk 3 (Node: lcontreras-wind)" (Match All)
+          \_ [OK] Cluster disk 3 Block RedirectedIOReason: NotBlockRedirected
+          \_ [OK] Cluster disk 3 FileSystem RedirectedIOReason: NotFileSystemRedirected
+          \_ [OK] Cluster disk 3 StateInfo: Direct
+       \_ [OK] Check package "SharedVolume Cluster disk 3 (Node: yhabteab-window)" (Match All)
+          \_ [OK] Cluster disk 3 Block RedirectedIOReason: NotBlockRedirected
+          \_ [OK] Cluster disk 3 FileSystem RedirectedIOReason: NotFileSystemRedirected
+          \_ [OK] Cluster disk 3 StateInfo: Direct
     | 'cluster_disk_2_freespace'=89.06%;;;0;100 'cluster_disk_3_freespace'=89.01%;;;0;100
     0
 .LINK
