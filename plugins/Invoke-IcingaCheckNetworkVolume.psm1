@@ -3,8 +3,8 @@ function Invoke-IcingaCheckNetworkVolume()
     param(
         [array]$IncludeVolumes = @(),
         [array]$ExcludeVolumes = @(),
-        $FreeSpaceWarning      = '20',
-        $FreeSpaceCritical     = '15',
+        $FreeSpaceWarning      = 20,
+        $FreeSpaceCritical     = 15,
         [switch]$NoPerfData    = $FALSE,
         [ValidateSet(0, 1, 2)]
         $Verbosity             = 0
