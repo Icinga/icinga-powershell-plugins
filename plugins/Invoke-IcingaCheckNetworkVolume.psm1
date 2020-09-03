@@ -23,6 +23,10 @@ function Invoke-IcingaCheckNetworkVolume()
                     -Name ([string]::Format('{0} State', $volume)) `
                     -Value $VolumeObj.State `
                     -NoPerfData
+            ).CritIfMatch(
+                $ProviderEnums.SharedVolumeState.Offline
+            ).CritIfMatch(
+                $ProviderEnums.SharedVolumeState.Failed
             )
         );
 
@@ -32,6 +36,10 @@ function Invoke-IcingaCheckNetworkVolume()
                     -Name ([string]::Format('{0} Block RedirectedIOReason', $volume)) `
                     -Value $VolumeObj.BlockRedirectedIOReason `
                     -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.BlockRedirectedIOReason.StorageSpaceNotAttached
+            ).CritIfMatch(
+                $ProviderEnums.BlockRedirectedIOReason.NoDiskConnectivity
             )
         );
 
@@ -50,6 +58,10 @@ function Invoke-IcingaCheckNetworkVolume()
                     -Name ([string]::Format('{0} FileSystem RedirectedIOReason', $volume)) `
                     -Value $VolumeObj.FileSystemRedirectedIOReason `
                     -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.FileSystemRedirectedIOReason.IncompatibleFileSystemFilter
+            ).CritIfMatch(
+                $ProviderEnums.FileSystemRedirectedIOReason.IncompatibleVolumeFilter
             )
         );
 
@@ -72,6 +84,10 @@ function Invoke-IcingaCheckNetworkVolume()
                     -Name ([string]::Format('{0} Fault State', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.FaultState `
                     -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.SharedVolumeFaultState.InMaintenance
+            ).CritIfMatch(
+                $ProviderEnums.SharedVolumeFaultState.NoAccess
             )
         );
 
@@ -80,15 +96,6 @@ function Invoke-IcingaCheckNetworkVolume()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} RedirectedAccess', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.RedirectedAccess `
-                    -NoPerfData
-            )
-        );
-
-        $VolumeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('{0} Maintenance Mode', $volume)) `
-                    -Value $VolumeObj.SharedVolumeInfo.MaintenanceMode `
                     -NoPerfData
             )
         );
