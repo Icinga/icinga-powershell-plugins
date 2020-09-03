@@ -14,21 +14,50 @@ function Invoke-IcingaCheckNetworkVolume()
     $GetVolumes   = Get-IcingaNetworkVolumeData -IncludeVolumes $IncludeVolumes -ExcludeVolumes $ExcludeVolumes;
 
     foreach ($volume in $GetVolumes.Keys) {
-        $VolumeObj         = $GetVolumes[$volume];
-        [string]$NodesName = '';
-        if ($VolumeObj.OwnerNode.Count -ne 0) {
-            $NodesName = ([string]::Join(',', $VolumeObj.OwnerNode.Values.Name));
-        } else {
-            $NodesName = $VolumeObj.OwnerNode.Values.Name;
-        }
-
-        $VolumeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('SharedVolume {0} (Node: {1})', $volume, $NodesName)) -OperatorAnd -Verbose $Verbosity;
+        $VolumeObj          = $GetVolumes[$volume];
+        $VolumeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('SharedVolume {0} (Node: {1})', $volume, $VolumeObj.OwnerNode)) -OperatorAnd -Verbose $Verbosity;
 
         $VolumeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} State', $volume)) `
                     -Value $VolumeObj.State `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} Block RedirectedIOReason', $volume)) `
+                    -Value $VolumeObj.BlockRedirectedIOReason `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} StateInfo', $volume)) `
+                    -Value $VolumeObj.StateInfo `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} FileSystem RedirectedIOReason', $volume)) `
+                    -Value $VolumeObj.FileSystemRedirectedIOReason `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} MaintenanceMode', $volume)) `
+                    -Value $VolumeObj.MaintenanceMode `
                     -NoPerfData
             )
         );
@@ -60,6 +89,15 @@ function Invoke-IcingaCheckNetworkVolume()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} RedirectedAccess', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.RedirectedAccess `
+                    -NoPerfData
+            )
+        );
+
+        $VolumeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} Maintenance Mode', $volume)) `
+                    -Value $VolumeObj.SharedVolumeInfo.Maintenance Mode `
                     -NoPerfData
             )
         );
