@@ -48,7 +48,7 @@ function Get-IcingaNetworkVolumeData()
 
         foreach ($node in $SharedVolumeState) {
             $details.OwnerNode.Add(
-                $node.Name, @{
+                $node.Node, @{
                     'Node'                         = $node.Node;
                     'Name'                         = $node.Name;
                     'BlockRedirectedIOReason'      = $node.BlockRedirectedIOReason;
