@@ -48,15 +48,13 @@ function Get-IcingaNetworkVolumeData()
         $details.Add('Name', $volume.Name);
 
         if ($volume.OwnerNode.Count -ne 0) {
-            foreach ($node in $volume.OwnerNode) {
-                $details.OwnerNode.Add(
-                    $node.Name, @{
-                        'Name'  = $node.Name;
-                        'State' = $node.State;
-                        'Type'  = $node.Type;
-                    }
-                );
-            }
+            $details.OwnerNode.Add(
+                $volume.OwnerNode.Name, @{
+                    'Name'  = $volume.OwnerNode.Name;
+                    'State' = $volume.OwnerNode.State;
+                    'Type'  = $volume.OwnerNode.Type;
+                }
+            );
         }
 
         foreach ($item in $VolumeInfo) {
@@ -79,7 +77,7 @@ function Get-IcingaNetworkVolumeData()
             $details.SharedVolumeInfo.Partition.Add('IsPartitionNumberValid', $item.Partition.IsPartitionNumberValid);
             $details.SharedVolumeInfo.Partition.Add('Name', $item.Partition.Name);
             $details.SharedVolumeInfo.Partition.Add('PartitionNumber', $item.Partition.PartitionNumber);
-            $details.SharedVolumeInfo.Partition.Add('PercentFree', $item.Partition.PercentFree);
+            $details.SharedVolumeInfo.Partition.Add('PercentFree', ([Math]::Round($item.Partition.PercentFree, 2)));
             $details.SharedVolumeInfo.Partition.Add('Size', $item.Partition.Size);
             $details.SharedVolumeInfo.Partition.Add('UsedSpace', $item.Partition.UsedSpace);
             $details.SharedVolumeInfo.Partition.MountPoints = $item.Partition.MountPoints;

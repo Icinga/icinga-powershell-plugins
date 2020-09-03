@@ -27,7 +27,7 @@ function Invoke-IcingaCheckNetworkVolume()
         $VolumeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} State', $volume)) `
+                    -Name ([string]::Format('{0} State', $volume)) `
                     -Value $VolumeObj.State `
                     -NoPerfData
             )
@@ -36,7 +36,7 @@ function Invoke-IcingaCheckNetworkVolume()
         $VolumeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} FreeSpace', $volume)) `
+                    -Name ([string]::Format('{0} FreeSpace', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.Partition.PercentFree `
                     -Unit '%'
             ).WarnIfLowerEqualThan(
@@ -49,25 +49,7 @@ function Invoke-IcingaCheckNetworkVolume()
         $VolumeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} Capacity', $volume)) `
-                    -Value ($VolumeObj.SharedVolumeInfo.Partition.Size / 1GB) `
-                    -Unit 'GB'
-            )
-        );
-
-        $VolumeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} TotalUsed', $volume)) `
-                    -Value ($VolumeObj.SharedVolumeInfo.Partition.UsedSpace / 1GB) `
-                    -Unit 'GB'
-            )
-        );
-
-        $VolumeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} Fault State', $volume)) `
+                    -Name ([string]::Format('{0} Fault State', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.FaultState `
                     -NoPerfData
             )
@@ -76,7 +58,7 @@ function Invoke-IcingaCheckNetworkVolume()
         $VolumeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('vol_ {0} RedirectedAccess', $volume)) `
+                    -Name ([string]::Format('{0} RedirectedAccess', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.RedirectedAccess `
                     -NoPerfData
             )
