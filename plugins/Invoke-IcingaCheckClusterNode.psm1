@@ -24,6 +24,22 @@ function Invoke-IcingaCheckClusterNode()
             )
         );
 
+        $NodeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} State', $ClusterNode.Name)) `
+                    -Value $ClusterNode.State `
+                    -Translation $ProviderEnums.ClusterNodeState `
+                    -NoPerfData
+            ).WarnIfMatch(
+                $ProviderEnums.ClusterNodeStateName.Unknown
+            ).CritIfMatch(
+                $ProviderEnums.ClusterNodeStateName.Down
+            ).CritIfMatch(
+                $ProviderEnums.ClusterNodeStateName.Paused
+            )
+        );
+
         $CheckPackage.AddCheck($NodeCheckPackage);
     }
 

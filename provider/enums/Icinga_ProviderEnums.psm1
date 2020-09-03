@@ -226,6 +226,22 @@
     'Timed Power On Supported'                 = 7;
 }
 
+[hashtable]$ClusterNodeState = @{
+    -1 = 'Unknown';
+    0  = 'Up';
+    1  = 'Down';
+    2  = 'Paused';
+    3  = 'Joining';
+}
+
+[hashtable]$ClusterNodeStateName = @{
+    'Unknown' = -1;
+    'Up'      = 0;
+    'Down'    = 1;
+    'Paused'  = 2;
+    'Joining' = 3;
+}
+
 <##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
@@ -758,6 +774,8 @@
     DeviceAvailability             = $DeviceAvailability;
     DeviceAvailabilityName         = $DeviceAvailabilityName;
     #/lib/provider/cluster
+    ClusterNodeState               = $ClusterNodeState;
+    ClusterNodeStateName           = $ClusterNodeStateName;
     ClusterNodeDedicated           = $ClusterNodeDedicated;
     ClusterNodeDedicatedName       = $ClusterNodeDedicatedName;
     #/lib/provider/cpu
