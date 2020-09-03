@@ -403,7 +403,7 @@
 ################# /lib/provider/networkVolumes#####################################################
 ##################################################################################################>
 
-[hastable]$BlockRedirectedIOReason = @{
+[hashtable]$BlockRedirectedIOReason = @{
     'NotBlockRedirected'      = 'NotBlockRedirected';
     'NoDiskConnectivity'      = 'NoDiskConnectivity';
     'StorageSpaceNotAttached' = 'StorageSpaceNotAttached';
