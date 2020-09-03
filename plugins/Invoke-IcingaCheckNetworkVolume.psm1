@@ -56,15 +56,6 @@ function Invoke-IcingaCheckNetworkVolume()
         $VolumeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('{0} MaintenanceMode', $volume)) `
-                    -Value $VolumeObj.SharedVolumeInfo.MaintenanceMode `
-                    -NoPerfData
-            )
-        );
-
-        $VolumeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
                     -Name ([string]::Format('{0} FreeSpace', $volume)) `
                     -Value $VolumeObj.SharedVolumeInfo.Partition.PercentFree `
                     -Unit '%'
@@ -97,7 +88,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} Maintenance Mode', $volume)) `
-                    -Value $VolumeObj.SharedVolumeInfo.Maintenance Mode `
+                    -Value $VolumeObj.SharedVolumeInfo.MaintenanceMode `
                     -NoPerfData
             )
         );
