@@ -400,6 +400,37 @@
 }
 
 <##################################################################################################
+################# /lib/provider/networkVolumes#####################################################
+##################################################################################################>
+
+[hastable]$BlockRedirectedIOReason = @{
+    'NotBlockRedirected'      = 'NotBlockRedirected';
+    'NoDiskConnectivity'      = 'NoDiskConnectivity';
+    'StorageSpaceNotAttached' = 'StorageSpaceNotAttached';
+}
+
+[hashtable]$FileSystemRedirectedIOReason = @{
+    'UserRequest'                  = 'UserRequest';
+    'IncompatibleFileSystemFilter' = 'IncompatibleFileSystemFilter';
+    'IncompatibleVolumeFilter'     = 'IncompatibleVolumeFilter';
+    'FileSystemTiering'            = 'FileSystemTiering';
+    'BitLockerInitializing'        = 'BitLockerInitializing';
+}
+
+[hashtable]$SharedVolumeState = @{
+    'Online'  = 'Online';
+    'Offline' = 'Offline';
+    'Failed'  = 'Failed';
+}
+
+[hashtable]$SharedVolumeFaultState = @{
+    'NoFaults'         = 'No Faults';
+    'RedirectedAccess' = 'Redirected Access';
+    'NoAccess'         = 'No Access';
+    'InMaintenance'    = 'In Maintenance';
+}
+
+<##################################################################################################
 ################# /lib/provider/memory ############################################################
 ##################################################################################################>
 
@@ -705,6 +736,11 @@
     CPUConfigManagerErrorCode      = $CPUConfigManagerErrorCode;
     CPUAvailability                = $CPUAvailability;
     CPUPowerManagementCapabilities = $CPUPowerManagementCapabilities;
+    #/lib/provider/networkVolumes
+    BlockRedirectedIOReason        = $BlockRedirectedIOReason;
+    FileSystemRedirectedIOReason   = $FileSystemRedirectedIOReason;
+    SharedVolumeState              = $SharedVolumeState;
+    SharedVolumeFaultState         = $SharedVolumeFaultState;
     #/lib/provider/memory
     MemoryFormFactor               = $MemoryFormFactor;
     MemoryInterleavePosition       = $MemoryInterleavePosition;
