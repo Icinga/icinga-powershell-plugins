@@ -82,7 +82,7 @@ function Invoke-IcingaCheckNetworkVolume()
             $OwnerNode        = $VolumeObj.OwnerNode[$node];
             $NodeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('SharedVolume {0} (Node: {1})', $volume, $node)) -OperatorAnd -Verbose $Verbosity;
 
-            $VolumeCheckPackage.AddCheck(
+            $NodeCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `
                         -Name ([string]::Format('{0} Block RedirectedIOReason', $volume)) `
@@ -95,7 +95,7 @@ function Invoke-IcingaCheckNetworkVolume()
                 )
             );
 
-            $VolumeCheckPackage.AddCheck(
+            $NodeCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `
                         -Name ([string]::Format('{0} StateInfo', $volume)) `
@@ -104,7 +104,7 @@ function Invoke-IcingaCheckNetworkVolume()
                 )
             );
 
-            $VolumeCheckPackage.AddCheck(
+            $NodeCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `
                         -Name ([string]::Format('{0} FileSystem RedirectedIOReason', $volume)) `
@@ -116,6 +116,8 @@ function Invoke-IcingaCheckNetworkVolume()
                     $ProviderEnums.FileSystemRedirectedIOReason.IncompatibleVolumeFilter
                 )
             );
+
+            $VolumeCheckPackage.AddCheck($NodeCheckPackage);
         }
 
         $VolumeCheckPackage.AddCheck(
