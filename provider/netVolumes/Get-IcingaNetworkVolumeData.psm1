@@ -21,8 +21,8 @@ function Get-IcingaNetworkVolumeData()
     foreach ($volume in $GetSharedVolume) {
         $SharedVolumeState         = Get-ClusterSharedVolume -Name $volume.Name | Get-ClusterSharedVolumeState;
         $VolumeInfo                = $volume | Select-Object -Expand SharedVolumeInfo;
-        [string]$SharedVolume      = '';
         $details                   = @{
+            'OwnerNode'        = @{};
             'SharedVolumeInfo' = @{
                 'Partition' = @{
                     'MountPoints' = @{ };
@@ -46,17 +46,18 @@ function Get-IcingaNetworkVolumeData()
         $details.Add('State', $volume.State);
         $details.Add('Name', $volume.Name);
 
-        foreach ($item in $SharedVolumeState) {
-            if ($SharedVolume -ne $item.Name) {
-                $details.Add('OwnerNode', $item.Node);
-                $details.Add('BlockRedirectedIOReason', $item.BlockRedirectedIOReason);
-                $details.Add('FileSystemRedirectedIOReason', $item.FileSystemRedirectedIOReason);
-                $details.Add('StateInfo', $item.StateInfo);
-                $details.Add('VolumeFriendlyName', $item.VolumeFriendlyName);
-                $details.Add('VolumeName', $item.VolumeName);
-
-                $SharedVolume = $item.Name;
-            }
+        foreach ($node in $SharedVolumeState) {
+            $details.OwnerNode.Add(
+                $node.Name, @{
+                    'Node'                         = $node.Node;
+                    'Name'                         = $node.Name;
+                    'BlockRedirectedIOReason'      = $node.BlockRedirectedIOReason;
+                    'FileSystemRedirectedIOReason' = $node.FileSystemRedirectedIOReason;
+                    'StateInfo'                    = $node.StateInfo;
+                    'VolumeFriendlyName'           = $node.VolumeFriendlyName;
+                    'VolumeName'                   = $node.VolumeName;
+                }
+            );
         }
 
         foreach ($item in $VolumeInfo) {
