@@ -57,7 +57,7 @@ function Invoke-IcingaCheckNetworkVolume()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} MaintenanceMode', $volume)) `
-                    -Value $VolumeObj.MaintenanceMode `
+                    -Value $VolumeObj.SharedVolumeInfo.MaintenanceMode `
                     -NoPerfData
             )
         );
