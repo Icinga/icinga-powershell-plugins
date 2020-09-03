@@ -1,3 +1,30 @@
+<#
+.SYNOPSIS
+    Checks the available space on cluster Shared Volumes and checks additionally availability
+    and state of the targeted Cluster Shared Volume from each Cluster nodes.
+.DESCRIPTION
+    Checks the available space on cluster Shared Volumes and checks additionally availability
+    and state of the targeted Cluster Shared Volume from each Cluster nodes. This plugin can only
+    run successfully on a Windows Server 2012 or later version. I.e. if you have Windows Server 2008 or older,
+    it will unfortunately not work.
+.PARAMETER IncludeVolumes
+    Used to Filter out which Cluster Shared Volumes you want to check, provided you have
+    several SharedVolumes on your system. Example ('Cluster Disk 2')
+.PARAMETER ExcludeVolumes
+    Used to Filter out which Cluster Shared Volumes you don't want to check, provided you have
+    several SharedVolumes on your system. Example ('Cluster Disk 2').
+.PARAMETER FreeSpaceWarning
+    Used to specify a Warning threshold for the SharedVolume FreeSpaces in %. Example (10)
+.PARAMETER FreeSpaceCritical
+    Used to specify a Critical threshold for the SharedVolume FreeSpaces in %. Example (5)
+.PARAMETER NoPerfData
+    You can set this to true if you want display the Performance Data as well. Default to false.
+.PARAMETER Verbosity
+    Make the Plugin Output verbose mode e.g 0/1/2. Default(0).
+.LINK
+    https://github.com/Icinga/icinga-powershell-framework
+    https://github.com/Icinga/icinga-powershell-plugins
+#>
 function Invoke-IcingaCheckNetworkVolume()
 {
     param(
