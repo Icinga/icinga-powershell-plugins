@@ -10,7 +10,7 @@ function Get-IcingaNetworkVolumeData()
             -CustomMessage 'Null-Command: Class "Get-ClusterSharedVolume": Error "InvalidCmdlet"' `
             -InputString ([string]::Format(
                 'The already mentioned class could not be found on your system. {0}{1}',
-                "`r`n",
+                (New-IcingaNewLine),
                 '"Get-ClusterSharedVolume" is only available on Windows Server 2012 and later.'
             ));
     }
