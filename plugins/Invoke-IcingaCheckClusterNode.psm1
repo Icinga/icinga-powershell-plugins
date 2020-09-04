@@ -33,11 +33,12 @@ function Invoke-IcingaCheckClusterNode()
             )
         );
 
+        [array]$ClusterNodeDedicated = $ClusterNode.Dedicated.Values;
         $NodeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('#{0} Dedicated', $node)) `
-                    -Value ([string]::Join(',', $ClusterNode.Dedicated.Values))
+                    -Value ([string]::Join(',', $ClusterNodeDedicated))
             ).WarnIfMatch(
                 $ProviderEnums.ClusterNodeDedicatedName.Unknown
             ).CritIfMatch(
