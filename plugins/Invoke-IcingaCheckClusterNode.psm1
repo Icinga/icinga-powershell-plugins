@@ -18,7 +18,7 @@ function Invoke-IcingaCheckClusterNode()
         $NodeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('{0} Status', $ClusterNode.Name)) `
+                    -Name ([string]::Format('#{0} Status', $node)) `
                     -Value $ClusterNode.Status `
                     -NoPerfData
             )
@@ -27,7 +27,54 @@ function Invoke-IcingaCheckClusterNode()
         $NodeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('{0} State', $ClusterNode.Name)) `
+                    -Name ([string]::Format('#{0} StatusInformation', $node)) `
+                    -Value $ClusterNode.StatusInformation `
+                    -Translation $ProviderEnums.ClusterNodeStatusInfo
+            )
+        );
+
+        $NodeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('#{0} Dedicated', $node)) `
+                    -Value $ClusterNode.Dedicated
+            ).WarnIfMatch(
+                $ProviderEnums.ClusterNodeDedicatedName.Unknown
+            ).CritIfMatch(
+                $ProviderEnums.ClusterNodeDedicatedName.'Not Dedicated'
+            )
+        );
+
+        $NodeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('#{0} NodeDrainStatus', $node)) `
+                    -Value $ClusterNode.NodeDrainStatus `
+                    -Translation $ProviderEnums.NodeDrainStatus
+            ).WarnIfMatch(
+                $ProviderEnums.NodeDrainStatusName.'Not Initiated'
+            ).CritIfMatch(
+                $ProviderEnums.NodeDrainStatusName.Failed
+            )
+        );
+
+        $NodeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('#{0} ResetCapability', $node)) `
+                    -Value $ClusterNode.ResetCapability `
+                    -Translation $ProviderEnums.ClusterNodeResetCapability
+            ).WarnIfMatch(
+                $ProviderEnums.ClusterNodeResetCapabilityName.Unknown
+            ).CritIfMatch(
+                $ProviderEnums.ClusterNodeResetCapabilityName.Disabled
+            )
+        );
+
+        $NodeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('#{0} State', $node)) `
                     -Value $ClusterNode.State `
                     -Translation $ProviderEnums.ClusterNodeState `
                     -NoPerfData
