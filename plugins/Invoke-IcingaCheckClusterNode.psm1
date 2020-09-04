@@ -37,7 +37,7 @@ function Invoke-IcingaCheckClusterNode()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('#{0} Dedicated', $node)) `
-                    -Value $ClusterNode.Dedicated
+                    -Value ([string]::Join(',', $ClusterNode.Dedicated.Values))
             ).WarnIfMatch(
                 $ProviderEnums.ClusterNodeDedicatedName.Unknown
             ).CritIfMatch(
