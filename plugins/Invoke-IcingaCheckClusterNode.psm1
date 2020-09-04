@@ -12,18 +12,8 @@ function Invoke-IcingaCheckClusterNode()
     $GetClusterNodes = Get-IcingaClusterNodeInfo;
 
     foreach ($node in $GetClusterNodes.Keys) {
-        $ClusterNode = $GetClusterNodes[$node];
+        $ClusterNode      = $GetClusterNodes[$node];
         $NodeCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('Node {0}', $ClusterNode.Name)) -OperatorAnd -Verbose $Verbosity;
-
-        $NodeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('#{0} Status', $node)) `
-                    -Value $ClusterNode.Status `
-                    -NoPerfData
-            )
-        );
-
         $NodeCheckPackage.AddCheck(
             (
                 New-IcingaCheck `
