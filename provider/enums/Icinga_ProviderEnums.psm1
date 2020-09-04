@@ -242,6 +242,48 @@
     'Joining' = 3;
 }
 
+[hashtable]$NodeDrainStatus = @{
+    0 = 'Not Initiated';
+    1 = 'In Progress';
+    2 = 'Completed';
+    3 = 'Failed';
+}
+
+[hashtable]$NodeDrainStatusName = @{
+    'Not Initiated' = 0;
+    'In Progress'   = 1;
+    'Completed'     = 2;
+    'Failed'        = 3;
+}
+
+[hashtable]$ClusterNodeResetCapability = @{
+    1 = 'Other';
+    2 = 'Unknown';
+    3 = 'Disabled';
+    4 = 'Enabled';
+    5 = 'Not Implemented';
+}
+
+[hashtable]$ClusterNodeResetCapabilityName = @{
+    'Other'           = 1;
+    'Unknown'         = 2;
+    'Disabled'        = 3;
+    'Enabled'         = 4;
+    'Not Implemented' = 5;
+}
+
+[hashtable]$ClusterNodeStatusInfo = @{
+    0 = 'Normal';
+    1 = 'Isolated';
+    2 = 'Quarantined';
+}
+
+[hashtable]$ClusterNodeStatusInfoName = @{
+    'Normal'      = 0;
+    'Isolated'    = 1;
+    'Quarantined' = 2;
+}
+
 <##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
@@ -774,6 +816,12 @@
     DeviceAvailability             = $DeviceAvailability;
     DeviceAvailabilityName         = $DeviceAvailabilityName;
     #/lib/provider/cluster
+    ClusterNodeStatusInfo          = $ClusterNodeStatusInfo;
+    ClusterNodeStatusInfoName      = $ClusterNodeStatusInfoName;
+    NodeDrainStatus                = $NodeDrainStatus;
+    NodeDrainStatusName            = $NodeDrainStatusName;
+    ClusterNodeResetCapability     = $ClusterResetCapability;
+    ClusterNodeResetCapabilityName = $ClusterResetCapabilityName;
     ClusterNodeState               = $ClusterNodeState;
     ClusterNodeStateName           = $ClusterNodeStateName;
     ClusterNodeDedicated           = $ClusterNodeDedicated;
