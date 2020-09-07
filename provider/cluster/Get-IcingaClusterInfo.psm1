@@ -13,6 +13,7 @@ function Get-IcingaClusterInfo()
             'Name'                    = $service.Name;
             'StartMode'               = $service.StartMode;
             'Started'                 = $service.Started;
+            'State'                   = $service.State;
             'SystemCreationClassName' = $service.SystemCreationClassName;
             'SystemName'              = $service.SystemName;
         };
