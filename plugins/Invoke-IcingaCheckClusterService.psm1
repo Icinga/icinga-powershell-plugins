@@ -13,25 +13,47 @@ function Invoke-IcingaCheckClusterService()
         $Verbosity          = 0
     );
 
-    $ClusterService = Get-IcingaClusterInfo;
-    $CheckPackage   = New-IcingaCheckPackage -Name ([string]::Format('{0} Package', $ClusterService.Name)) -OperatorAnd -Verbose $Verbosity;
+    $ClusterServices = Get-IcingaClusterInfo;
+    $CheckPackage    = New-IcingaCheckPackage -Name 'Cluster Services Package' -OperatorAnd -Verbose $Verbosity;
 
-    $CheckPackage.AddCheck(
-        (
-            New-IcingaCheck `
-                -Name ([string]::Format('{0} Status', $ClusterService.Name)) `
-                -Value $ClusterService.Status
-        )
-    );
+    foreach ($service in $ClusterServices.Keys) {
+        $ClusterService      = $ClusterServices[$service];
+        $ServiceCheckPackage = New-IcingaCheckPackage -Name ([string]::Format('{0} Package', $service)) -OperatorAnd -Verbose $Verbosity;
 
-    $CheckPackage.AddCheck(
-        (
-            New-IcingaCheck `
-                -Name ([string]::Format('{0} ClusterEnforcedAntiAffinity', $ClusterService.Name)) `
-                -Value $ClusterService.ClusterEnforcedAntiAffinity `
-                -Translation $ProviderEnums.ClusterEnforcedAntiAffinity
-        )
-    );
+        $ServiceCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} Status', $service)) `
+                    -Value $ClusterService.Status
+            )
+        );
+
+        $ServiceCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} Started', $service)) `
+                    -Value $ClusterService.Started
+            )
+        );
+
+        $ServiceCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} Start Mode', $service)) `
+                    -Value $ClusterService.StartMode
+            )
+        );
+
+        $ServiceCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} State', $service)) `
+                    -Value $ClusterService.State
+            )
+        );
+
+        $CheckPackage.AddCheck($ServiceCheckPackage);
+    }
 
     return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
 }
