@@ -53,13 +53,22 @@ function Invoke-IcingaCheckClusterNode()
                     -Name ([string]::Format('#{0} State', $node)) `
                     -Value $ClusterNode.State `
                     -Translation $ProviderEnums.ClusterNodeState `
-                    -NoPerfData
             ).WarnIfMatch(
                 $ProviderEnums.ClusterNodeStateName.Unknown
             ).CritIfMatch(
                 $ProviderEnums.ClusterNodeStateName.Down
             ).CritIfMatch(
                 $ProviderEnums.ClusterNodeStateName.Paused
+            )
+        );
+
+        $NodeCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('#{0} NodeWeight', $node)) `
+                    -Value $ClusterNode.NodeWeight
+            ).WarnIfMatch(
+                1
             )
         );
 
