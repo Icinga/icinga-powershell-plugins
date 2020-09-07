@@ -24,5 +24,14 @@ function Invoke-IcingaCheckClusterService()
         )
     );
 
+    $CheckPackage.AddCheck(
+        (
+            New-IcingaCheck `
+                -Name ([string]::Format('{0} ClusterEnforcedAntiAffinity', $ClusterService.Name)) `
+                -Value $ClusterService.ClusterEnforcedAntiAffinity `
+                -Translation $ProviderEnums.ClusterEnforcedAntiAffinity
+        )
+    );
+
     return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
 }
