@@ -70,7 +70,9 @@ function Invoke-IcingaCheckClusterService()
         if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatusName.Running)) {
             $ServicesCheck.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
         }
+    }
 
+    if ($ServicesCheck.HasCheck()) {
         $CheckPackage.AddCheck($ServicesCheck);
     }
 
