@@ -23,4 +23,6 @@ function Invoke-IcingaCheckClusterService()
                 -Value $ClusterService.Status
         )
     );
+
+    return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
 }
