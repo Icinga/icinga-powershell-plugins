@@ -167,6 +167,20 @@
 }
 
 <##################################################################################################
+################# /lib/provider/cluster ###########################################################
+##################################################################################################>
+
+[hashtable]$ClusterEnforcedAntiAffinity = @{
+    0 = 'Disabled';
+    1 = 'Enabled';
+}
+
+[hashtable]$ClusterEnforcedAntiAffinityName = @{
+    'Disabled' = 0;
+    'Enabled'  = 1;
+}
+
+<##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
 
@@ -697,6 +711,9 @@
     DeviceStatus                   = $DeviceStatus;
     DeviceAvailability             = $DeviceAvailability;
     DeviceAvailabilityName         = $DeviceAvailabilityName;
+    #/lib/provider/cluster
+    ClusterEnforcedAntiAffinity    = $ClusterEnforcedAntiAffinity;
+    ClusterEnforcedAntiAffinityName = $ClusterEnforcedAntiAffinityName;
     #/lib/provider/cpu
     CPUArchitecture                = $CPUArchitecture;
     CPUProcessorType               = $CPUProcessorType;
