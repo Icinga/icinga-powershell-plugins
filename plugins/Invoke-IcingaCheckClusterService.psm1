@@ -57,8 +57,9 @@ function Invoke-IcingaCheckClusterService()
     }
 
     foreach ($ClusService in $GetClusServices.Keys) {
-        $ServiceObj = $GetClusServices[$ClusService];
-        $CheckPackage.AddCheck(
+        $ServiceObj    = $GetClusServices[$ClusService];
+        $ServicesCheck = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
+        $ServicesCheck.AddCheck(
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} Status', $ClusService)) `
@@ -67,8 +68,10 @@ function Invoke-IcingaCheckClusterService()
         );
 
         if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatusName.Running)) {
-            $CheckPackage.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
+            $ServicesCheck.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
         }
+
+        $CheckPackage.AddCheck($ServicesCheck);
     }
 
     return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
