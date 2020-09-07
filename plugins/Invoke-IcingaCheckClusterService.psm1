@@ -16,6 +16,7 @@ function Invoke-IcingaCheckClusterService()
     $ClusterServices = Get-IcingaClusterInfo;
     $GetClusServices = Get-IcingaServices -Service 'ClusSvc', 'StarWindClusterService';
     $CheckPackage    = New-IcingaCheckPackage -Name 'Cluster Services Package' -OperatorAnd -Verbose $Verbosity;
+    $ServicesCheck   = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
 
     foreach ($service in $ClusterServices.Keys) {
         $ClusterService      = $ClusterServices[$service];
@@ -58,7 +59,6 @@ function Invoke-IcingaCheckClusterService()
 
     foreach ($ClusService in $GetClusServices.Keys) {
         $ServiceObj    = $GetClusServices[$ClusService];
-        $ServicesCheck = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
         $ServicesCheck.AddCheck(
             (
                 New-IcingaCheck `
