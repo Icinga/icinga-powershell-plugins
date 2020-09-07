@@ -72,7 +72,7 @@ function Invoke-IcingaCheckClusterService()
         }
     }
 
-    if ($ServicesCheck.HasCheck()) {
+    if ($ServicesCheck.HasChecks()) {
         $CheckPackage.AddCheck($ServicesCheck);
     }
 
