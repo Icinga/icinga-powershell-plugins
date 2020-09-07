@@ -16,6 +16,9 @@ function Get-IcingaClusterInfo()
             'State'                   = $service.State;
             'SystemCreationClassName' = $service.SystemCreationClassName;
             'SystemName'              = $service.SystemName;
+            'NodeHighestVersion'      = $service.NodeHighestVersion;
+            'NodeLowestVersion'       = $service.NodeLowestVersion;
+            'CimClass'                = $service.CimClass;
         };
 
         $ClusterData.Add($service.SystemName, $details);
