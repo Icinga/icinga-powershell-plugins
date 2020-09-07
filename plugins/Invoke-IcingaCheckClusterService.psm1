@@ -68,9 +68,9 @@ function Invoke-IcingaCheckClusterService()
             -Value $ServiceObj.configuration.Status.raw `
             -Translation $ProviderEnums.ServiceStatusName;
 
-        if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatus.Running)) {
+        if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.raw -ne $ProviderEnums.ServiceStatus.Running)) {
             $Check.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
-        } elseif ($ClusService -eq 'MSiSCSI' -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatus.Running)) {
+        } elseif ($ClusService -eq 'MSiSCSI' -And ($ServiceObj.configuration.Status.raw -ne $ProviderEnums.ServiceStatus.Running)) {
             $Check.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
         }
 
