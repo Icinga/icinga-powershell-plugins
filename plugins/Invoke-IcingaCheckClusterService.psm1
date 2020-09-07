@@ -63,19 +63,17 @@ function Invoke-IcingaCheckClusterService()
 
     foreach ($ClusService in $GetClusServices.Keys) {
         $ServiceObj    = $GetClusServices[$ClusService];
-        $ServicesCheck.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('{0} Status', $ClusService)) `
-                    -Value $ServiceObj.configuration.Status.value
-            )
-        );
+        $Check = New-IcingaCheck `
+            -Name ([string]::Format('{0} Status', $ClusService)) `
+            -Value $ServiceObj.configuration.Status.value;
 
         if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatusName.Running)) {
-            $ServicesCheck.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
+            $Check.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
         } elseif ($ClusService -eq 'MSiSCSI') {
-            $ServicesCheck.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
+            $Check.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
         }
+
+        $ServicesCheck.AddCheck($Check);
     }
 
     if ($ServicesCheck.HasChecks()) {
