@@ -68,7 +68,7 @@ function Invoke-IcingaCheckClusterNode()
                     -Name ([string]::Format('#{0} NodeWeight', $node)) `
                     -Value $ClusterNode.NodeWeight
             ).WarnIfMatch(
-                1
+                0
             )
         );
 
