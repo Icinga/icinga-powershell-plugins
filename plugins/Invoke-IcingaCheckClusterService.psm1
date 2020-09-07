@@ -13,14 +13,14 @@ function Invoke-IcingaCheckClusterService()
         $Verbosity          = 0
     );
 
+    $CheckPackage    = New-IcingaCheckPackage -Name 'Cluster Services Package' -OperatorAnd -Verbose $Verbosity;
+    $ServicesCheck   = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
     $ClusterServices = Get-IcingaClusterInfo;
     $GetClusServices = Get-IcingaServices -Service @(
         'ClusSvc',
         'StarWindClusterService',
         'MSiSCSI'
     );
-    $CheckPackage    = New-IcingaCheckPackage -Name 'Cluster Services Package' -OperatorAnd -Verbose $Verbosity;
-    $ServicesCheck   = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
 
     foreach ($service in $ClusterServices.Keys) {
         $ClusterService      = $ClusterServices[$service];
@@ -65,7 +65,8 @@ function Invoke-IcingaCheckClusterService()
         $ServiceObj    = $GetClusServices[$ClusService];
         $Check = New-IcingaCheck `
             -Name ([string]::Format('{0} Status', $ClusService)) `
-            -Value $ServiceObj.configuration.Status.value;
+            -Value $ServiceObj.configuration.Status.raw `
+            -Translation $ProviderEnums.ServiceStatus;
 
         if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatusName.Running)) {
             $Check.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
