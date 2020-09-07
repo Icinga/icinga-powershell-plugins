@@ -57,11 +57,11 @@ function Invoke-IcingaCheckClusterService()
     }
 
     foreach ($ClusService in $GetClusServices.Keys) {
-        $ServiceObj = $GetClusServices[$ClusterService];
+        $ServiceObj = $GetClusServices[$ClusService];
         $CheckPackage.AddCheck(
             (
                 New-IcingaCheck `
-                    -Name ([string]::Format('{0} Status', $ClusterService)) `
+                    -Name ([string]::Format('{0} Status', $ClusService)) `
                     -Value $ServiceObj.configuration.Status.value
             )
         );
