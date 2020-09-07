@@ -17,7 +17,7 @@ function Invoke-IcingaCheckClusterService()
     $GetClusServices = Get-IcingaServices -Service @(
         'ClusSvc',
         'StarWindClusterService',
-        'iSCSI'
+        'MSiSCSI'
     );
     $CheckPackage    = New-IcingaCheckPackage -Name 'Cluster Services Package' -OperatorAnd -Verbose $Verbosity;
     $ServicesCheck   = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
