@@ -14,7 +14,11 @@ function Invoke-IcingaCheckClusterService()
     );
 
     $ClusterServices = Get-IcingaClusterInfo;
-    $GetClusServices = Get-IcingaServices -Service 'ClusSvc', 'StarWindClusterService';
+    $GetClusServices = Get-IcingaServices -Service @(
+        'ClusSvc',
+        'StarWindClusterService',
+        'iSCSI'
+    );
     $CheckPackage    = New-IcingaCheckPackage -Name 'Cluster Services Package' -OperatorAnd -Verbose $Verbosity;
     $ServicesCheck   = New-IcingaCheckPackage -Name 'Services Package' -OperatorAnd -Verbose $Verbosity;
 
@@ -68,6 +72,8 @@ function Invoke-IcingaCheckClusterService()
         );
 
         if (([string]::IsNullOrEmpty($ServiceObj.configuration.ExitCode) -eq $FALSE ) -And ($ServiceObj.configuration.ExitCode -ne 0) -And ($ServiceObj.configuration.Status.value -ne $ProviderEnums.ServiceStatusName.Running)) {
+            $ServicesCheck.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
+        } elseif ($ClusService -eq 'MSiSCSI') {
             $ServicesCheck.CritIfNotMatch($ProviderEnums.ServiceStatusName.Running) | Out-Null;
         }
     }
