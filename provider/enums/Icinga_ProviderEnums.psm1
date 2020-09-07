@@ -276,12 +276,14 @@
     0 = 'Normal';
     1 = 'Isolated';
     2 = 'Quarantined';
+    8 = 'DrainCompleted';
 }
 
 [hashtable]$ClusterNodeStatusInfoName = @{
-    'Normal'      = 0;
-    'Isolated'    = 1;
-    'Quarantined' = 2;
+    'Normal'         = 0;
+    'Isolated'       = 1;
+    'Quarantined'    = 2;
+    'DrainCompleted' = 8;
 }
 
 <##################################################################################################

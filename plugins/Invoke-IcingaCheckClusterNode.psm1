@@ -42,23 +42,8 @@ function Invoke-IcingaCheckClusterNode()
                     -Name ([string]::Format('#{0} NodeDrainStatus', $node)) `
                     -Value $ClusterNode.NodeDrainStatus `
                     -Translation $ProviderEnums.NodeDrainStatus
-            ).WarnIfMatch(
-                $ProviderEnums.NodeDrainStatusName.'Not Initiated'
             ).CritIfMatch(
                 $ProviderEnums.NodeDrainStatusName.Failed
-            )
-        );
-
-        $NodeCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('#{0} ResetCapability', $node)) `
-                    -Value $ClusterNode.ResetCapability `
-                    -Translation $ProviderEnums.ClusterNodeResetCapability
-            ).WarnIfMatch(
-                $ProviderEnums.ClusterNodeResetCapabilityName.Unknown
-            ).CritIfMatch(
-                $ProviderEnums.ClusterNodeResetCapabilityName.Disabled
             )
         );
 
