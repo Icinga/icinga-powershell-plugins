@@ -41,6 +41,11 @@ function Publish-IcingaPluginDocumentation()
     [string]$DocDir        = Join-Path -Path $ModulePath -ChildPath 'doc';
     [string]$PluginDocFile = Join-Path -Path $ModulePath -ChildPath 'doc/10-Icinga-Plugins.md';
     [string]$PluginDocDir  = Join-Path -Path $ModulePath -ChildPath 'doc/plugins';
+
+    if ((Test-Path $PluginDocDir) -eq $FALSE) {
+        New-Item -Path $PluginDocDir -ItemType Directory -Force | Out-Null;
+    }
+
     $MDFiles               = Get-ChildItem -Path $PluginDocDir;
     [int]$FileCount        = $MDFiles.Count;
     [string]$FileCountStr  = '';
@@ -101,6 +106,17 @@ function Publish-IcingaPluginDocumentation()
         Add-Content -Path $PluginDescriptionFile -Value $PluginHelp.details.description.Text;
         Add-Content -Path $PluginDescriptionFile -Value '';
         Add-Content -Path $PluginDescriptionFile -Value $PluginHelp.description.Text;
+        Add-Content -Path $PluginDescriptionFile -Value '';
+        Add-Content -Path $PluginDescriptionFile -Value '## Permissions';
+        Add-Content -Path $PluginDescriptionFile -Value '';
+
+        if ([string]::IsNullOrEmpty($PluginHelp.Role)) {
+            Add-Content -Path $PluginDescriptionFile -Value 'No special permissions required.';
+        } else {
+            Add-Content -Path $PluginDescriptionFile -Value 'To execute this plugin you will require to grant the following user permissions.';
+            Add-Content -Path $PluginDescriptionFile -Value '';
+            Add-Content -Path $PluginDescriptionFile -Value $PluginHelp.Role;
+        }
 
         if ($null -ne $PluginHelp.parameters.parameter) {
             Add-Content -Path $PluginDescriptionFile -Value '';

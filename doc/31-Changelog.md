@@ -11,6 +11,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/4?closed=1)
 
+### Enhancements
+
+* [#73](https://github.com/Icinga/icinga-powershell-plugins/issues/73) Improves plugin creation Cmdlet to write a new permission section and to create the `plugins` doc folder in case it does not exist
+
 ## 1.2.0 (2020-08-28)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/3?closed=1)
