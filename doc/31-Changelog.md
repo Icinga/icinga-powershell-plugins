@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#73](https://github.com/Icinga/icinga-powershell-plugins/issues/73) Improves plugin creation Cmdlet to write a new permission section and to create the `plugins` doc folder in case it does not exist
+* [#74](https://github.com/Icinga/icinga-powershell-plugins/pull/74) Adds `avg. disk queue length` metric for monitoring and performance data to `Invoke-IcingaCheckDiskHealth`
 * [#78](https://github.com/Icinga/icinga-powershell-plugins/issues/78) Improves the documentation and output for `Invoke-IcingaCheckService` by adding metrics for all found services configured to run `Automatic` and adds service output on Verbosity 1 to show a list of all found services including their current state
 
 ### Bugfixes

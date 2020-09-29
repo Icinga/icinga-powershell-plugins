@@ -41,6 +41,10 @@
     are awaiting service. This counter might reflect a transitory high or low queue length, but if there is a sustained load on the
     disk drive, it is likely that this will be consistently high. Requests experience delays proportional to the length of this queue
     minus the number of spindles on the disks. For good performance, this difference should average less than two.
+.PARAMETER DiskQueueAvgLenWarning
+    Warning threshold for Avg. Disk Queue Length is the average number of both read and write requests that were queued for the selected disk during the sample interval.
+.PARAMETER DiskQueueAvgLenCritical
+    Critical threshold for Avg. Disk Queue Length is the average number of both read and write requests that were queued for the selected disk during the sample interval.
 .PARAMETER DiskReadByteSecWarning
     Warning threshold for disk Read Bytes/sec is the rate at which bytes are transferred from the disk during read operations.
 .PARAMETER DiskReadByteSecCritical
@@ -65,32 +69,32 @@
     Set this to include only disks that have drive letters like C:, D:, ..., assigned to them. Can be combined with include/exclude filters
 .EXAMPLE
     PS> Invoke-IcingaCheckDiskHealth  -DiskReadSecWarning 0 -DiskReadSecCritical 1 -DiskAvgTransSecWarning 5s -DiskAvgTransSecCritical 10s -DiskReadByteSecWarning 3000 -DiskReadByteSecCritical 5000 -Verbosity 2
-    [CRITICAL] Check package "Physical Disk Package" (Match All) - [CRITICAL] _Total disk read bytes/sec
-    \_ [CRITICAL] Check package "Disk #_Total" (Match All)
+    [OK] Check package "Physical Disk Package" (Match All)
+    \_ [OK] Check package "Disk #_Total" (Match All)
+       \_ [OK] _Total avg. disk queue length: 0.001748%
        \_ [OK] _Total avg. disk sec/read: 0s
-       \_ [OK] _Total avg. disk sec/transfer: 0s
-       \_ [OK] _Total avg. disk sec/write: 0s
-       \_ [OK] _Total current disk queue length: 0
-       \_ [CRITICAL] _Total disk read bytes/sec: Value "808675.12B" is greater than threshold "5000B"
+       \_ [OK] _Total avg. disk sec/transfer: 0.000315s
+       \_ [OK] _Total avg. disk sec/write: 0.000315s
+       \_ [OK] _Total disk read bytes/sec: 0B
        \_ [OK] _Total disk reads/sec: 0
-       \_ [OK] _Total disk write bytes/sec: 6679.13B
-       \_ [OK] _Total disk writes/sec: 1.68
+       \_ [OK] _Total disk write bytes/sec: 125800.7B
+       \_ [OK] _Total disk writes/sec: 5.025574
     \_ [OK] Check package "Disk #0" (Match All)
+       \_ [OK] F: C: avg. disk queue length: 0.001751%
        \_ [OK] F: C: avg. disk sec/read: 0s
-       \_ [OK] F: C: avg. disk sec/transfer: 0s
-       \_ [OK] F: C: avg. disk sec/write: 0s
+       \_ [OK] F: C: avg. disk sec/transfer: 0.000315s
+       \_ [OK] F: C: avg. disk sec/write: 0.000315s
        \_ [OK] F: C: current disk queue length: 0
        \_ [OK] F: C: disk read bytes/sec: 0B
        \_ [OK] F: C: disk reads/sec: 0
-       \_ [OK] F: C: disk write bytes/sec: 6680.76B
-       \_ [OK] F: C: disk writes/sec: 1.64
+       \_ [OK] F: C: disk write bytes/sec: 125814.7B
+       \_ [OK] F: C: disk writes/sec: 5.018281
        \_ [OK] F: C: Is Offline: False
        \_ [OK] F: C: Is ReadOnly: False
        \_ [OK] F: C: Operational Status: OK
        \_ [OK] F: C: Status: OK
-    | 'f_c_avg_disk_sectransfer'=0s;5;10 'f_c_disk_write_bytessec'=6680.76B;; 'f_c_disk_read_bytessec'=0B;3000;5000 'f_c_avg_disk_secwrite'=0s;; 
-'f_c_avg_disk_secread'=0s;; 'f_c_disk_readssec'=0;0;1 'f_c_current_disk_queue_length'=0;; 'f_c_disk_writessec'=1.64;; '_total_disk_readssec'=0;0;1 '_total_avg_disk_sectransfer'=0s;5;10 '_total_disk_read_bytessec'=808675.12B;3000;5000 '_total_disk_write_bytessec'=6679.13B;; '_total_avg_disk_secread'=0s;; '_total_disk_writessec'=1.68;; '_total_current_disk_queue_length'=0;; '_total_avg_disk_secwrite'=0s;;
-    2
+    | 'f_c_avg_disk_sectransfer'=0.000315s;5;10 'f_c_disk_write_bytessec'=125814.7B;; 'f_c_avg_disk_secwrite'=0.000315s;; 'f_c_disk_read_bytessec'=0B;3000;5000 'f_c_avg_disk_secread'=0s;; 'f_c_disk_readssec'=0;0;1 'f_c_avg_disk_queue_length'=0.001751%;;;0;100 'f_c_current_disk_queue_length'=0;; 'f_c_disk_writessec'=5.018281;; '_total_disk_readssec'=0;0;1 '_total_disk_write_bytessec'=125800.7B;; '_total_avg_disk_sectransfer'=0.000315s;5;10 '_total_disk_read_bytessec'=0B;3000;5000 '_total_avg_disk_queue_length'=0.001748%;;;0;100 '_total_avg_disk_secread'=0s;; '_total_disk_writessec'=5.025574;; '_total_current_disk_queue_length'=0;; '_total_avg_disk_secwrite'=0.000315s;;
+    0
 .LINK
    https://github.com/Icinga/icinga-powershell-framework
    https://github.com/Icinga/icinga-powershell-plugins
@@ -110,6 +114,8 @@ function Invoke-IcingaCheckDiskHealth()
         $DiskWriteSecCritical     = $null,
         $DiskQueueLenWarning      = $null,
         $DiskQueueLenCritical     = $null,
+        $DiskQueueAvgLenWarning   = $null,
+        $DiskQueueAvgLenCritical  = $null,
         $DiskReadByteSecWarning   = $null,
         $DiskReadByteSecCritical  = $null,
         $DiskWriteByteSecWarning  = $null,
@@ -138,7 +144,8 @@ function Invoke-IcingaCheckDiskHealth()
         '\PhysicalDisk(*)\avg. disk sec/read',
         '\PhysicalDisk(*)\avg. disk sec/write',
         '\PhysicalDisk(*)\avg. disk sec/transfer',
-        '\PhysicalDisk(*)\current disk queue length'
+        '\PhysicalDisk(*)\current disk queue length',
+        '\PhysicalDisk(*)\avg. disk queue length'
     ) `
         -IncludeDisk $IncludeDisk `
         -ExcludeDisk $ExcludeDisk `
@@ -275,6 +282,19 @@ function Invoke-IcingaCheckDiskHealth()
                 $DiskQueueLenWarning
             ).CritOutOfRange(
                 $DiskQueueLenCritical
+            )
+        );
+
+        $PartCheckPackage.AddCheck(
+            (
+                New-IcingaCheck `
+                    -Name ([string]::Format('{0} avg. disk queue length', $Partition)) `
+                    -Value $DiskObjects.PerfCounter['avg. disk queue length'].value `
+                    -Unit '%'
+            ).WarnOutOfRange(
+                $DiskQueueAvgLenWarning
+            ).CritOutOfRange(
+                $DiskQueueAvgLenCritical
             )
         );
 
