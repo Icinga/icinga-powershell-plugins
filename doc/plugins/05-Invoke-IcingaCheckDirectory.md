@@ -3,29 +3,36 @@
 
 ## Description
 
-Checks how many files are in a directory.
+Checks for amount of files within a directory depending on the set filters
 
-Invoke-IcingaCheckDirectory returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-e.g 'C:\Users\Icinga\Backup' contains 200 files, WARNING is set to 150, CRITICAL is set to 300. In this case the check will return CRITICAL
+Invoke-IcingaCheckDirectory will check within a specific directory for files matching the set filter criteria.
+It allows to filter for files with a specific size, modification date, name or file ending.
+By using the Warning or Critical threshold you can then set on when the check will be set to 'WARNING' or 'CRITICAL'.
+
+Based on the provided filters, the plugin will return the amount of files found matching those filters.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
+
+## Permissions
+
+No special permissions required.
 
 ## Arguments
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
 | Path | String | false |  | Used to specify a path. e.g. 'C:\Users\Icinga\Downloads' |
-| FileNames | Array | false |  | Used to specify an array of filenames or expressions to match against.  e.g '*.txt', '*.sql' # Fiends all files ending with .txt and .sql |
-| Recurse | SwitchParameter | false | False | A switch, which can be set to filter through directories recursively. |
-| Critical | Object | false |  | Used to specify a Critical threshold. In this case an integer value. |
-| Warning | Object | false |  | Used to specify a Warning threshold. In this case an integer value. |
+| FileNames | Array | false |  | Used to specify an array of filenames or expressions to match against results to filter for specific files.  e.g '*.txt', '*.sql' # Fiends all files ending with .txt and .sql |
+| Recurse | SwitchParameter | false | False | A switch, which can be set to search through directories recursively. |
+| Critical | Object | false |  | Used to specify a Critical threshold. Follows the Icinga plugin threshold |
+| Warning | Object | false |  | Used to specify a Warning threshold. Follows the Icinga plugin threshold |
 | ChangeTimeEqual | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have been changed 20 days ago are considered within the check. |
 | ChangeYoungerThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have a change date younger then 20 days are considered within the check. |
 | ChangeOlderThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have a change date older then 20 days are considered within the check. |
 | CreationTimeEqual | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have been created 20 days ago are considered within the check. |
 | CreationOlderThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have a creation date older then 20 days are considered within the check. |
 | CreationYoungerThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have a creation date younger then 20 days are considered within the check. |
-| FileSizeGreaterThan | String | false |  |  |
-| FileSizeSmallerThan | String | false |  |  |
+| FileSizeGreaterThan | String | false |  | String that expects input format like "20MB", which translates to the filze size 20 MB. Allowed units: B, KB, MB, GB, TB.  Thereby all files with a size of 20 MB or larger are considered within the check. |
+| FileSizeSmallerThan | String | false |  | String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.  Thereby all files with a size of 5 MB or less are considered within the check. |
 | Verbosity | Int32 | false | 0 |  |
 | NoPerfData | SwitchParameter | false | False |  |
 
