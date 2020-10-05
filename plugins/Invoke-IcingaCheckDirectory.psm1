@@ -1,9 +1,12 @@
 <#
 .SYNOPSIS
-   Checks how many files are in a directory.
+   Checks for amount of files within a directory depending on the set filters
 .DESCRIPTION
-   Invoke-IcingaCheckDirectory returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-   e.g 'C:\Users\Icinga\Backup' contains 200 files, WARNING is set to 150, CRITICAL is set to 300. In this case the check will return CRITICAL
+   Invoke-IcingaCheckDirectory will check within a specific directory for files matching the set filter criteria.
+   It allows to filter for files with a specific size, modification date, name or file ending.
+   By using the Warning or Critical threshold you can then set on when the check will be set to 'WARNING' or 'CRITICAL'.
+
+   Based on the provided filters, the plugin will return the amount of files found matching those filters.
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
    This module is intended to be used to check how many files and directories are within are specified path. 
@@ -29,18 +32,18 @@
    [OK]: Check package "C:\Users\Icinga\Downloads" is [OK] (Match All)
     \_ [OK]: C:\Users\Icinga\Downloads is 4
 .PARAMETER Warning
-   Used to specify a Warning threshold. In this case an integer value.
+   Used to specify a Warning threshold. Follows the Icinga plugin threshold
 .PARAMETER Critical
-   Used to specify a Critical threshold. In this case an integer value.
+   Used to specify a Critical threshold. Follows the Icinga plugin threshold
 .PARAMETER Path
    Used to specify a path.
    e.g. 'C:\Users\Icinga\Downloads'
 .PARAMETER FileNames
-   Used to specify an array of filenames or expressions to match against.
+   Used to specify an array of filenames or expressions to match against results to filter for specific files.
    
    e.g '*.txt', '*.sql' # Fiends all files ending with .txt and .sql
 .PARAMETER Recurse
-   A switch, which can be set to filter through directories recursively.
+   A switch, which can be set to search through directories recursively.
 .PARAMETER ChangeYoungerThan
    String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.
 
@@ -57,17 +60,22 @@
    String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.
 
    Thereby all files which have a creation date older then 20 days are considered within the check.
-
 .PARAMETER ChangeTimeEqual
    String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.
 
    Thereby all files which have been changed 20 days ago are considered within the check.
-
 .PARAMETER CreationTimeEqual
    String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.
 
    Thereby all files which have been created 20 days ago are considered within the check.
+.PARAMETER FileSizeGreaterThan
+   String that expects input format like "20MB", which translates to the filze size 20 MB. Allowed units: B, KB, MB, GB, TB.
 
+   Thereby all files with a size of 20 MB or larger are considered within the check.
+.PARAMETER FileSizeSmallerThan
+   String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.
+
+   Thereby all files with a size of 5 MB or less are considered within the check.
 .INPUTS
    System.String
 .OUTPUTS
