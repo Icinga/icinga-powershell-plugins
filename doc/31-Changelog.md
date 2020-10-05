@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#75](https://github.com/Icinga/icinga-powershell-plugins/issues/75) Fixes unhandled arguments `FileSizeGreaterThan` and `FileSizeSmallerThan` for `Invoke-IcingaCheckDirectory`
+* [#77](https://github.com/Icinga/icinga-powershell-plugins/issues/77) Fix wrong filtering for EventIds for `Invoke-IcingaCheckEventLog` and improve the output by adding the EventLog messages on severity 1. In addition we now allow the filtering for message sources and increase performance by fetching EventLog data for new checks from the last 2 hours only
 * [#79](https://github.com/Icinga/icinga-powershell-plugins/issues/79) Fixes service check to exclude provided service names in case they contain the wildcard symbol '*' which causes the check to always return unknown
 * [#84](https://github.com/Icinga/icinga-powershell-plugins/issues/84) Fixes `Invoke-IcingaCheckUsedPartitionSpace` to throw an unknown in case permissions for certain partitions are missing and no data can be fetched. This resolves an issue for partitions reporting 100% usage.
 

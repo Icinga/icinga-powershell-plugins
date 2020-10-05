@@ -14,9 +14,9 @@ More Information on https://github.com/Icinga/icinga-powershell-plugins
 
 To execute this plugin you will require to grant the following user permissions.
 
-### EventLog
+### Required User Groups
 
-Users running this plugin have to be added to the `Event Log Reader` group
+* Event Log Reader
 
 ## Arguments
 
@@ -33,6 +33,8 @@ Users running this plugin have to be added to the `Event Log Reader` group
 | ExcludeEntryType | Array | false |  | Used to specify an array of entry types within the eventlog to be excluded. |
 | IncludeMessage | Array | false |  | Used to specify an array of messages within the eventlog to be included. |
 | ExcludeMessage | Array | false |  | Used to specify an array of messages within the eventlog to be excluded. |
+| IncludeSource | Array | false |  | Used to specify an array of message sources within the eventlog to be included. |
+| ExcludeSource | Array | false |  | Used to specify an array of message sources within the eventlog to be excluded. |
 | After | Object | false |  | Used to specify a date like dd.mm.yyyy and every eventlog entry after that date will be considered. |
 | Before | Object | false |  | Used to specify a date like dd.mm.yyyy and every eventlog entry before that date will be considered. |
 | DisableTimeCache | SwitchParameter | false | False | Switch to disable the time cache on a check. If this parameter is set the time cache is disabled. After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended. This is due to the time cache, when disabled the whole eventlog is checked instead. |
