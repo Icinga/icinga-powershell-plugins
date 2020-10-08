@@ -112,6 +112,9 @@ function Invoke-IcingaCheckService()
    # Check our included services and add an unknown state for each service which was not found on the system
    foreach ($ServiceArg in $Service) {
       if ($null -eq $FetchedServices -Or $FetchedServices.ContainsKey($ServiceArg) -eq $FALSE) {
+         if ($ServiceArg.Contains('*')) {
+            continue;
+         }
          $ServicesPackage.AddCheck(
             (New-IcingaCheck -Name ([string]::Format('{0}: Service not found', $ServiceArg))).SetUnknown()
          );
