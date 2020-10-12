@@ -10,6 +10,14 @@ e.g Eventlog returns 500 entries with the specified parameters, WARNING is set t
 
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### EventLog
+
+Users running this plugin have to be added to the `Event Log Reader` group
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |
