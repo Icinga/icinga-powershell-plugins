@@ -9,6 +9,10 @@
 .FUNCTIONALITY
    This Module is intended to be used to check how many eventlog occurrences of a given type there are.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+.ROLE
+   ### EventLog
+
+   Users running this plugin have to be added to the `Event Log Reader` group
 .EXAMPLE
    PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000
    [CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642
