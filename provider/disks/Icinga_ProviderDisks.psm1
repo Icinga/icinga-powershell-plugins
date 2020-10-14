@@ -58,7 +58,7 @@ function Get-IcingaDiskPartitions()
         )
         $diskPartition = $diskPartition.Replace('"', '');
         $diskDisk,$diskPartition = $diskPartition.split(',');
-        
+
         $diskPartition = $diskPartition.trim("Partition #");
         $diskDisk = $diskDisk.trim("Disk #");
 
@@ -75,14 +75,15 @@ function Get-IcingaDiskPartitions()
         $PartitionDiskByDriveLetter.Add(
             $driveLetter,
             @{
-                'Disk' = $diskDisk;
-                'Partition' = $diskPartition;
-                'Size' = $diskPartitionSize.Size;
+                'Disk'       = $diskDisk;
+                'Partition'  = $diskPartition;
+                'Size'       = $diskPartitionSize.Size;
                 'Free Space' = $DiskArray.Item([string]::Format('{0}:', $driveLetter))."% free space".value;
             }
         );
     }
-        return $PartitionDiskByDriveLetter;
+
+    return $PartitionDiskByDriveLetter;
 }
 
 function Join-IcingaPhysicalDiskDataPerfCounter()
