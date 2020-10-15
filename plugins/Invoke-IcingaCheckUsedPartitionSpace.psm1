@@ -4,10 +4,27 @@
 .DESCRIPTION
    Invoke-IcingaCheckUsedPartition returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
    e.g 'C:' is at 8% usage, WARNING is set to 60, CRITICAL is set to 80. In this case the check will return OK.
+
+   The plugin will return `UNKNOWN` in case partition data (size and free space) can not be fetched. This is
+   normally happening in case the user the plugin is running with does not have permissions to fetch this
+   specific partition data.
+
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
    This module is intended to be used to check how much usage there is on an partition.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+
+   The plugin will return `UNKNOWN` in case partition data (size and free space) can not be fetched. This is
+   normally happening in case the user the plugin is running with does not have permissions to fetch this
+   specific partition data.
+.ROLE
+   ### WMI Permissions
+
+   * Root\Cimv2
+
+   ### Performance Counter
+
+   * LogicalDisk(*)\% free space
 .EXAMPLE
    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
    [OK]: Check package "Used Partition Space" is [OK]
@@ -70,6 +87,12 @@ function Invoke-IcingaCheckUsedPartitionSpace()
          }
       }
 
+      $SetUnknown = $FALSE;
+
+      if ([string]::IsNullOrEmpty($DiskFree.([string]::Format($Letter))."Size") -Or [string]::IsNullOrEmpty($DiskFree.([string]::Format($Letter))."Free Space")) {
+         $SetUnknown = $TRUE;
+      }
+
       $Unit               = Get-UnitPrefixIEC $DiskFree.([string]::Format($Letter))."Size";
       $PerfUnit           = Get-UnitPrefixSI  $DiskFree.([string]::Format($Letter))."Size";
       $Bytes              = [math]::Round(($DiskFree.([string]::Format($Letter))."Size") * (100-($DiskFree.([string]::Format($Letter))."Free Space")) / 100);
@@ -91,11 +114,19 @@ function Invoke-IcingaCheckUsedPartitionSpace()
       }
 
       $IcingaCheckByte = New-IcingaCheck -Name ([string]::Format( 'Used Space Partition {0}', $Letter )) -Value $ByteValueConverted.Value -Unit $PerfUnit -Minimum 0 -Maximum $DiskSize.Value;
-      $IcingaCheckByte.WarnOutOfRange($DiskTotalWarning).CritOutOfRange($DiskTotalCritical) | Out-Null;
+      if ($SetUnknown -eq $FALSE) {
+         $IcingaCheckByte.WarnOutOfRange($DiskTotalWarning).CritOutOfRange($DiskTotalCritical) | Out-Null;
+      } else {
+         $IcingaCheckByte.SetUnknown() | Out-Null;
+      }
       $DiskBytePackage.AddCheck($IcingaCheckByte);
 
       $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $Letter)) -Value (100-($DiskFree.([string]::Format($Letter))."Free Space")) -Unit '%';
-      $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+      if ($SetUnknown -eq $FALSE) {
+         $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+      } else {
+         $IcingaCheck.SetUnknown() | Out-Null;
+      }
       $DiskPackage.AddCheck($IcingaCheck);
 
       $DiskPackage.AddCheck($DiskBytePackage);

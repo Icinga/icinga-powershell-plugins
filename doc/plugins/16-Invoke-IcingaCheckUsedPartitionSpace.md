@@ -7,7 +7,24 @@ Checks how much space on a partition is used.
 
 Invoke-IcingaCheckUsedPartition returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
 e.g 'C:' is at 8% usage, WARNING is set to 60, CRITICAL is set to 80. In this case the check will return OK.
+
+The plugin will return `UNKNOWN` in case partition data (size and free space) can not be fetched. This is
+normally happening in case the user the plugin is running with does not have permissions to fetch this
+specific partition data.
+
 More Information on https://github.com/Icinga/icinga-powershell-plugins
+
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### WMI Permissions
+
+* Root\Cimv2
+
+### Performance Counter
+
+* LogicalDisk(*)\% free space
 
 ## Arguments
 
