@@ -272,14 +272,5 @@ function Get-IcingaCPUCount()
         $CounterArray = Show-IcingaPerformanceCounterInstances -Counter '\Processor(*)\% processor time';
     }
 
-    [int]$CpuCount = 0;
-
-    foreach ($core in $CounterArray.Keys) {
-        if ((Test-Numeric $core)) {
-           $CpuCount = Get-IcingaValue -Value ([int]$core) -Compare $CpuCount -Maximum;
-        }
-     }
-     $CpuCount += 1;
-
-     return $CpuCount;
+    return [int]($CounterArray.Count - 1);
 }
