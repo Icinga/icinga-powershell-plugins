@@ -20,6 +20,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#75](https://github.com/Icinga/icinga-powershell-plugins/issues/75) Fixes unhandled arguments `FileSizeGreaterThan` and `FileSizeSmallerThan` for `Invoke-IcingaCheckDirectory`
 * [#79](https://github.com/Icinga/icinga-powershell-plugins/issues/79) Fixes service check to exclude provided service names in case they contain the wildcard symbol '*' which causes the check to always return unknown
 * [#84](https://github.com/Icinga/icinga-powershell-plugins/issues/84) Fixes `Invoke-IcingaCheckUsedPartitionSpace` to throw an unknown in case permissions for certain partitions are missing and no data can be fetched. This resolves an issue for partitions reporting 100% usage.
+* [#86](https://github.com/Icinga/icinga-powershell-plugins/pull/86) Fixes `Get-IcingaCPUCount` returns wrong count on empty arguments
 
 ## 1.2.0 (2020-08-28)
 
