@@ -10,9 +10,9 @@
    This Module is intended to be used to check how many eventlog occurrences of a given type there are.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
 .ROLE
-   ### EventLog
+   ### Required User Groups
 
-   Users running this plugin have to be added to the `Event Log Reader` group
+    * Event Log Reader
 .EXAMPLE
    PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000
    [CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642
@@ -68,6 +68,10 @@
    Used to specify an array of messages within the eventlog to be included.
 .PARAMETER ExcludeMessage
    Used to specify an array of messages within the eventlog to be excluded.
+.PARAMETER IncludeSource
+   Used to specify an array of message sources within the eventlog to be included.
+.PARAMETER ExcludeSource
+   Used to specify an array of message sources within the eventlog to be excluded.
 .PARAMETER After
    Used to specify a date like dd.mm.yyyy and every eventlog entry after that date will be considered.
 .PARAMETER Before
@@ -101,6 +105,8 @@ function Invoke-IcingaCheckEventlog()
       [array]$ExcludeEntryType,
       [array]$IncludeMessage,
       [array]$ExcludeMessage,
+      [array]$IncludeSource,
+      [array]$ExcludeSource,
       $After                    = $null,
       $Before                   = $null,
       [switch]$DisableTimeCache = $FALSE,
@@ -112,15 +118,20 @@ function Invoke-IcingaCheckEventlog()
    $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity;
    $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
                                     -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
-                                    -After $After -Before $Before -DisableTimeCache $DisableTimeCache;
+                                    -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After -Before $Before -DisableTimeCache $DisableTimeCache;
+
+   [hashtable]$EventLogSource = @{};
 
    if ($EventLogData.eventlog.Count -ne 0) {
       foreach ($event in $EventLogData.eventlog.Keys) {
          $eventEntry = $EventLogData.eventlog[$event];
+
          $EventLogEntryPackage = New-IcingaCheckPackage -Name ([string]::Format('Between: [{0}] - [{1}] there occured {2} event(s).', $eventEntry.OldestEntry, $eventEntry.NewestEntry, $eventEntry.Count)) -OperatorAnd -Verbose $Verbosity;
          $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $EventLogData.eventlog[$event].EventId)) -Value $eventEntry.Count -NoPerfData;
          $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
          $EventLogEntryPackage.AddCheck($IcingaCheck);
+         $EventMessage = New-IcingaCheck -Name ([string]::Format('Event Message: {0}', ($eventEntry.Message).Replace("`r`n", '').Replace("`n", ''))) -NoPerfData;
+         $EventLogEntryPackage.AddCheck($EventMessage);
 
          $EventLogPackage.AddCheck($EventLogEntryPackage);
       }
