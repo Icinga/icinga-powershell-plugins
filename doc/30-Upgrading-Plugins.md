@@ -6,7 +6,9 @@ Specific version upgrades are described below. Please note that version updates 
 
 ## Upgrading to v1.3.0 (pending)
 
-*No special steps required*
+### Removed Cmdlets
+
+* With v1.3.0 we are going to remove the Cmdlets `Use-IcingaPlugins` and `Import-IcingaPlugins`. These Cmdlets should not be in use by users and developers. Instead, plugins will now auto-load once a new shell is created. If you have been using any of these Commands, please add your plugins into the `NestedModules` array of the `icinga-powershell-plugins.psd1` file
 
 ## Upgrading to v1.2.0 (2020-08-28)
 
