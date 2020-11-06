@@ -34,8 +34,10 @@ To execute this plugin you will require to grant the following user permissions.
 | Critical | Object | false |  | Used to specify a Critical threshold. In this case an integer value. |
 | Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked. e.g. 'C:\','D:\' |
 | Exclude | Array | false | @() | Used to specify an array of partitions to be excluded. e.g. 'C:\','D:\' |
-| NoPerfData | SwitchParameter | false | False |  |
-| Verbosity | Int32 | false | 0 |  |
+| IgnoreEmptyChecks | SwitchParameter | false | False | Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example). Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set. |
+| NoPerfData | SwitchParameter | false | False | Disables the performance data output of this plugin |
+| SkipUnknown | SwitchParameter | false | False | Allows to set Unknown partitions to Ok in case no metrics could be loaded. |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state |
 
 ## Examples
 
