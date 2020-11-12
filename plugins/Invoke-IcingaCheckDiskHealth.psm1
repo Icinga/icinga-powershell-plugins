@@ -11,6 +11,22 @@
 
     * root\cimv2
     * root\Microsoft\Windows\Storage
+
+    ### Performance Counter
+
+    * \PhysicalDisk(*)\disk read bytes/sec
+    * \PhysicalDisk(*)\disk write bytes/sec
+    * \PhysicalDisk(*)\disk reads/sec
+    * \PhysicalDisk(*)\disk writes/sec
+    * \PhysicalDisk(*)\avg. disk sec/read
+    * \PhysicalDisk(*)\avg. disk sec/write
+    * \PhysicalDisk(*)\avg. disk sec/transfer
+    * \PhysicalDisk(*)\current disk queue length
+    * \PhysicalDisk(*)\avg. disk queue length
+
+    ### Required User Groups
+
+    * Performance Log Users
 .PARAMETER IncludeDisk
     Specify the index id of disks you want to include for checks. Example 0, 1
 .PARAMETER ExcludeDisk
@@ -351,5 +367,5 @@ function Invoke-IcingaCheckDiskHealth()
         $CheckPackage.AddCheck($PartCheckPackage);
     }
 
-    return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckResult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
 }

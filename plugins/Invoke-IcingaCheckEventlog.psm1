@@ -12,7 +12,7 @@
 .ROLE
    ### Required User Groups
 
-    * Event Log Reader
+   * Event Log Reader
 .EXAMPLE
    PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000
    [CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642

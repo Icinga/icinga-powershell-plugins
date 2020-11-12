@@ -9,6 +9,14 @@ Invoke-IcingaCheckUpdates returns either 'OK', 'WARNING' or 'CRITICAL', based on
 e.g 'C:\Users\Icinga\Backup' 10 updates are pending, WARNING is set to 20, CRITICAL is set to 50. In this case the check will return OK.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### COM-Objects
+
+* Microsoft.Update.Session
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

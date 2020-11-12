@@ -10,6 +10,20 @@ e.g memory is currently at 60% usage, WARNING is set to 50, CRITICAL is set to 9
 
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### Performance Counter
+
+* \Memory\% committed bytes in use
+* \Memory\Available Bytes
+* \Paging File(_Total)\% usage
+
+### Required User Groups
+
+* Performance Log Users
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

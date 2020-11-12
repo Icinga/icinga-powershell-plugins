@@ -8,6 +8,10 @@ Gets Network Time Protocol time(SNTP/NTP) from a specified server
 Invoke-IcingaCheckTimeSync connects to an NTP server on UDP default port 123 and retrieves the current NTP time.
 Selected components of the returned time information are decoded and returned in a hashtable.
 
+## Permissions
+
+No special permissions required.
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

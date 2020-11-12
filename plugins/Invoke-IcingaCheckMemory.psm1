@@ -9,6 +9,16 @@
 .FUNCTIONALITY
    This module is intended to be used to check on memory usage.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+.ROLE
+    ### Performance Counter
+
+    * \Memory\% committed bytes in use
+    * \Memory\Available Bytes
+    * \Paging File(_Total)\% usage
+
+    ### Required User Groups
+
+    * Performance Log Users
 .EXAMPLE
    PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
    [WARNING]: % Memory Check 78.74 is greater than 60

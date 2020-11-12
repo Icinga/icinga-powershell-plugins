@@ -9,6 +9,22 @@ Invoke-IcingaCheckDirectory returns either 'OK', 'WARNING' or 'CRITICAL', based 
 e.g there are three conhost processes running, WARNING is set to 3, CRITICAL is set to 4. In this case the check will return WARNING.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### WMI Permissions
+
+* root\cimv2
+
+### Performance Counter
+
+* Processor(*)\% processor time
+
+### Required User Groups
+
+* Performance Log Users
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

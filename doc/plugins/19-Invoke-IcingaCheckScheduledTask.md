@@ -10,6 +10,10 @@ to determine the plugin output. States of tasks not matching the plugin argument
 [CRITICAL], while all other tasks will return [OK]. For not found tasks we will return [UNKNOWN]
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+No special permissions required.
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

@@ -9,6 +9,14 @@ Invoke-IcingaCheckUsers returns either 'OK', 'WARNING' or 'CRITICAL', based on t
 e.g There are 13 users logged on, WARNING is set to 8, CRITICAL is set to 15. In this case the check will return WARNING.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### WMI Permissions
+
+* Root\Cimv2
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

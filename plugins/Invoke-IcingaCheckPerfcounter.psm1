@@ -11,6 +11,10 @@
 .FUNCTIONALITY
    This module is intended to be used to perform checks on different performance counter.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+.ROLE
+    ### Required User Groups
+
+    * Performance Log Users
 .EXAMPLE
    PS> Invoke-IcingaCheckPerfCounter -PerfCounter '\processor(*)\% processor time' -Warning 60 -Critical 90
    [WARNING]: Check package "Performance Counter" is [WARNING]

@@ -10,6 +10,10 @@ e.g a certificate will run out in 30 days, WARNING is set to '20d:', CRITICAL is
 
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+No special permissions required.
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

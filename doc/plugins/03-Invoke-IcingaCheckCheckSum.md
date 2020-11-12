@@ -9,6 +9,10 @@ Invoke-IcingaCheckCheckSum returns either 'OK' or 'CRITICAL', whether the check 
 
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+No special permissions required.
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |
