@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#73](https://github.com/Icinga/icinga-powershell-plugins/issues/73) Improves plugin creation Cmdlet to write a new permission section and to create the `plugins` doc folder in case it does not exist
+* [#74](https://github.com/Icinga/icinga-powershell-plugins/pull/74) Adds `avg. disk queue length` metric for monitoring and performance data to `Invoke-IcingaCheckDiskHealth`
 * [#78](https://github.com/Icinga/icinga-powershell-plugins/issues/78) Improves the documentation and output for `Invoke-IcingaCheckService` by adding metrics for all found services configured to run `Automatic` and adds service output on Verbosity 1 to show a list of all found services including their current state
 * [#85](https://github.com/Icinga/icinga-powershell-plugins/issues/85) Adds support on `Invoke-IcingaCheckUsedPartitionSpace` to ignore a `Unknown` in case all checks are filtered out. This will then return `Ok` instead if argument `-IgnoreEmptyChecks` is set. In addition you can now use `-SkipUnknown` which will transform an `Unknown` of partitions without data to `Ok`. Reworks [#84](https://github.com/Icinga/icinga-powershell-plugins/issues/84)
 
