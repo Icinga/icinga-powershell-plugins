@@ -9,6 +9,18 @@ Invoke-IcingaCheckCPU returns either 'OK', 'WARNING' or 'CRITICAL', based on the
 e.g A system has 4 cores, each running at 60% usage, WARNING is set to 50%, CRITICAL is set to 75%. In this case the check will return WARNING.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### Performance Counter
+
+* Processor(*)\% processor time
+
+### Required User Groups
+
+* Performance Log Users
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

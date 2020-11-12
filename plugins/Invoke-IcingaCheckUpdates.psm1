@@ -8,7 +8,10 @@
 .FUNCTIONALITY
    This module is intended to be used to check how many updates are to be applied and thereby currently pending
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
-   
+.ROLE
+    ### COM-Objects
+
+    * Microsoft.Update.Session
 .EXAMPLE
    PS> Invoke-IcingaCheckUpdates -Warning 4 -Critical 20
    [OK]: Check package "Updates" is [OK]

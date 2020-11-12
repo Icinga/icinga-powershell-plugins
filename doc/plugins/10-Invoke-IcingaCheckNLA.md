@@ -8,6 +8,10 @@ Checks whether the network location awareness(NLA) found the correct firewall pr
 Invoke-IcingaCheckNLA returns either 'OK' or 'CRITICAL', whether the check matches or not.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+No special permissions required.
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

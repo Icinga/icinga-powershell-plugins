@@ -26,6 +26,10 @@ To execute this plugin you will require to grant the following user permissions.
 
 * LogicalDisk(*)\% free space
 
+### Required User Groups
+
+* Performance Log Users
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

@@ -19,6 +19,22 @@ To execute this plugin you will require to grant the following user permissions.
 * root\cimv2
 * root\Microsoft\Windows\Storage
 
+### Performance Counter
+
+* \PhysicalDisk(*)\disk read bytes/sec
+* \PhysicalDisk(*)\disk write bytes/sec
+* \PhysicalDisk(*)\disk reads/sec
+* \PhysicalDisk(*)\disk writes/sec
+* \PhysicalDisk(*)\avg. disk sec/read
+* \PhysicalDisk(*)\avg. disk sec/write
+* \PhysicalDisk(*)\avg. disk sec/transfer
+* \PhysicalDisk(*)\current disk queue length
+* \PhysicalDisk(*)\avg. disk queue length
+
+### Required User Groups
+
+* Performance Log Users
+
 ## Arguments
 
 | Argument | Type | Required | Default | Description |

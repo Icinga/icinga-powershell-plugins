@@ -25,6 +25,10 @@
     ### Performance Counter
 
     * LogicalDisk(*)\% free space
+
+    ### Required User Groups
+
+    * Performance Log Users
 .EXAMPLE
     PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
     [OK]: Check package "Used Partition Space" is [OK]

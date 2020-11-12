@@ -8,7 +8,10 @@
 .FUNCTIONALITY
    This module is intended to check how many users are loged onto a host. 
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
-   
+.ROLE
+    ### WMI Permissions
+
+    * Root\Cimv2
 .EXAMPLE
    PS> Invoke-IcingaCheckUsers -Warning 8 -Critical 15
    [WARNING] Check package "Users" - [WARNING] Logged On Users

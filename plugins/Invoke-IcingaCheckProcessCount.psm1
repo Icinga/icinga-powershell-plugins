@@ -8,6 +8,18 @@
 .FUNCTIONALITY
    This module is intended to be used to check how many processes of a process exist.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+.ROLE
+    ### WMI Permissions
+
+    * root\cimv2
+
+    ### Performance Counter
+
+    * Processor(*)\% processor time
+
+    ### Required User Groups
+
+    * Performance Log Users
 .EXAMPLE
    PS>Invoke-IcingaCheckProcessCount -Process conhost -Warning 5 -Critical 10
    [OK]: Check package "Process Check" is [OK]

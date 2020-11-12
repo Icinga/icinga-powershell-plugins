@@ -8,6 +8,14 @@ Finds out the Bios Serial
 Invoke-IcingaCheckBiosSerial returns either the Bios Serial or nothing.
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
+## Permissions
+
+To execute this plugin you will require to grant the following user permissions.
+
+### WMI Permissions
+
+ * Root\Cimv2
+
 ## Examples
 
 ### Example Command 1

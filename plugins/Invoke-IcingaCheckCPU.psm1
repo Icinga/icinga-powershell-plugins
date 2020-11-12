@@ -8,6 +8,14 @@
 .FUNCTIONALITY
     This module is intended to be used to check on the current cpu usage of a specified core.
     Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+.ROLE
+    ### Performance Counter
+
+    * Processor(*)\% processor time
+
+    ### Required User Groups
+
+    * Performance Log Users
 .EXAMPLE
     PS>Invoke-IcingaCheckCpu -Warning 50 -Critical 75
     [OK]: Check package "CPU Load" is [OK]

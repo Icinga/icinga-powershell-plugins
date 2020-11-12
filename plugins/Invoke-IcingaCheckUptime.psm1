@@ -8,6 +8,10 @@
 .FUNCTIONALITY
    This module is intended to check how long a Windows system has been up for.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
+.ROLE
+    ### WMI Permissions
+
+    * Root\Cimv2
 .EXAMPLE
    PS> Invoke-IcingaCheckUptime -Warning 18d -Critical 20d
    [WARNING]: Check package "Windows Uptime: Days: 19 Hours: 13 Minutes: 48 Seconds: 29" is [WARNING]

@@ -7,6 +7,10 @@
 .FUNCTIONALITY
    This module is intended to be used to find out the Bios Serial of a given system
    Either the a Bios Serial is returned or not. Thereby the Check is always okay.
+.ROLE
+   ### WMI Permissions
+
+    * Root\Cimv2
 .EXAMPLE
    PS>Invoke-IcingaCheckBiosSerial
    [OK]: SerialNumber is 1234-5678-9101-1121-3141-5161-7100
