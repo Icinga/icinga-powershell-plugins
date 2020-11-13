@@ -29,7 +29,7 @@
 .PARAMETER Critical
     Used to specify a Critical threshold. In this case an integer value.
 .PARAMETER Core
-    Used to specify a single core to check for.
+    Used to specify a single core to check for. For the average load across all cores use `_Total`
 .INPUTS
     System.String
 .OUTPUTS
