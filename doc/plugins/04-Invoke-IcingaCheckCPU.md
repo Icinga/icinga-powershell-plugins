@@ -27,7 +27,7 @@ To execute this plugin you will require to grant the following user permissions.
 | ---      | ---  | ---      | ---     | ---         |
 | Warning | Object | false |  | Used to specify a Warning threshold. In this case an integer value. |
 | Critical | Object | false |  | Used to specify a Critical threshold. In this case an integer value. |
-| Core | String | false | * | Used to specify a single core to check for. |
+| Core | String | false | * | Used to specify a single core to check for. For the average load across all cores use `_Total` |
 | NoPerfData | SwitchParameter | false | False |  |
 | Verbosity | Int32 | false | 0 |  |
 
