@@ -68,8 +68,8 @@ function Invoke-IcingaCheckScheduledTask()
             } else {
                 $CheckPackage.AddCheck(
                     (
-                        New-IcingaCheck -Name ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath)) -Value $task.State
-                    ).CritIfNotMatch($State)
+                        New-IcingaCheck -Name ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath)) -Value ($ProviderEnums.ScheduledTaskStatus[[string]$task.State]) -Translation $ProviderEnums.ScheduledTaskName
+                    ).CritIfNotMatch($ProviderEnums.ScheduledTaskStatus[$State])
                 )
             }
         }

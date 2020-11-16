@@ -763,6 +763,26 @@
     'Disabled'  = 4;
 }
 
+<##################################################################################################
+################# /lib/provider/tasks #############################################################
+##################################################################################################>
+
+[hashtable]$ScheduledTaskStatus = @{
+    'Unknown'  = 0;
+    'Disabled' = 1;
+    'Queued'   = 2;
+    'Ready'    = 3;
+    'Running'  = 4;
+}
+
+[hashtable]$ScheduledTaskName = @{
+    0 = 'Unknown';
+    1 = 'Disabled';
+    2 = 'Queued';
+    3 = 'Ready';
+    4 = 'Running';
+}
+
 [hashtable]$TimeSyncStatus = @{
     'NoLeapWarning'       = 0;
     'PositiveLeapSecond'  = 1;
@@ -878,6 +898,9 @@
     ServiceStatus                  = $ServiceStatus;
     ServiceStatusName              = $ServiceStatusName;
     ServiceStartupType             = $ServiceStartupType;
+    #/lib/provider/tasks
+    ScheduledTaskStatus            = $ScheduledTaskStatus;
+    ScheduledTaskName              = $ScheduledTaskName;
     #/lib/provider/NtpChecks
     TimeSyncStatus                 = $TimeSyncStatus;
     TimeSyncStatusName             = $TimeSyncStatusName;

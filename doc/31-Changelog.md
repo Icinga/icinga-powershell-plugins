@@ -24,6 +24,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#77](https://github.com/Icinga/icinga-powershell-plugins/issues/77) Fix wrong filtering for EventIds for `Invoke-IcingaCheckEventLog` and improve the output by adding the EventLog messages on severity 1. In addition we now allow the filtering for message sources and increase performance by fetching EventLog data for new checks from the last 2 hours only
 * [#79](https://github.com/Icinga/icinga-powershell-plugins/issues/79) Fixes service check to exclude provided service names in case they contain the wildcard symbol '*' which causes the check to always return unknown
 * [#86](https://github.com/Icinga/icinga-powershell-plugins/pull/86) Fixes `Get-IcingaCPUCount` returns wrong count on empty arguments
+* [#97](https://github.com/Icinga/icinga-powershell-plugins/issues/97), [#98](https://github.com/Icinga/icinga-powershell-plugins/pull/98) Fixes invalid performance data output for `Invoke-IcingaCheckScheduledTask`
 
 ## 1.2.0 (2020-08-28)
 
