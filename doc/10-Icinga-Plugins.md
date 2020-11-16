@@ -24,6 +24,7 @@ To test thresholds with different input values, you can use the Framework Cmdlet
 * [Invoke-IcingaCheckFirewall](plugins/07-Invoke-IcingaCheckFirewall.md)
 * [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md)
 * [Invoke-IcingaCheckMemory](plugins/09-Invoke-IcingaCheckMemory.md)
+* [Invoke-IcingaCheckNetworkInterface](plugins/21-Invoke-IcingaCheckNetworkInterface.md)
 * [Invoke-IcingaCheckNLA](plugins/10-Invoke-IcingaCheckNLA.md)
 * [Invoke-IcingaCheckPerfcounter](plugins/11-Invoke-IcingaCheckPerfcounter.md)
 * [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md)
