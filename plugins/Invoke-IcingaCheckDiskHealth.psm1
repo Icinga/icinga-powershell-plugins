@@ -81,6 +81,10 @@
     Warning threshold for Avg. Disk sec/Write is the average time, in seconds, of a write of data to the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
 .PARAMETER DiskAvgWriteSecCritical
     Critical threshold for Avg. Disk sec/Write is the average time, in seconds, of a write of data to the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...)
+.PARAMETER IgnoreOfflineDisks
+    Ignores any disk which is having the state `Offline` and returns `Ok` instead of `Warning` for this specific state
+.PARAMETER IgnoreReadOnlyDisks
+    Ignores any disk which is having the state `Read Only` and returns `Ok` instead of `Warning` for this specific state
 .PARAMETER CheckLogicalOnly
     Set this to include only disks that have drive letters like C:, D:, ..., assigned to them. Can be combined with include/exclude filters
 .EXAMPLE
@@ -120,32 +124,34 @@ function Invoke-IcingaCheckDiskHealth()
 {
     param
     (
-        [array]$IncludeDisk       = @(),
-        [array]$ExcludeDisk       = @(),
-        [array]$IncludePartition  = @(),
-        [array]$ExcludePartition  = @(),
-        $DiskReadSecWarning       = $null,
-        $DiskReadSecCritical      = $null,
-        $DiskWriteSecWarning      = $null,
-        $DiskWriteSecCritical     = $null,
-        $DiskQueueLenWarning      = $null,
-        $DiskQueueLenCritical     = $null,
-        $DiskQueueAvgLenWarning   = $null,
-        $DiskQueueAvgLenCritical  = $null,
-        $DiskReadByteSecWarning   = $null,
-        $DiskReadByteSecCritical  = $null,
-        $DiskWriteByteSecWarning  = $null,
-        $DiskWriteByteSecCritical = $null,
-        $DiskAvgTransSecWarning   = $null,
-        $DiskAvgTransSecCritical  = $null,
-        $DiskAvgReadSecWarning    = $null,
-        $DiskAvgReadSecCritical   = $null,
-        $DiskAvgWriteSecWarning   = $null,
-        $DiskAvgWriteSecCritical  = $null,
-        [switch]$CheckLogicalOnly = $FALSE,
-        [switch]$NoPerfData,
+        [array]$IncludeDisk          = @(),
+        [array]$ExcludeDisk          = @(),
+        [array]$IncludePartition     = @(),
+        [array]$ExcludePartition     = @(),
+        $DiskReadSecWarning          = $null,
+        $DiskReadSecCritical         = $null,
+        $DiskWriteSecWarning         = $null,
+        $DiskWriteSecCritical        = $null,
+        $DiskQueueLenWarning         = $null,
+        $DiskQueueLenCritical        = $null,
+        $DiskQueueAvgLenWarning      = $null,
+        $DiskQueueAvgLenCritical     = $null,
+        $DiskReadByteSecWarning      = $null,
+        $DiskReadByteSecCritical     = $null,
+        $DiskWriteByteSecWarning     = $null,
+        $DiskWriteByteSecCritical    = $null,
+        $DiskAvgTransSecWarning      = $null,
+        $DiskAvgTransSecCritical     = $null,
+        $DiskAvgReadSecWarning       = $null,
+        $DiskAvgReadSecCritical      = $null,
+        $DiskAvgWriteSecWarning      = $null,
+        $DiskAvgWriteSecCritical     = $null,
+        [switch]$IgnoreOfflineDisks  = $FALSE,
+        [switch]$IgnoreReadOnlyDisks = $FALSE,
+        [switch]$CheckLogicalOnly    = $FALSE,
+        [switch]$NoPerfData          = $FALSE,
         [ValidateSet(0, 1, 2)]
-        [int]$Verbosity           = 0
+        [int]$Verbosity             = 0
     )
 
     $CheckPackage = New-IcingaCheckPackage `
@@ -225,25 +231,28 @@ function Invoke-IcingaCheckDiskHealth()
                     $ProviderEnums.DeviceStatus.OK
                 )
             );
+    
+            $DiskOfflineCheck  = New-IcingaCheck `
+                -Name ([string]::Format('{0} Is Offline', $Partition)) `
+                -Value $DiskObjects.Data.IsOffline `
+                -NoPerfData;
+
+            if ($IgnoreOfflineDisks -eq $FALSE) {
+                $DiskOfflineCheck.WarnIfMatch('True') | Out-Null;
+            }
+
+            $DiskReadOnlyCheck = New-IcingaCheck `
+                -Name ([string]::Format('{0} Is ReadOnly', $Partition)) `
+                -Value $DiskObjects.Data.IsReadOnly `
+                -NoPerfData;
+
+            if ($IgnoreReadOnlyDisks -eq $FALSE) {
+                $DiskReadOnlyCheck.WarnIfMatch('True') | Out-Null;
+            }
 
             # Check for Disk OperationalStatus
-            $PartCheckPackage.AddCheck(
-                (
-                    New-IcingaCheck `
-                        -Name ([string]::Format('{0} Is Offline', $Partition)) `
-                        -Value $DiskObjects.Data.IsOffline `
-                        -NoPerfData
-                ).WarnIfMatch('True')
-            );
-
-            $PartCheckPackage.AddCheck(
-                (
-                    New-IcingaCheck `
-                        -Name ([string]::Format('{0} Is ReadOnly', $Partition)) `
-                        -Value $DiskObjects.Data.IsReadOnly `
-                        -NoPerfData
-                ).WarnIfMatch('True')
-            );
+            $PartCheckPackage.AddCheck($DiskOfflineCheck);
+            $PartCheckPackage.AddCheck($DiskReadOnlyCheck);
         } else {
             if ($CheckLogicalOnly) {
                 continue;
