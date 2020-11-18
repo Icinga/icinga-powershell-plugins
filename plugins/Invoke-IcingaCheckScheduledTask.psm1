@@ -25,7 +25,6 @@
    properly handled as string
 .PARAMETER State
    The state a task should currently have for the plugin to return [OK]
-   Force the usage of IPv6 addresses for ICMP calls by using a hostname
 .PARAMETER NoPerfData
    Set this argument to not write any performance data
 .PARAMETER Verbosity
@@ -44,7 +43,7 @@ function Invoke-IcingaCheckScheduledTask()
     param (
         [array]$TaskName,
         [ValidateSet('Unknown', 'Disabled', 'Queued', 'Ready', 'Running')]
-        [string]$State,
+        [array]$State       = @(),
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2)]
         [int]$Verbosity     = 0
@@ -66,11 +65,12 @@ function Invoke-IcingaCheckScheduledTask()
                     ).SetUnknown()
                 )
             } else {
-                $CheckPackage.AddCheck(
-                    (
-                        New-IcingaCheck -Name ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath)) -Value ($ProviderEnums.ScheduledTaskStatus[[string]$task.State]) -Translation $ProviderEnums.ScheduledTaskName
-                    ).CritIfNotMatch($ProviderEnums.ScheduledTaskStatus[$State])
-                )
+                $TaskCheck = New-IcingaCheck -Name ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath)) -Value ($ProviderEnums.ScheduledTaskStatus[[string]$task.State]) -Translation $ProviderEnums.ScheduledTaskName;
+
+                if ($State.Count -ne 0 -and $State -NotContains ([string]$task.State)) {
+                    $TaskCheck.CritIfNotMatch($ProviderEnums.ScheduledTaskStatus[$State[0]]) | Out-Null;
+                }
+                $CheckPackage.AddCheck($TaskCheck);
             }
         }
 

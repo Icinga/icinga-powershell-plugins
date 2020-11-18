@@ -6,7 +6,13 @@ Specific version upgrades are described below. Please note that version updates 
 
 ## Upgrading to v1.3.0 (pending)
 
-*No special steps required*
+### Plugin Argument Changes <span style="color:#F6BE00">(Breaking Changes)
+
+The following plugins received modifications to their existing arguments. Please keep in mind that updating to this version of the Icinga PowerShell Plugins, you **must** update your configuration to ensure everything is running properly **and** update all plugins on all systems.
+
+#### Invoke-IcingaCheckScheduledTask
+
+The `State` argument for `Invoke-IcingaCheckScheduledTask` has been changed from `String` to `Array`, which will now support providing multiple states a task can be into. In addition we modified the [Icinga PowerShell Framework](https://github.com/Icinga/icinga-powershell-framework) to properly support `ValidateSet` for array arguments, fixed in [#152](https://github.com/Icinga/icinga-powershell-framework/pull/152). Please ensure to upgrade to v1.3.0 before generating the new configuration and importing it, as the fix ensures that array arguments still can only contain fixed values.
 
 ## Upgrading to v1.2.0 (2020-08-28)
 
