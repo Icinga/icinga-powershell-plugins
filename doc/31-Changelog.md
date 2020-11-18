@@ -18,6 +18,10 @@ This release adds the following new plugin:
 * [Invoke-IcingaCheckNetworkInterface](https://icinga.com/docs/windows/latest/plugins/doc/plugins/21-Invoke-IcingaCheckNetworkInterface/): Checks availability, state and Usage of Network interfaces and Interface Teams
 * [Invoke-IcingaCheckStoragePool](https://icinga.com/docs/windows/latest/plugins/doc/plugins/21-Invoke-IcingaCheckStoragePool/): Checks availability, utilization and state of a StoragePool
 
+### Breaking changes
+
+If you are going to install this plugin release, please have a look on the [upgrading docs](https://icinga.com/docs/windows/latest/plugins/doc/30-Upgrading-Plugins/) to not run into issues!
+
 ### Enhancements
 
 * [#61](https://github.com/Icinga/icinga-powershell-plugins/issues/61) Adds exception handling in case permissions to access Windows Updates are missing on the system
@@ -26,6 +30,7 @@ This release adds the following new plugin:
 * [#78](https://github.com/Icinga/icinga-powershell-plugins/issues/78) Improves the documentation and output for `Invoke-IcingaCheckService` by adding metrics for all found services configured to run `Automatic` and adds service output on Verbosity 1 to show a list of all found services including their current state
 * [#85](https://github.com/Icinga/icinga-powershell-plugins/issues/85) Adds support on `Invoke-IcingaCheckUsedPartitionSpace` to ignore a `Unknown` in case all checks are filtered out. This will then return `Ok` instead if argument `-IgnoreEmptyChecks` is set. In addition you can now use `-SkipUnknown` which will transform an `Unknown` of partitions without data to `Ok`. Reworks [#84](https://github.com/Icinga/icinga-powershell-plugins/issues/84)
 * [#90](https://github.com/Icinga/icinga-powershell-plugins/issues/90) Adds support to ignore read only/offline disks on `Invoke-IcingaCheckDiskHealth`
+* [#101](https://github.com/Icinga/icinga-powershell-plugins/pull/101) Improves `Invoke-IcingaCheckScheduledTask` by changing the `State` argument from `String` to `Array`, allowing the comparison against multiple states. **Important:** Please have a look on the [upgrading docs!](https://icinga.com/docs/windows/latest/plugins/doc/30-Upgrading-Plugins/)
 * [#104](https://github.com/Icinga/icinga-powershell-plugins/pull/104) Adds plugin configuration files for Icinga Director and Icinga 2 within the [config directory](https://github.com/Icinga/icinga-powershell-plugins/tree/master/config)
 
 ### Bugfixes
