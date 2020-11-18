@@ -61,6 +61,8 @@ To execute this plugin you will require to grant the following user permissions.
 | DiskAvgReadSecCritical | Object | false |  | Critical threshold for avg. Disk sec/Read is the average time, in seconds, of a read of data from the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...) |
 | DiskAvgWriteSecWarning | Object | false |  | Warning threshold for Avg. Disk sec/Write is the average time, in seconds, of a write of data to the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...) |
 | DiskAvgWriteSecCritical | Object | false |  | Critical threshold for Avg. Disk sec/Write is the average time, in seconds, of a write of data to the disk. If the threshold values are not in seconds, please enter a unit such as (ms, s, m, h, ...) |
+| IgnoreOfflineDisks | SwitchParameter | false | False | Ignores any disk which is having the state `Offline` and returns `Ok` instead of `Warning` for this specific state |
+| IgnoreReadOnlyDisks | SwitchParameter | false | False | Ignores any disk which is having the state `Read Only` and returns `Ok` instead of `Warning` for this specific state |
 | CheckLogicalOnly | SwitchParameter | false | False | Set this to include only disks that have drive letters like C:, D:, ..., assigned to them. Can be combined with include/exclude filters |
 | NoPerfData | SwitchParameter | false | False |  |
 | Verbosity | Int32 | false | 0 |  |
