@@ -19,27 +19,27 @@
     Specify the name of network interface teams you want to include for checks. Example OutboundGroup, ClusterInterface
 .PARAMETER ExcludeInterfaceTeam
     Specify the name of network interface teams you want to exclude for checks. Example OutboundGroup, ClusterInterface
-.PARAMETER IncludeHiddenNetworkDevice
+.PARAMETER IncludeHidden
     Set this argument if you want to include hidden network Adapter for checks. It is a network which is available but is not
     broadcasting its ID.
-.PARAMETER PacketReceivedSecWarning
+.PARAMETER PacketReceivedSecWarn
     Warning threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface.
-.PARAMETER PacketReceivedSecCritical
+.PARAMETER PacketReceivedSecCrit
     Critical threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface.
-.PARAMETER PacketSentSecWarning
+.PARAMETER PacketSentSecWarn
     Warning threshold for network Interface Packets Sent/sec is the rate at which packets are sent on the network interface.
-.PARAMETER PacketSentSecCritical
+.PARAMETER PacketSentSecCrit
     Critical threshold for network Interface Packets Sent/sec is the rate at which packets are sent on the network interface.
-.PARAMETER PackteReceivedErrorWarning
+.PARAMETER PackteReceivedErrorWarn
     Warning threshold for network Interface Packets Received Errors is the number of inbound packets that contained errors preventing
     them from being deliverable to a higher-layer protocol.
-.PARAMETER PackteReceivedErrorCritical
+.PARAMETER PackteReceivedErrorCrit
     Critical threshold for network Interface Packets Received Errors is the number of inbound packets that contained errors preventing
     them from being deliverable to a higher-layer protocol.
-.PARAMETER PackteOutboundErrorWarning
+.PARAMETER PackteOutboundErrorWarn
     Warning threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted
     because of errors.
-.PARAMETER PackteOutboundErrorCritical
+.PARAMETER PackteOutboundErrorCrit
     Critical threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted
     because of errors.
 .PARAMETER PacketReceivedDiscardedWarn
@@ -54,24 +54,24 @@
 .PARAMETER PacketOutboundDiscardedCrit
     Critical threshold for network Interface Packets Outbound Discarded is the number of outbound packets that were chosen to be discarded
     even though no errors had been detected to prevent transmission.
-.PARAMETER IncomingAvgBandUsageWarning
+.PARAMETER IncomingAvgBandUsageWarn
     Warning threshold for network Interface avg. Bytes Received/sec is the average of incoming Bytes.
-.PARAMETER IncomingAvgBandUsageCritical
+.PARAMETER IncomingAvgBandUsageCrit
     Critical threshold for network Interface avg. Bytes Received/sec is the average of incoming Bytes.
-.PARAMETER OutboundAvgBandUsageWarning
+.PARAMETER OutboundAvgBandUsageWarn
     Warning threshold for network Interface avg. Bytes Sent/sec is the average of outbound Bytes.
-.PARAMETER OutboundAvgBandUsageCritical
+.PARAMETER OutboundAvgBandUsageCrit
     Critical threshold for network Interface avg. Bytes Sent/sec is the average of outbound Bytes.
-.PARAMETER DeviceTotalBytesSecWarning
+.PARAMETER DeviceTotalBytesSecWarn
     Warning threshold for network Interface Bytes Total/sec is the rate at which bytes are sent and received over each network adapter,
     including framing characters.
-.PARAMETER DeviceTotalBytesSecCritical
+.PARAMETER DeviceTotalBytesSecCrit
     Critical threshold for network Interface Bytes Total/sec is the rate at which bytes are sent and received over each network adapter,
     including framing characters.
-.PARAMETER DeviceSentBytesSecWarning
+.PARAMETER DeviceSentBytesSecWarn
     Warning threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing
     characters.
-.PARAMETER DeviceSentBytesSecCritical
+.PARAMETER DeviceSentBytesSecCrit
     Critical threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing
     characters.
 .PARAMETER DeviceReceivedBytesSecWarn
@@ -80,27 +80,27 @@
 .PARAMETER DeviceReceivedBytesSecCrit
     Critical threshold for network Interface Bytes Received/sec is the rate at which bytes are received over each network adapter, including
     framing characters.
-.PARAMETER LinkSpeedWarning
+.PARAMETER LinkSpeedWarn
     Warning threshold for the transmit link speed in (10 MBit, 100 MBit, 1 GBit, 10 GBit, 100 GBit, ...) of the network Interface.
-.PARAMETER LinkSpeedCritical
+.PARAMETER LinkSpeedCrit
     Critical threshold for the transmit link speed in (10 MBit, 100 MBit, 1 GBit, 10 GBit, 100 GBit, ...) of the network Interface.
-.PARAMETER InterfaceTeamStatusWarning
+.PARAMETER IfTeamStatusWarn
     Warning threshold for the Status of a network Interface Teams.
-.PARAMETER InterfaceTeamStatusCritical
+.PARAMETER IfTeamStatusCrit
     Critical threshold for the Status of a network Interface Teams.
-.PARAMETER InterfaceSlaveEnabledStateWarning
+.PARAMETER IfSlaveEnabledStateWarn
     Warning threshold for the State of a network Interface Team-Members/Slaves.
-.PARAMETER InterfaceSlaveEnabledStateCritical
+.PARAMETER IfSlaveEnabledStateCrit
     Critical threshold for the State of a network Interface Team-Members/Slaves.
-.PARAMETER InterfaceAdminStatusWarning
+.PARAMETER IfAdminStatusWarn
     Warning threshold for the network Interface administrative status.
-.PARAMETER InterfaceOperationalStatusWarning
+.PARAMETER IfOperationalStatusWarn
     Warning threshold for the current network interface operational status.
-.Parameter InterfaceOperationalStatusCritical
+.Parameter IfOperationalStatusCrit
     Critical threshold for the current network interface operational status.
-.PARAMETER InterfaceConnectionStatusWarning
+.PARAMETER IfConnectionStatusWarn
     Warning threshold for the state of the network adapter connection to the network.
-.PARAMETER InterfaceConnectionStatusCritical
+.PARAMETER IfConnectionStatusCrit
     Critical threshold for the state of the network adapter connection to the network.
 .PARAMETER NoPerfData
     Disables the performance data output of this plugin
@@ -141,56 +141,56 @@
 function Invoke-IcingaCheckNetworkInterface()
 {
     param (
-        [array]$IncludeNetworkDevice        = @(),
-        [array]$ExcludeNetworkDevice        = @(),
-        [array]$ExcludeInterfaceTeam        = @(),
-        [array]$IncludeInterfaceTeam        = @(),
-        $PacketReceivedSecWarning           = $null,
-        $PacketReceivedSecCritical          = $null,
-        $PacketSentSecWarning               = $null,
-        $PacketSentSecCritical              = $null,
-        $PackteReceivedErrorWarning         = $null,
-        $PackteReceivedErrorCritical        = $null,
-        $PackteOutboundErrorWarning         = $null,
-        $PackteOutboundErrorCritical        = $null,
-        $PacketReceivedDiscardedWarn        = $null,
-        $PacketReceivedDiscardedCrit        = $null,
-        $PacketOutboundDiscardedWarn        = $null,
-        $PacketOutboundDiscardedCrit        = $null,
-        $IncomingAvgBandUsageWarning        = $null,
-        $IncomingAvgBandUsageCritical       = $null,
-        $OutboundAvgBandUsageWarning        = $null,
-        $OutboundAvgBandUsageCritical       = $null,
-        $DeviceTotalBytesSecWarning         = $null,
-        $DeviceTotalBytesSecCritical        = $null,
-        $DeviceSentBytesSecWarning          = $null,
-        $DeviceSentBytesSecCritical         = $null,
-        $DeviceReceivedBytesSecWarn         = $null,
-        $DeviceReceivedBytesSecCrit         = $null,
-        $LinkSpeedWarning,
-        $LinkSpeedCritical,
+        [array]$IncludeNetworkDevice  = @(),
+        [array]$ExcludeNetworkDevice  = @(),
+        [array]$ExcludeInterfaceTeam  = @(),
+        [array]$IncludeInterfaceTeam  = @(),
+        $PacketReceivedSecWarn        = $null,
+        $PacketReceivedSecCrit        = $null,
+        $PacketSentSecWarn            = $null,
+        $PacketSentSecCrit            = $null,
+        $PackteReceivedErrorWarn      = $null,
+        $PackteReceivedErrorCrit      = $null,
+        $PackteOutboundErrorWarn      = $null,
+        $PackteOutboundErrorCrit      = $null,
+        $PacketReceivedDiscardedWarn  = $null,
+        $PacketReceivedDiscardedCrit  = $null,
+        $PacketOutboundDiscardedWarn  = $null,
+        $PacketOutboundDiscardedCrit  = $null,
+        $IncomingAvgBandUsageWarn     = $null,
+        $IncomingAvgBandUsageCrit     = $null,
+        $OutboundAvgBandUsageWarn     = $null,
+        $OutboundAvgBandUsageCrit     = $null,
+        $DeviceTotalBytesSecWarn      = $null,
+        $DeviceTotalBytesSecCrit      = $null,
+        $DeviceSentBytesSecWarn       = $null,
+        $DeviceSentBytesSecCrit       = $null,
+        $DeviceReceivedBytesSecWarn   = $null,
+        $DeviceReceivedBytesSecCrit   = $null,
+        $LinkSpeedWarn,
+        $LinkSpeedCrit,
         [ValidateSet('Up', 'Down', 'Degraded')]
-        $InterfaceTeamStatusWarning,
+        $IfTeamStatusWarn,
         [ValidateSet('Up', 'Down', 'Degraded')]
-        $InterfaceTeamStatusCritical,
+        $IfTeamStatusCrit,
         [ValidateSet('Unknown', 'Other', 'Enabled', 'Disabled', 'ShuttingDown', 'NotApplicable', 'EnabledButOffline', 'InTest', 'Deferred', 'Quiesce', 'Starting')]
-        $InterfaceSlaveEnabledStateWarning,
+        $IfSlaveEnabledStateWarn,
         [ValidateSet('Unknown', 'Other', 'Enabled', 'Disabled', 'ShuttingDown', 'NotApplicable', 'EnabledButOffline', 'InTest', 'Deferred', 'Quiesce', 'Starting')]
-        $InterfaceSlaveEnabledStateCritical,
+        $IfSlaveEnabledStateCrit,
         [ValidateSet('Up', 'Down', 'Testing')]
-        $InterfaceAdminStatusWarning,
+        $IfAdminStatusWarn,
         [ValidateSet('Up', 'Down', 'Testing', 'Unknown', 'Dormant', 'NotPresent', 'LowerLayerDown')]
-        $InterfaceOperationalStatusWarning,
+        $IfOperationalStatusWarn,
         [ValidateSet('Up', 'Down', 'Testing', 'Unknown', 'Dormant', 'NotPresent', 'LowerLayerDown')]
-        $InterfaceOperationalStatusCritical,
+        $IfOperationalStatusCrit,
         [ValidateSet('Disconnected', 'Connecting', 'Connected', 'Disconnecting', 'HardwareNotPresent', 'HardwareDisabled', 'HardwareMalfunction', 'MediaDisconnected', 'Authenticating', 'AuthenticationSucceeded', 'AuthenticationFailed', 'InvalidAddress', 'CredentialsRequired', 'Other')]
-        $InterfaceConnectionStatusWarning,
+        $IfConnectionStatusWarn,
         [ValidateSet('Disconnected', 'Connecting', 'Connected', 'Disconnecting', 'HardwareNotPresent', 'HardwareDisabled', 'HardwareMalfunction', 'MediaDisconnected', 'Authenticating', 'AuthenticationSucceeded', 'AuthenticationFailed', 'InvalidAddress', 'CredentialsRequired', 'Other')]
-        $InterfaceConnectionStatusCritical,
-        [switch]$IncludeHiddenNetworkDevice = $FALSE,
+        $IfConnectionStatusCrit,
+        [switch]$IncludeHidden        = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2)]
-        $Verbosity                          = 0
+        $Verbosity                    = 0
     );
 
     $NetworkDevices = Join-IcingaNetworkDeviceDataPerfCounter -NetworkDeviceCounter @(
@@ -208,7 +208,7 @@ function Invoke-IcingaCheckNetworkInterface()
         -ExcludeNetworkDevice $ExcludeNetworkDevice `
         -ExcludeInterfaceTeam $ExcludeInterfaceTeam `
         -IncludeInterfaceTeam $IncludeInterfaceTeam `
-        -IncludeHiddenNetworkDevice:$IncludeHiddenNetworkDevice;
+        -IncludeHiddenNetworkDevice:$IncludeHidden;
 
     $CheckPackage          = New-IcingaCheckPackage -Name 'Network Device Package' -OperatorAnd -Verbose $Verbosity;
     $InterfaceTeamsPackage = New-IcingaCheckPackage -Name 'Interface Teams' -OperatorAnd -Verbose $Verbosity;
@@ -250,9 +250,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets received/sec', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets received/sec'].value `
             ).WarnOutOfRange(
-                $PacketReceivedSecWarning
+                $PacketReceivedSecWarn
             ).CritOutOfRange(
-                $PacketReceivedSecCritical
+                $PacketReceivedSecCrit
             )
         );
 
@@ -262,9 +262,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets sent/sec', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets sent/sec'].value `
             ).WarnOutOfRange(
-                $PacketSentSecWarning
+                $PacketSentSecWarn
             ).CritOutOfRange(
-                $PacketSentSecCritical
+                $PacketSentSecCrit
             )
         );
 
@@ -274,9 +274,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets received errors', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets received errors'].value
             ).WarnOutOfRange(
-                $PackteReceivedErrorWarning
+                $PackteReceivedErrorWarn
             ).CritOutOfRange(
-                $PackteReceivedErrorCritical
+                $PackteReceivedErrorCrit
             )
         );
 
@@ -286,9 +286,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets outbound errors', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets outbound errors'].value
             ).WarnOutOfRange(
-                $PackteOutboundErrorWarning
+                $PackteOutboundErrorWarn
             ).CritOutOfRange(
-                $PackteOutboundErrorCritical
+                $PackteOutboundErrorCrit
             )
         );
 
@@ -327,9 +327,9 @@ function Invoke-IcingaCheckNetworkInterface()
                 ) `
                     -Unit '%'
             ).WarnOutOfRange(
-                $OutboundAvgBandUsageWarning
+                $OutboundAvgBandUsageWarn
             ).CritOutOfRange(
-                $OutboundAvgBandUsageCritical
+                $OutboundAvgBandUsageCrit
             )
         );
 
@@ -344,9 +344,9 @@ function Invoke-IcingaCheckNetworkInterface()
                 ) `
                     -Unit '%'
             ).WarnOutOfRange(
-                $IncomingAvgBandUsageWarning
+                $IncomingAvgBandUsageWarn
             ).CritOutOfRange(
-                $IncomingAvgBandUsageCritical
+                $IncomingAvgBandUsageCrit
             )
         );
 
@@ -357,9 +357,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Value $NetworkDeviceObject.PerfCounter['bytes total/sec'].value `
                     -Unit 'B'
             ).WarnOutOfRange(
-                $DeviceTotalBytesSecWarning
+                $DeviceTotalBytesSecWarn
             ).CritOutOfRange(
-                $DeviceTotalBytesSecCritical
+                $DeviceTotalBytesSecCrit
             )
         );
 
@@ -370,9 +370,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Value $NetworkDeviceObject.PerfCounter['bytes sent/sec'].value `
                     -Unit 'B'
             ).WarnOutOfRange(
-                $DeviceSentBytesSecWarning
+                $DeviceSentBytesSecWarn
             ).CritOutOfRange(
-                $DeviceSentBytesSecCritical
+                $DeviceSentBytesSecCrit
             )
         );
 
@@ -400,7 +400,7 @@ function Invoke-IcingaCheckNetworkInterface()
         );
 
         # Add the checks for our interface link speed and performance metrics
-        $LinkChecks = Get-IcingaNetworkSpeedChecks -Name $InterfaceName -LinkSpeed $NetworkDeviceObject.Data.TransmitLinkSpeed -LinkSpeedWarning $LinkSpeedWarning -LinkSpeedCritical $LinkSpeedCritical;
+        $LinkChecks = Get-IcingaNetworkSpeedChecks -Name $InterfaceName -LinkSpeed $NetworkDeviceObject.Data.TransmitLinkSpeed -LinkSpeedWarning $LinkSpeedWarn -LinkSpeedCritical $LinkSpeedCrit;
         $NetworkEntryCheckPackage.AddCheck($LinkChecks.CheckLinkSpeed);
         $HiddenCheckPackage.AddCheck($LinkChecks.PerfDataLinkSpeed);
 
@@ -424,9 +424,9 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Translation $ProviderEnums.InterfaceTeamStatus `
                         -NoPerfData
                 ).WarnIfMatch(
-                    $ProviderEnums.InterfaceTeamStatusName[[string]$InterfaceTeamStatusWarning]
+                    $ProviderEnums.InterfaceTeamStatusName[[string]$IfTeamStatusWarn]
                 ).CritIfMatch(
-                    $ProviderEnums.InterfaceTeamStatusName[[string]$InterfaceTeamStatusCritical]
+                    $ProviderEnums.InterfaceTeamStatusName[[string]$IfTeamStatusCrit]
                 )
             );
 
@@ -477,14 +477,14 @@ function Invoke-IcingaCheckNetworkInterface()
                             -Translation $ProviderEnums.SlaveEnabledState `
                             -NoPerfData
                     ).WarnIfMatch(
-                        $ProviderEnums.SlaveEnabledStateName[[string]$InterfaceSlaveEnabledStateWarning]
+                        $ProviderEnums.SlaveEnabledStateName[[string]$IfSlaveEnabledStateWarn]
                     ).CritIfMatch(
-                        $ProviderEnums.SlaveEnabledStateName[[string]$InterfaceSlaveEnabledStateCritical]
+                        $ProviderEnums.SlaveEnabledStateName[[string]$IfSlaveEnabledStateCrit]
                     )
                 );
 
                 # Add the checks for our interface link speed and performance metrics
-                $LinkChecks = Get-IcingaNetworkSpeedChecks -Name $TeamMember.Name -LinkSpeed $TeamMember.TransmitLinkSpeed -LinkSpeedWarning $LinkSpeedWarning -LinkSpeedCritical $LinkSpeedCritical;
+                $LinkChecks = Get-IcingaNetworkSpeedChecks -Name $TeamMember.Name -LinkSpeed $TeamMember.TransmitLinkSpeed -LinkSpeedWarning $LinkSpeedWarn -LinkSpeedCritical $LinkSpeedCrit;
                 $TeamMemberPackage.AddCheck($LinkChecks.CheckLinkSpeed);
                 $HiddenCheckPackage.AddCheck($LinkChecks.PerfDataLinkSpeed);
 
@@ -511,7 +511,7 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Translation $ProviderEnums.InterfaceAdminStatus `
                         -NoPerfData
                 ).WarnIfMatch(
-                    $ProviderEnums.InterfaceAdminStatusName[[string]$InterfaceAdminStatusWarning]
+                    $ProviderEnums.InterfaceAdminStatusName[[string]$IfAdminStatusWarn]
                 )
             );
 
@@ -523,9 +523,9 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Translation $ProviderEnums.InterfaceOperationalStatus `
                         -NoPerfData
                 ).WarnIfMatch(
-                    $ProviderEnums.InterfaceOperationalStatusName[[string]$InterfaceOperationalStatusWarning]
+                    $ProviderEnums.InterfaceOperationalStatusName[[string]$IfOperationalStatusWarn]
                 ).CritIfMatch(
-                    $ProviderEnums.InterfaceOperationalStatusName[[string]$InterfaceOperationalStatusCritical]
+                    $ProviderEnums.InterfaceOperationalStatusName[[string]$IfOperationalStatusCrit]
                 )
             );
 
@@ -537,9 +537,9 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Translation $ProviderEnums.NetConnectionStatus `
                         -NoPerfData
                 ).WarnIfMatch(
-                    $ProviderEnums.NetConnectionStatusName[[string]$InterfaceConnectionStatusWarning]
+                    $ProviderEnums.NetConnectionStatusName[[string]$IfConnectionStatusWarn]
                 ).CritIfMatch(
-                    $ProviderEnums.NetConnectionStatusName[[string]$InterfaceConnectionStatusCritical]
+                    $ProviderEnums.NetConnectionStatusName[[string]$IfConnectionStatusCrit]
                 )
             );
 
