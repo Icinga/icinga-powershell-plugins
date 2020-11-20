@@ -42,16 +42,16 @@
 .PARAMETER PackteOutboundErrorCritical
     Critical threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted
     because of errors.
-.PARAMETER PacketReceivedDiscardedWarning
+.PARAMETER PacketReceivedDiscardedWarn
     Warning threshold for network Interface Packets Received Discarded is the number of inbound packets that were chosen to be discarded
     even though no errors had been detected to prevent their delivery to a higher-layer protocol.
-.PARAMETER PacketReceivedDiscardedCritical
+.PARAMETER PacketReceivedDiscardedCrit
     Critical threshold for network Interface Packets Received Discarded is the number of inbound packets that were chosen to be discarded
     even though no errors had been detected to prevent their delivery to a higher-layer protocol.
-.PARAMETER PacketOutboundDiscardedWarning
+.PARAMETER PacketOutboundDiscardedWarn
     Warning threshold for network Interface Packets Outbound Discarded is the number of outbound packets that were chosen to be discarded
     even though no errors had been detected to prevent transmission.
-.PARAMETER PacketOutboundDiscardedCritical
+.PARAMETER PacketOutboundDiscardedCrit
     Critical threshold for network Interface Packets Outbound Discarded is the number of outbound packets that were chosen to be discarded
     even though no errors had been detected to prevent transmission.
 .PARAMETER IncomingAvgBandUsageWarning
@@ -74,10 +74,10 @@
 .PARAMETER DeviceSentBytesSecCritical
     Critical threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing
     characters.
-.PARAMETER DeviceReceivedBytesSecWarning
+.PARAMETER DeviceReceivedBytesSecWarn
     Warning threshold for network Interface Bytes Received/sec is the rate at which bytes are received over each network adapter, including
     framing characters.
-.PARAMETER DeviceReceivedBytesSecCritical
+.PARAMETER DeviceReceivedBytesSecCrit
     Critical threshold for network Interface Bytes Received/sec is the rate at which bytes are received over each network adapter, including
     framing characters.
 .PARAMETER LinkSpeedWarning
@@ -153,10 +153,10 @@ function Invoke-IcingaCheckNetworkInterface()
         $PackteReceivedErrorCritical        = $null,
         $PackteOutboundErrorWarning         = $null,
         $PackteOutboundErrorCritical        = $null,
-        $PacketReceivedDiscardedWarning     = $null,
-        $PacketReceivedDiscardedCritical    = $null,
-        $PacketOutboundDiscardedWarning     = $null,
-        $PacketOutboundDiscardedCritical    = $null,
+        $PacketReceivedDiscardedWarn        = $null,
+        $PacketReceivedDiscardedCrit        = $null,
+        $PacketOutboundDiscardedWarn        = $null,
+        $PacketOutboundDiscardedCrit        = $null,
         $IncomingAvgBandUsageWarning        = $null,
         $IncomingAvgBandUsageCritical       = $null,
         $OutboundAvgBandUsageWarning        = $null,
@@ -165,8 +165,8 @@ function Invoke-IcingaCheckNetworkInterface()
         $DeviceTotalBytesSecCritical        = $null,
         $DeviceSentBytesSecWarning          = $null,
         $DeviceSentBytesSecCritical         = $null,
-        $DeviceReceivedBytesSecWarning      = $null,
-        $DeviceReceivedBytesSecCritical     = $null,
+        $DeviceReceivedBytesSecWarn         = $null,
+        $DeviceReceivedBytesSecCrit         = $null,
         $LinkSpeedWarning,
         $LinkSpeedCritical,
         [ValidateSet('Up', 'Down', 'Degraded')]
@@ -298,9 +298,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets received discarded', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets received discarded'].value
             ).WarnOutOfRange(
-                $PacketReceivedDiscardedWarning
+                $PacketReceivedDiscardedWarn
             ).CritOutOfRange(
-                $PacketReceivedDiscardedCritical
+                $PacketReceivedDiscardedCrit
             )
         );
 
@@ -310,9 +310,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets outbound discarded', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets outbound discarded'].value
             ).WarnOutOfRange(
-                $PacketOutboundDiscardedWarning
+                $PacketOutboundDiscardedWarn
             ).CritOutOfRange(
-                $PacketOutboundDiscardedCritical
+                $PacketOutboundDiscardedCrit
             )
         );
 
@@ -383,9 +383,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Value $NetworkDeviceObject.PerfCounter['bytes received/sec'].value `
                     -Unit 'B'
             ).WarnOutOfRange(
-                $DeviceReceivedBytesSecWarning
+                $DeviceReceivedBytesSecWarn
             ).CritOutOfRange(
-                $DeviceReceivedBytesSecCritical
+                $DeviceReceivedBytesSecCrit
             )
         );
 
