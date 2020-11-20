@@ -27,40 +27,40 @@ To execute this plugin you will require to grant the following user permissions.
 | ExcludeNetworkDevice | Array | false | @() | Specify the index of network adapters you want to exclude for checks. Example 4, 3 |
 | ExcludeInterfaceTeam | Array | false | @() | Specify the name of network interface teams you want to exclude for checks. Example OutboundGroup, ClusterInterface |
 | IncludeInterfaceTeam | Array | false | @() | Specify the name of network interface teams you want to include for checks. Example OutboundGroup, ClusterInterface |
-| PacketReceivedSecWarning | Object | false |  | Warning threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface. |
-| PacketReceivedSecCritical | Object | false |  | Critical threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface. |
-| PacketSentSecWarning | Object | false |  | Warning threshold for network Interface Packets Sent/sec is the rate at which packets are sent on the network interface. |
-| PacketSentSecCritical | Object | false |  | Critical threshold for network Interface Packets Sent/sec is the rate at which packets are sent on the network interface. |
-| PackteReceivedErrorWarning | Object | false |  | Warning threshold for network Interface Packets Received Errors is the number of inbound packets that contained errors preventing them from being deliverable to a higher-layer protocol. |
-| PackteReceivedErrorCritical | Object | false |  | Critical threshold for network Interface Packets Received Errors is the number of inbound packets that contained errors preventing them from being deliverable to a higher-layer protocol. |
-| PackteOutboundErrorWarning | Object | false |  | Warning threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted because of errors. |
-| PackteOutboundErrorCritical | Object | false |  | Critical threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted because of errors. |
+| PacketReceivedSecWarn | Object | false |  | Warning threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface. |
+| PacketReceivedSecCrit | Object | false |  | Critical threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface. |
+| PacketSentSecWarn | Object | false |  | Warning threshold for network Interface Packets Sent/sec is the rate at which packets are sent on the network interface. |
+| PacketSentSecCrit | Object | false |  | Critical threshold for network Interface Packets Sent/sec is the rate at which packets are sent on the network interface. |
+| PackteReceivedErrorWarn | Object | false |  | Warning threshold for network Interface Packets Received Errors is the number of inbound packets that contained errors preventing them from being deliverable to a higher-layer protocol. |
+| PackteReceivedErrorCrit | Object | false |  | Critical threshold for network Interface Packets Received Errors is the number of inbound packets that contained errors preventing them from being deliverable to a higher-layer protocol. |
+| PackteOutboundErrorWarn | Object | false |  | Warning threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted because of errors. |
+| PackteOutboundErrorCrit | Object | false |  | Critical threshold for network Interface Packets Outbound Errors is the number of outbound packets that could not be transmitted because of errors. |
 | PacketReceivedDiscardedWarn | Object | false |  | Warning threshold for network Interface Packets Received Discarded is the number of inbound packets that were chosen to be discarded even though no errors had been detected to prevent their delivery to a higher-layer protocol. |
 | PacketReceivedDiscardedCrit | Object | false |  | Critical threshold for network Interface Packets Received Discarded is the number of inbound packets that were chosen to be discarded even though no errors had been detected to prevent their delivery to a higher-layer protocol. |
 | PacketOutboundDiscardedWarn | Object | false |  | Warning threshold for network Interface Packets Outbound Discarded is the number of outbound packets that were chosen to be discarded even though no errors had been detected to prevent transmission. |
 | PacketOutboundDiscardedCrit | Object | false |  | Critical threshold for network Interface Packets Outbound Discarded is the number of outbound packets that were chosen to be discarded even though no errors had been detected to prevent transmission. |
-| IncomingAvgBandUsageWarning | Object | false |  | Warning threshold for network Interface avg. Bytes Received/sec is the average of incoming Bytes. |
-| IncomingAvgBandUsageCritical | Object | false |  | Critical threshold for network Interface avg. Bytes Received/sec is the average of incoming Bytes. |
-| OutboundAvgBandUsageWarning | Object | false |  | Warning threshold for network Interface avg. Bytes Sent/sec is the average of outbound Bytes. |
-| OutboundAvgBandUsageCritical | Object | false |  | Critical threshold for network Interface avg. Bytes Sent/sec is the average of outbound Bytes. |
-| DeviceTotalBytesSecWarning | Object | false |  | Warning threshold for network Interface Bytes Total/sec is the rate at which bytes are sent and received over each network adapter, including framing characters. |
-| DeviceTotalBytesSecCritical | Object | false |  | Critical threshold for network Interface Bytes Total/sec is the rate at which bytes are sent and received over each network adapter, including framing characters. |
-| DeviceSentBytesSecWarning | Object | false |  | Warning threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing characters. |
-| DeviceSentBytesSecCritical | Object | false |  | Critical threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing characters. |
+| IncomingAvgBandUsageWarn | Object | false |  | Warning threshold for network Interface avg. Bytes Received/sec is the average of incoming Bytes. |
+| IncomingAvgBandUsageCrit | Object | false |  | Critical threshold for network Interface avg. Bytes Received/sec is the average of incoming Bytes. |
+| OutboundAvgBandUsageWarn | Object | false |  | Warning threshold for network Interface avg. Bytes Sent/sec is the average of outbound Bytes. |
+| OutboundAvgBandUsageCrit | Object | false |  | Critical threshold for network Interface avg. Bytes Sent/sec is the average of outbound Bytes. |
+| DeviceTotalBytesSecWarn | Object | false |  | Warning threshold for network Interface Bytes Total/sec is the rate at which bytes are sent and received over each network adapter, including framing characters. |
+| DeviceTotalBytesSecCrit | Object | false |  | Critical threshold for network Interface Bytes Total/sec is the rate at which bytes are sent and received over each network adapter, including framing characters. |
+| DeviceSentBytesSecWarn | Object | false |  | Warning threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing characters. |
+| DeviceSentBytesSecCrit | Object | false |  | Critical threshold for network Interface Bytes Sent/sec is the rate at which bytes are sent over each network adapter, including framing characters. |
 | DeviceReceivedBytesSecWarn | Object | false |  | Warning threshold for network Interface Bytes Received/sec is the rate at which bytes are received over each network adapter, including framing characters. |
 | DeviceReceivedBytesSecCrit | Object | false |  | Critical threshold for network Interface Bytes Received/sec is the rate at which bytes are received over each network adapter, including framing characters. |
-| LinkSpeedWarning | Object | false |  | Warning threshold for the transmit link speed in (10 MBit, 100 MBit, 1 GBit, 10 GBit, 100 GBit, ...) of the network Interface. |
-| LinkSpeedCritical | Object | false |  | Critical threshold for the transmit link speed in (10 MBit, 100 MBit, 1 GBit, 10 GBit, 100 GBit, ...) of the network Interface. |
-| InterfaceTeamStatusWarning | Object | false |  | Warning threshold for the Status of a network Interface Teams. |
-| InterfaceTeamStatusCritical | Object | false |  | Critical threshold for the Status of a network Interface Teams. |
-| InterfaceSlaveEnabledStateWarning | Object | false |  | Warning threshold for the State of a network Interface Team-Members/Slaves. |
-| InterfaceSlaveEnabledStateCritical | Object | false |  | Critical threshold for the State of a network Interface Team-Members/Slaves. |
-| InterfaceAdminStatusWarning | Object | false |  | Warning threshold for the network Interface administrative status. |
-| InterfaceOperationalStatusWarning | Object | false |  | Warning threshold for the current network interface operational status. |
-| InterfaceOperationalStatusCritical | Object | false |  | Critical threshold for the current network interface operational status. |
-| InterfaceConnectionStatusWarning | Object | false |  | Warning threshold for the state of the network adapter connection to the network. |
-| InterfaceConnectionStatusCritical | Object | false |  | Critical threshold for the state of the network adapter connection to the network. |
-| IncludeHiddenNetworkDevice | SwitchParameter | false | False | Set this argument if you want to include hidden network Adapter for checks. It is a network which is available but is not broadcasting its ID. |
+| LinkSpeedWarn | Object | false |  | Warning threshold for the transmit link speed in (10 MBit, 100 MBit, 1 GBit, 10 GBit, 100 GBit, ...) of the network Interface. |
+| LinkSpeedCrit | Object | false |  | Critical threshold for the transmit link speed in (10 MBit, 100 MBit, 1 GBit, 10 GBit, 100 GBit, ...) of the network Interface. |
+| IfTeamStatusWarn | Object | false |  | Warning threshold for the Status of a network Interface Teams. |
+| IfTeamStatusCrit | Object | false |  | Critical threshold for the Status of a network Interface Teams. |
+| IfSlaveEnabledStateWarn | Object | false |  | Warning threshold for the State of a network Interface Team-Members/Slaves. |
+| IfSlaveEnabledStateCrit | Object | false |  | Critical threshold for the State of a network Interface Team-Members/Slaves. |
+| IfAdminStatusWarn | Object | false |  | Warning threshold for the network Interface administrative status. |
+| IfOperationalStatusWarn | Object | false |  | Warning threshold for the current network interface operational status. |
+| IfOperationalStatusCrit | Object | false |  | Critical threshold for the current network interface operational status. |
+| IfConnectionStatusWarn | Object | false |  | Warning threshold for the state of the network adapter connection to the network. |
+| IfConnectionStatusCrit | Object | false |  | Critical threshold for the state of the network adapter connection to the network. |
+| IncludeHidden | SwitchParameter | false | False | Set this argument if you want to include hidden network Adapter for checks. It is a network which is available but is not broadcasting its ID. |
 | NoPerfData | SwitchParameter | false | False | Disables the performance data output of this plugin |
 | Verbosity | Object | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state |
 

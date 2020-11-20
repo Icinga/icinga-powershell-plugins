@@ -26,7 +26,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#79](https://github.com/Icinga/icinga-powershell-plugins/issues/79) Fixes service check to exclude provided service names in case they contain the wildcard symbol '*' which causes the check to always return unknown
 * [#86](https://github.com/Icinga/icinga-powershell-plugins/pull/86) Fixes `Get-IcingaCPUCount` returns wrong count on empty arguments
 * [#97](https://github.com/Icinga/icinga-powershell-plugins/issues/97), [#98](https://github.com/Icinga/icinga-powershell-plugins/pull/98) Fixes invalid performance data output for `Invoke-IcingaCheckScheduledTask`
-* [#102](https://github.com/Icinga/icinga-powershell-plugins/pull/102) Fixes `Invoke-IcingaCheckNetworkInterface` plugins arguments being too long for Icinga Director
+* [#102](https://github.com/Icinga/icinga-powershell-plugins/pull/102), [#103](https://github.com/Icinga/icinga-powershell-plugins/pull/103) Fixes `Invoke-IcingaCheckNetworkInterface` plugins arguments being too long for Icinga Director
 
 ## 1.2.0 (2020-08-28)
 
