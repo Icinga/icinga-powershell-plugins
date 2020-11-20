@@ -19,7 +19,7 @@ No special permissions required.
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
 | TaskName | Array | false |  | A list of tasks to check for. If your tasks contain spaces, wrap them around a ' to ensure they are properly handled as string |
-| State | String | false |  | The state a task should currently have for the plugin to return [OK] Force the usage of IPv6 addresses for ICMP calls by using a hostname |
+| State | Array | false | @() | The state a task should currently have for the plugin to return [OK] |
 | NoPerfData | SwitchParameter | false | False | Set this argument to not write any performance data |
 | Verbosity | Int32 | false | 0 | Increase the printed output message by adding additional details or print all data regardless of their status |
 
