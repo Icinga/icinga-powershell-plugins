@@ -11,6 +11,12 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/4?closed=1)
 
+### New Plugins
+
+This release adds the following new plugin:
+
+* [Invoke-IcingaCheckNetworkInterface](https://icinga.com/docs/windows/latest/plugins/doc/plugins/21-Invoke-IcingaCheckNetworkInterface/): Checks availability, state and Usage of Network interfaces and Interface Teams
+
 ### Enhancements
 
 * [#73](https://github.com/Icinga/icinga-powershell-plugins/issues/73) Improves plugin creation Cmdlet to write a new permission section and to create the `plugins` doc folder in case it does not exist
