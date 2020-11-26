@@ -36,7 +36,7 @@ To execute this plugin you will require to grant the following user permissions.
 ### Example Command 1
 
 ```powershell
-Invoke-IcingaCheckCpu -Warning 50 -Critical 75
+Invoke-IcingaCheckCPU -Warning 50 -Critical 75
 ```
 
 ### Example Output 1
@@ -48,7 +48,7 @@ Invoke-IcingaCheckCpu -Warning 50 -Critical 75
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckCpu -Warning 50 -Critical 75 -Core 1
+Invoke-IcingaCheckCPU -Warning 50 -Critical 75 -Core 1
 ```
 
 ### Example Output 2
