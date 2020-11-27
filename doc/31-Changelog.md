@@ -7,7 +7,7 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
-## 1.3.0 (pending)
+## 1.3.0 (2020-12-01)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/4?closed=1)
 
@@ -16,6 +16,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 This release adds the following new plugin:
 
 * [Invoke-IcingaCheckNetworkInterface](https://icinga.com/docs/windows/latest/plugins/doc/plugins/21-Invoke-IcingaCheckNetworkInterface/): Checks availability, state and Usage of Network interfaces and Interface Teams
+* [Invoke-IcingaCheckStoragePool](https://icinga.com/docs/windows/latest/plugins/doc/plugins/21-Invoke-IcingaCheckStoragePool/): Checks availability, utilization and state of a StoragePool
 
 ### Enhancements
 
