@@ -32,6 +32,7 @@ If you are going to install this plugin release, please have a look on the [upgr
 * [#90](https://github.com/Icinga/icinga-powershell-plugins/issues/90) Adds support to ignore read only/offline disks on `Invoke-IcingaCheckDiskHealth`
 * [#101](https://github.com/Icinga/icinga-powershell-plugins/pull/101) Improves `Invoke-IcingaCheckScheduledTask` by changing the `State` argument from `String` to `Array`, allowing the comparison against multiple states. **Important:** Please have a look on the [upgrading docs!](https://icinga.com/docs/windows/latest/plugins/doc/30-Upgrading-Plugins/)
 * [#104](https://github.com/Icinga/icinga-powershell-plugins/pull/104) Adds plugin configuration files for Icinga Director and Icinga 2 within the [config directory](https://github.com/Icinga/icinga-powershell-plugins/tree/master/config)
+* [#109](https://github.com/Icinga/icinga-powershell-plugins/pull/109) Adds exception handling in case `-Path` argument is not set or not directing a file (including invalid path)
 
 ### Bugfixes
 
