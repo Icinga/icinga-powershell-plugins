@@ -44,10 +44,10 @@ function Get-IcingaEventLog()
         $After = [datetime]::Now.Subtract([TimeSpan]::FromHours(2));
     }
     
-    if ($null -ne $IncludeUsername) {
+    if ($null -ne $IncludeUsername -And $IncludeUsername.Count -ne 0) {
         $EventLogArguments.Add('UserName', $IncludeUsername);
     }
-    if ($null -ne $IncludeEntryType) {
+    if ($null -ne $IncludeEntryType -And $IncludeEntryType.Count -ne 0) {
         $EventLogArguments.Add('EntryType', $IncludeEntryType);
     }
     if ($null -ne $After) {
