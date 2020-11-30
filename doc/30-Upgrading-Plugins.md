@@ -6,6 +6,10 @@ Specific version upgrades are described below. Please note that version updates 
 
 For upgrading plugins, please have a look on the [installation docs](02-Installation.md).
 
+## Upgrading to v1.4.0 (pending)
+
+*No special steps required*
+
 ## Upgrading to v1.3.0 (2020-12-01)
 
 ### Plugin Argument Changes <span style="color:#F6BE00">(Breaking Changes)</span>
