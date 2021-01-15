@@ -19,7 +19,7 @@
 
     ### Required User Groups
 
-    * Performance Log Users
+    * Performance Monitor Users
 .EXAMPLE
    PS>Invoke-IcingaCheckProcessCount -Process conhost -Warning 5 -Critical 10
    [OK]: Check package "Process Check" is [OK]
