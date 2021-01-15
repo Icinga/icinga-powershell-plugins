@@ -7,6 +7,22 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.4.0 (pending)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/5?closed=1)
+
+### Enhancements
+
+### Bugfixes
+
+## 1.3.1 (2021-02-04)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/6?closed=1)
+
+### Bugfixes
+
+* [#123](https://github.com/Icinga/icinga-powershell-plugins/pull/123) Fixes wrong documented user group for accessing Performance Counter objects which should be `Performance Monitor Users`
+
 ## 1.3.0 (2020-12-01)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/4?closed=1)
