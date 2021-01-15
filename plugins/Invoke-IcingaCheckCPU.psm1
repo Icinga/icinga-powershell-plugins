@@ -15,7 +15,7 @@
 
     ### Required User Groups
 
-    * Performance Log Users
+    * Performance Monitor Users
 .EXAMPLE
     PS>Invoke-IcingaCheckCPU -Warning 50 -Critical 75
     [OK]: Check package "CPU Load" is [OK]

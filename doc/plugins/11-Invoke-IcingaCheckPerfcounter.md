@@ -18,7 +18,7 @@ To execute this plugin you will require to grant the following user permissions.
 
 ### Required User Groups
 
-* Performance Log Users
+* Performance Monitor Users
 
 ## Arguments
 

@@ -26,7 +26,7 @@
 
     ### Required User Groups
 
-    * Performance Log Users
+    * Performance Monitor Users
 .PARAMETER IncludeDisk
     Specify the index id of disks you want to include for checks. Example 0, 1
 .PARAMETER ExcludeDisk

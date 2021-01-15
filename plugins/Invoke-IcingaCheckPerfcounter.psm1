@@ -14,7 +14,7 @@
 .ROLE
     ### Required User Groups
 
-    * Performance Log Users
+    * Performance Monitor Users
 .EXAMPLE
    PS> Invoke-IcingaCheckPerfCounter -PerfCounter '\processor(*)\% processor time' -Warning 60 -Critical 90
    [WARNING]: Check package "Performance Counter" is [WARNING]
