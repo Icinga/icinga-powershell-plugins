@@ -18,7 +18,7 @@
 
     ### Required User Groups
 
-    * Performance Log Users
+    * Performance Monitor Users
 .EXAMPLE
    PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
    [WARNING]: % Memory Check 78.74 is greater than 60
