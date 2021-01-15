@@ -28,7 +28,7 @@
 
     ### Required User Groups
 
-    * Performance Log Users
+    * Performance Monitor Users
 .EXAMPLE
     PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
     [OK]: Check package "Used Partition Space" is [OK]
