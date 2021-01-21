@@ -26,6 +26,8 @@ function Get-IcingaServices()
         [array]$DependingServices = $null;
         $ServiceExitCode          = 0;
         [string]$ServiceUser      = '';
+        [int]$StartModeId         = 5;
+        [string]$StartMode        = 'Unknown';
 
         if ($Exclude -contains $service.ServiceName) {
             continue;
@@ -35,6 +37,10 @@ function Get-IcingaServices()
             if ($wmiService.Name -eq $service.ServiceName) {
                 $ServiceUser     = $wmiService.StartName;
                 $ServiceExitCode = $wmiService.ExitCode;
+                if ([string]::IsNullOrEmpty($wmiService.StartMode) -eq $FALSE) {
+                    $StartModeId = ([int]$ProviderEnums.ServiceWmiStartupType[$wmiService.StartMode]);
+                    $StartMode   = $ProviderEnums.ServiceStartupTypeName[$StartModeId];
+                }
                 break;
             }
         }
@@ -57,34 +63,34 @@ function Get-IcingaServices()
 
         $ServiceData.Add(
             $service.Name, @{
-                'metadata' = @{
-                    'DisplayName' = $service.DisplayName;
-                    'ServiceName' = $service.ServiceName;
-                    'Site' = $service.Site;
-                    'Container' = $service.Container;
+                'metadata'      = @{
+                    'DisplayName'   = $service.DisplayName;
+                    'ServiceName'   = $service.ServiceName;
+                    'Site'          = $service.Site;
+                    'Container'     = $service.Container;
                     'ServiceHandle' = $service.ServiceHandle;
-                    'Dependent' = $DependentServices;
-                    'Depends' = $DependingServices;
+                    'Dependent'     = $DependentServices;
+                    'Depends'       = $DependingServices;
                 };
                 'configuration' = @{
                     'CanPauseAndContinue' = $service.CanPauseAndContinue;
-                    'CanShutdown' = $service.CanShutdown;
-                    'CanStop' = $service.CanStop;
-                    'Status' = @{
-                        'raw' = [int]$service.Status;
+                    'CanShutdown'         = $service.CanShutdown;
+                    'CanStop'             = $service.CanStop;
+                    'Status'              = @{
+                        'raw'   = [int]$service.Status;
                         'value' = $service.Status;
                     };
-                    'ServiceType' = @{
-                        'raw' = [int]$service.ServiceType;
+                    'ServiceType'         = @{
+                        'raw'   = [int]$service.ServiceType;
                         'value' = $service.ServiceType;
                     };
-                    'ServiceHandle' = $service.ServiceHandle;
-                    'StartType' = @{
-                        'raw' = [int]$service.StartType;
-                        'value' = $service.StartType;
+                    'ServiceHandle'       = $service.ServiceHandle;
+                    'StartType'           = @{
+                        'raw'   = $StartModeId;
+                        'value' = $StartMode;
                     };
-                    'ServiceUser' = $ServiceUser;
-                    'ExitCode'    = $ServiceExitCode;
+                    'ServiceUser'         = $ServiceUser;
+                    'ExitCode'            = $ServiceExitCode;
                 }
             }
         );
