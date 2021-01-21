@@ -99,7 +99,7 @@ function Invoke-IcingaCheckService()
                 continue;
             }
 
-            # Service is not running bug the ExitCode is 0 -> this is fine and should not raise a critical
+            # Service is not running but the ExitCode is 0 -> this is fine and should not raise a critical
             if ($autoservice.configuration.ExitCode -eq 0) {
                 $ServicesPackage.AddCheck(
                     (New-IcingaWindowsServiceCheckObject -Status 'Stopped' -Service $autoservice -NoPerfData)
@@ -109,7 +109,7 @@ function Invoke-IcingaCheckService()
 
             # Services which should be running, but are not
             $ServicesPackage.AddCheck(
-                (New-IcingaWindowsServiceCheckObject -Status 'Running' -Service $FetchedServices[$services] -NoPerfData)
+                (New-IcingaWindowsServiceCheckObject -Status 'Running' -Service $autoservice -NoPerfData)
             );
         }
     } else {
