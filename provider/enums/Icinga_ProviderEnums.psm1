@@ -863,9 +863,30 @@
 }
 
 [hashtable]$ServiceStartupType = @{
+    'Boot'      = 0;
+    'System'    = 1;
     'Automatic' = 2;
     'Manual'    = 3;
     'Disabled'  = 4;
+    'Unknown'   = 5; # Custom
+}
+
+[hashtable]$ServiceStartupTypeName = @{
+    0 = 'Boot';
+    1 = 'System';
+    2 = 'Automatic';
+    3 = 'Manual';
+    4 = 'Disabled';
+    5 = 'Unknown'; # Custom
+}
+
+[hashtable]$ServiceWmiStartupType = @{
+    'Boot'     = 0;
+    'System'   = 1;
+    'Auto'     = 2;
+    'Manual'   = 3;
+    'Disabled' = 4;
+    'Unknown'  = 5; # Custom
 }
 
 <##################################################################################################
@@ -1013,6 +1034,8 @@
     ServiceStatus                  = $ServiceStatus;
     ServiceStatusName              = $ServiceStatusName;
     ServiceStartupType             = $ServiceStartupType;
+    ServiceStartupTypeName         = $ServiceStartupTypeName;
+    ServiceWmiStartupType          = $ServiceWmiStartupType;
     #/lib/provider/tasks
     ScheduledTaskStatus            = $ScheduledTaskStatus;
     ScheduledTaskName              = $ScheduledTaskName;

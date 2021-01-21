@@ -17,6 +17,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#123](https://github.com/Icinga/icinga-powershell-plugins/pull/123) Fixes wrong documented user group for accessing Performance Counter objects which should be `Performance Monitor Users`
 * [#124](https://github.com/Icinga/icinga-powershell-plugins/pull/124) Fixes crash on `Invoke-IcingaCheckService` if an automatic service is not running
+* [#126](https://github.com/Icinga/icinga-powershell-plugins/pull/126) Fixes code base for `Invoke-IcingaCheckService` by preferring to fetch the startup type of services by using WMI instead of `Get-Services`, as the result of `Get-Services` might be empty in some cases
 
 ## 1.3.0 (2020-12-01)
 
