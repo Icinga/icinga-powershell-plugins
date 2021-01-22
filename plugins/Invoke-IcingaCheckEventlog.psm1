@@ -5,6 +5,10 @@
    Invoke-IcingaCheckEventlog returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
    e.g Eventlog returns 500 entries with the specified parameters, WARNING is set to 200, CRITICAL is set to 800. Thereby the check will return WARNING.
 
+   By default if no time frame is selected with `-After` for example, the plugin will fetch EventLog information from the last two hours.
+   In case your are not using `-DisableTimeCache`, the plugin will after the first execution only collect the delta between the last
+   execution time and the current execution time.
+
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
    This Module is intended to be used to check how many eventlog occurrences of a given type there are.

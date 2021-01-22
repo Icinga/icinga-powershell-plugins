@@ -25,7 +25,7 @@ To execute this plugin you will require to grant the following user permissions.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Service | Array | false |  | Used to specify an array of services which should be checked against the status. Supports '*' for wildcards. |
+| Service | Array | false | @() | Used to specify an array of services which should be checked against the status. Supports '*' for wildcards. |
 | Exclude | Array | false | @() | Allows to exclude services which might come in handy for checking services which are configured to start automatically on Windows but are not running and weren't exited properly. |
 | Status | String | false | Running | Status for the specified service or services to check against. |
 | Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state |

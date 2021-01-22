@@ -64,7 +64,7 @@
 function Invoke-IcingaCheckService()
 {
     param (
-        [array]$Service,
+        [array]$Service     = @(),
         [array]$Exclude     = @(),
         [ValidateSet('Stopped', 'StartPending', 'StopPending', 'Running', 'ContinuePending', 'PausePending', 'Paused')]
         [string]$Status     = 'Running',
