@@ -3,7 +3,7 @@
 
 ## Description
 
-Checks hash against filehash of a file
+Checks hash against file hash of a file
 
 Invoke-IcingaCheckCheckSum returns either 'OK' or 'CRITICAL', whether the check matches or not.
 
