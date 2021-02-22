@@ -10,7 +10,7 @@
 
     More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
-    This module is intended to be used to check whether one or more services have a certain status. 
+    This module is intended to be used to check whether one or more services have a certain status.
     As soon as one of the specified services does not match the status, the function returns 'CRITICAL' instead of 'OK'.
 .ROLE
     ### WMI Permissions
@@ -118,7 +118,7 @@ function Invoke-IcingaCheckService()
             $ServicesPackage.AddCheck(
                 (New-IcingaWindowsServiceCheckObject -Status $Status -Service $services)
             );
-    
+
             $ServiceSummary = Add-IcingaServiceSummary -ServiceStatus $StatusRaw -ServiceData $ServiceSummary;
         }
     }
@@ -160,7 +160,7 @@ function Invoke-IcingaCheckService()
         (New-IcingaCheck -Name 'service count' -Value $ServiceSummary.ServicesCounted)
     );
 
-     $ServicesPackage.AddCheck($ServicesCountPackage)
+    $ServicesPackage.AddCheck($ServicesCountPackage)
 
     return (New-IcingaCheckResult -Name 'Services' -Check $ServicesPackage -NoPerfData $NoPerfData -Compile);
 }

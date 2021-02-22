@@ -30,13 +30,13 @@
    \_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"
    | 'packet_loss'=0%;50;75;0;100 'packet_count'=4c;; 'response_time'=113.25ms;80;100
 .PARAMETER Warning
-   Treshold on which the plugin will return 'WARNING' for the response time in ms
+   Threshold on which the plugin will return 'WARNING' for the response time in ms
 .PARAMETER Critical
-   Treshold on which the plugin will return 'CRITICAL' for the response time in ms
+   Threshold on which the plugin will return 'CRITICAL' for the response time in ms
 .PARAMETER WarningPl
-   Treshold on which the plugin will return 'WARNING' for possible packet loss in %
+   Threshold on which the plugin will return 'WARNING' for possible packet loss in %
 .PARAMETER CriticalPl
-   Treshold on which the plugin will return 'CRITICAL' for possible packet loss in %
+   Threshold on which the plugin will return 'CRITICAL' for possible packet loss in %
 .PARAMETER Hostname
    The target hosts IP or FQDN to send ICMP requests too
 .PARAMETER PacketCount
@@ -64,48 +64,48 @@
 
 function Invoke-IcingaCheckICMP()
 {
-   param (
-      $Warning            = 100,
-      $Critical           = 200,
-      $WarningPl          = 20,
-      $CriticalPl         = 50,
-      [string]$Hostname,
-      [int]$PacketCount   = 5,
-      [int]$PacketSize    = 64,
-      [switch]$IPv4       = $FALSE,
-      [switch]$IPv6       = $FALSE,
-      [switch]$NoPerfData = $FALSE,
-      [ValidateSet(0, 1, 2)]
-      [int]$Verbosity     = 0
-   );
+    param (
+        $Warning            = 100,
+        $Critical           = 200,
+        $WarningPl          = 20,
+        $CriticalPl         = 50,
+        [string]$Hostname,
+        [int]$PacketCount   = 5,
+        [int]$PacketSize    = 64,
+        [switch]$IPv4       = $FALSE,
+        [switch]$IPv6       = $FALSE,
+        [switch]$NoPerfData = $FALSE,
+        [ValidateSet(0, 1, 2)]
+        [int]$Verbosity     = 0
+    );
 
-   $Result      = Test-IcingaICMPConnection -Hostname $Hostname -PacketCount $PacketCount -PacketSize $PacketSize -IPv4 $IPv4 -IPv6 $IPv6;
-   $ICMPPackage = New-IcingaCheckPackage -Name ([string]::Format('ICMP Check for {0}', $Hostname)) -OperatorAnd -Verbose $Verbosity;
+    $Result      = Test-IcingaICMPConnection -Hostname $Hostname -PacketCount $PacketCount -PacketSize $PacketSize -IPv4 $IPv4 -IPv6 $IPv6;
+    $ICMPPackage = New-IcingaCheckPackage -Name ([string]::Format('ICMP Check for {0}', $Hostname)) -OperatorAnd -Verbose $Verbosity;
 
-   foreach ($entry in $Result.Results.Values) {
-      $ICMPValue = $entry.Value;
+    foreach ($entry in $Result.Results.Values) {
+        $ICMPValue = $entry.Value;
 
-      $ICMPCheck = New-IcingaCheck -Name ([string]::Format('ICMP request to {0} with {1} bytes', $Result.Summary.IPAddress, $PacketSize)) -Value $ICMPValue.ResponseTime -Unit 'ms' -NoPerfData;
-      $ICMPCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+        $ICMPCheck = New-IcingaCheck -Name ([string]::Format('ICMP request to {0} with {1} bytes', $Result.Summary.IPAddress, $PacketSize)) -Value $ICMPValue.ResponseTime -Unit 'ms' -NoPerfData;
+        $ICMPCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
-      $ICMPPackage.AddCheck($ICMPCheck);
-   }
+        $ICMPPackage.AddCheck($ICMPCheck);
+    }
 
-   $PacketLoss = New-IcingaCheck -Name 'Packet Loss' -Value $Result.Summary.PacketLoss -Unit '%';
-   $PacketLoss.WarnOutOfRange($WarningPl).CritOutOfRange($CriticalPl) | Out-Null;
+    $PacketLoss = New-IcingaCheck -Name 'Packet Loss' -Value $Result.Summary.PacketLoss -Unit '%';
+    $PacketLoss.WarnOutOfRange($WarningPl).CritOutOfRange($CriticalPl) | Out-Null;
 
-   $ICMPPackage.AddCheck($PacketLoss);
+    $ICMPPackage.AddCheck($PacketLoss);
 
-   $ResponseTime = New-IcingaCheck -Name 'Average Response Time' -Value $Result.Summary.ResponseTime -Unit 'ms';
-   $ResponseTime.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+    $ResponseTime = New-IcingaCheck -Name 'Average Response Time' -Value $Result.Summary.ResponseTime -Unit 'ms';
+    $ResponseTime.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
-   $PerfDataPackage = New-IcingaCheckPackage -Name 'PerfData' -OperatorAnd -Verbose $Verbosity -Hidden -Checks @(
-      $ResponseTime,
-      (New-IcingaCheck -Name 'Packet Count' -Value $Result.Summary.PacketsSend -Unit 'c')
-      (New-IcingaCheck -Name 'Minimum Response Time' -Value $Result.Summary.MinResponseTime -Unit 'ms'),
-      (New-IcingaCheck -Name 'Maximum Response Time' -Value $Result.Summary.MaxResponseTime -Unit 'ms')
-   );
-   $ICMPPackage.AddCheck($PerfDataPackage);
+    $PerfDataPackage = New-IcingaCheckPackage -Name 'PerfData' -OperatorAnd -Verbose $Verbosity -Hidden -Checks @(
+        $ResponseTime,
+        (New-IcingaCheck -Name 'Packet Count' -Value $Result.Summary.PacketsSend -Unit 'c')
+        (New-IcingaCheck -Name 'Minimum Response Time' -Value $Result.Summary.MinResponseTime -Unit 'ms'),
+        (New-IcingaCheck -Name 'Maximum Response Time' -Value $Result.Summary.MaxResponseTime -Unit 'ms')
+    );
+    $ICMPPackage.AddCheck($PerfDataPackage);
 
-   return (New-IcingaCheckResult -Check $ICMPPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckResult -Check $ICMPPackage -NoPerfData $NoPerfData -Compile);
 }

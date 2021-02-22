@@ -15,7 +15,7 @@
 .EXAMPLE
    PS> Invoke-IcingaCheckUptime -Warning 18d -Critical 20d
    [WARNING]: Check package "Windows Uptime: Days: 19 Hours: 13 Minutes: 48 Seconds: 29" is [WARNING]
-   | 'Windows Uptime'=1691309,539176s;1555200;1728000 
+   | 'Windows Uptime'=1691309,539176s;1555200;1728000
 .EXAMPLE
    PS> Invoke-IcingaCheckUptime -Warning 25d:
    [WARNING] Check package "System Uptime: 22d 16h 42m 35s" - [WARNING] System Uptime
@@ -39,25 +39,25 @@
 
 function Invoke-IcingaCheckUptime()
 {
-   param(
-      [string]$Warning    = $null,
-      [string]$Critical   = $null,
-      [switch]$NoPerfData,
-      [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity     = 0
-   );
+    param(
+        [string]$Warning    = $null,
+        [string]$Critical   = $null,
+        [switch]$NoPerfData,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity     = 0
+    );
 
-   $WindowsData = Get-IcingaWindows;
-   $Name        = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value)));
+    $WindowsData = Get-IcingaWindows;
+    $Name        = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value)));
 
-   $IcingaCheck = New-IcingaCheck -Name 'System Uptime' -Value $WindowsData.windows.metadata.uptime.value -Unit 's';
-   $IcingaCheck.WarnOutOfRange(
-      (ConvertTo-SecondsFromIcingaThresholds -Threshold $Warning)
-   ).CritOutOfRange(
-      (ConvertTo-SecondsFromIcingaThresholds -Threshold $Critical)
-   ) | Out-Null;
+    $IcingaCheck = New-IcingaCheck -Name 'System Uptime' -Value $WindowsData.windows.metadata.uptime.value -Unit 's';
+    $IcingaCheck.WarnOutOfRange(
+        (ConvertTo-SecondsFromIcingaThresholds -Threshold $Warning)
+    ).CritOutOfRange(
+        (ConvertTo-SecondsFromIcingaThresholds -Threshold $Critical)
+    ) | Out-Null;
 
-   $CheckPackage = New-IcingaCheckPackage -Name $Name -OperatorAnd -Checks $IcingaCheck -Verbose $Verbosity;
+    $CheckPackage = New-IcingaCheckPackage -Name $Name -OperatorAnd -Checks $IcingaCheck -Verbose $Verbosity;
 
-   return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckResult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
 }

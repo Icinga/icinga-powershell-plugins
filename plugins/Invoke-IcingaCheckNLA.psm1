@@ -38,8 +38,8 @@ function Invoke-IcingaCheckNLA()
         [array]$NICs
     );
 
-    $NLAPackage = New-IcingaCheckPackage -Name 'NLA' -OperatorAnd -Verbos $Verbosity;
-   
+    $NLAPackage = New-IcingaCheckPackage -Name 'NLA' -OperatorAnd -Verbose $Verbosity;
+
     if ($NICs.Count -eq 0) {
         foreach ($NLAData in Get-NetConnectionProfile) {
             $NLAName = $NLAData.InterfaceAlias;

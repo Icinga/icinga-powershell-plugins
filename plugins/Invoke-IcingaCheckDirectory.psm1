@@ -9,7 +9,7 @@
    Based on the provided filters, the plugin will return the amount of files found matching those filters.
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
-   This module is intended to be used to check how many files and directories are within are specified path. 
+   This module is intended to be used to check how many files and directories are within are specified path.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
 .EXAMPLE
    PS>Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Critical 30 -Verbosity 3
@@ -40,7 +40,7 @@
    e.g. 'C:\Users\Icinga\Downloads'
 .PARAMETER FileNames
    Used to specify an array of filenames or expressions to match against results to filter for specific files.
-   
+
    e.g '*.txt', '*.sql' # Fiends all files ending with .txt and .sql
 .PARAMETER Recurse
    A switch, which can be set to search through directories recursively.
@@ -87,39 +87,39 @@
 
 function Invoke-IcingaCheckDirectory()
 {
-   param(
-      [string]$Path,
-      [array]$FileNames,
-      [switch]$Recurse,
-      $Critical           = $null,
-      $Warning            = $null,
-      [string]$ChangeTimeEqual,
-      [string]$ChangeYoungerThan,
-      [string]$ChangeOlderThan,
-      [string]$CreationTimeEqual,
-      [string]$CreationOlderThan,
-      [string]$CreationYoungerThan,
-      [string]$FileSizeGreaterThan,
-      [string]$FileSizeSmallerThan,
-      [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity     = 0,
-      [switch]$NoPerfData
-   );
+    param(
+        [string]$Path,
+        [array]$FileNames,
+        [switch]$Recurse,
+        $Critical           = $null,
+        $Warning            = $null,
+        [string]$ChangeTimeEqual,
+        [string]$ChangeYoungerThan,
+        [string]$ChangeOlderThan,
+        [string]$CreationTimeEqual,
+        [string]$CreationOlderThan,
+        [string]$CreationYoungerThan,
+        [string]$FileSizeGreaterThan,
+        [string]$FileSizeSmallerThan,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity     = 0,
+        [switch]$NoPerfData
+    );
 
-   $DirectoryData  = Get-IcingaDirectoryAll -Path $Path -FileNames $FileNames -Recurse $Recurse `
-                     -ChangeYoungerThan $ChangeYoungerThan -ChangeOlderThan $ChangeOlderThan `
-                     -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
-                     -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
-                     -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
-   $DirectoryCheck = New-IcingaCheck -Name 'File Count' -Value $DirectoryData.Count;
+    $DirectoryData  = Get-IcingaDirectoryAll -Path $Path -FileNames $FileNames -Recurse $Recurse `
+                        -ChangeYoungerThan $ChangeYoungerThan -ChangeOlderThan $ChangeOlderThan `
+                        -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
+                        -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
+                        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
+    $DirectoryCheck = New-IcingaCheck -Name 'File Count' -Value $DirectoryData.Count;
 
-   $DirectoryCheck.WarnOutOfRange(
-      ($Warning)
-   ).CritOutOfRange(
-      ($Critical)
-   ) | Out-Null;
+    $DirectoryCheck.WarnOutOfRange(
+        ($Warning)
+    ).CritOutOfRange(
+        ($Critical)
+    ) | Out-Null;
 
-   $DirectoryPackage = New-IcingaCheckPackage -Name $Path -OperatorAnd -Checks $DirectoryCheck -Verbose $Verbosity;
+    $DirectoryPackage = New-IcingaCheckPackage -Name $Path -OperatorAnd -Checks $DirectoryCheck -Verbose $Verbosity;
 
-   return (New-IcingaCheckresult -Check $DirectoryPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckResult -Check $DirectoryPackage -NoPerfData $NoPerfData -Compile);
 }
