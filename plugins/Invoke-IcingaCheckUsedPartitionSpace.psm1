@@ -125,6 +125,7 @@ function Invoke-IcingaCheckUsedPartitionSpace()
         if ($null -eq $DiskSizeBytes) {
             $DiskSizeBytes = 0;
         }
+
         $DiskSize           = Convert-Bytes -Value ([string]::Format('{0}B', $DiskSizeBytes)) -Unit $Unit;
         $DiskTotalWarning   = $null;
         $DiskTotalCritical  = $null;

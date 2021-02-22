@@ -1,15 +1,14 @@
 function Use-IcingaPlugins()
 {
     Import-IcingaPlugins -Directory 'provider';
-    Import-IcingaPlugins -Directory 'plugins';
 }
 
 function Import-IcingaPlugins()
 {
-    param(
+    param (
         [Parameter(
-            Position=0, 
-            Mandatory=$true, 
+            Position=0,
+            Mandatory=$true,
             ValueFromPipeline=$true,
             ValueFromPipelineByPropertyName=$true)
         ]
@@ -21,10 +20,10 @@ function Import-IcingaPlugins()
     # Load modules from directory
     if ((Test-Path $module -PathType Container)) {
         Get-ChildItem -Path $module -Recurse -Filter *.psm1 |
-        ForEach-Object {
-            [string]$modulePath = $_.FullName;
-            Import-Module ([string]::Format('{0}', $modulePath)) -Global;
-        }
+            ForEach-Object {
+                [string]$modulePath = $_.FullName;
+                Import-Module ([string]::Format('{0}', $modulePath)) -Global;
+            }
     } else {
         $module = $module.Replace('.psm1', ''); # Cut possible .psm1 ending
         Import-Module ([string]::Format('{0}.psm1', $module)) -Global;
@@ -124,7 +123,7 @@ function Publish-IcingaPluginDocumentation()
             Add-Content -Path $PluginDescriptionFile -Value '';
             Add-Content -Path $PluginDescriptionFile -Value '| Argument | Type | Required | Default | Description |';
             Add-Content -Path $PluginDescriptionFile -Value '| ---      | ---  | ---      | ---     | ---         |';
-            
+
             foreach ($parameter in $PluginHelp.parameters.parameter) {
                 [string]$ParamDescription = $parameter.description.Text;
                 if ([string]::IsNullOrEmpty($ParamDescription) -eq $FALSE) {
@@ -171,7 +170,7 @@ function Publish-IcingaPluginDocumentation()
                 Add-Content -Path $PluginDescriptionFile -Value $ExampleDescription;
                 Add-Content -Path $PluginDescriptionFile -Value '```';
                 Add-Content -Path $PluginDescriptionFile -Value '';
-                
+
                 $ExampleIndex += 1;
             }
 

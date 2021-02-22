@@ -23,7 +23,7 @@
 
 function Invoke-IcingaCheckBiosSerial()
 {
-   $Bios      = Get-IcingaBiosSerialNumber;
-   $BiosCheck = New-IcingaCheck -Name ([string]::Format('BIOS {0}', $Bios.Name)) -Value $Bios.Value -NoPerfData;
-   return (New-IcingaCheckresult -Check $BiosCheck -NoPerfData $TRUE -Compile);
+    $Bios      = Get-IcingaBiosSerialNumber;
+    $BiosCheck = New-IcingaCheck -Name ([string]::Format('BIOS {0}', $Bios.Name)) -Value $Bios.Value -NoPerfData;
+    return (New-IcingaCheckResult -Check $BiosCheck -NoPerfData $TRUE -Compile);
 }

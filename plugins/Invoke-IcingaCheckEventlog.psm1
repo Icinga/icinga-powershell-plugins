@@ -20,34 +20,34 @@
 .EXAMPLE
    PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000
    [CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
       \_ [WARNING] EventId 2002: Value "242" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
       \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
       \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occurred 242 event(s)."
       \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occured 391 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occurred 391 event(s)."
       \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occured 391 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occurred 391 event(s)."
       \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 15:51:00] - [17.08.2020 19:41:00] there occured 298 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 15:51:00] - [17.08.2020 19:41:00] there occurred 298 event(s)."
       \_ [WARNING] EventId 642: Value "298" is greater than threshold "100"
-   \_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occured 3539 event(s)."
+   \_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occurred 3539 event(s)."
       \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"
-   \_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occured 3539 event(s)."
+   \_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occurred 3539 event(s)."
       \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"
-   \_ [CRITICAL] Check package "Between: [17.08.2020 20:03:07] - [27.08.2020 09:56:35] there occured 2757 event(s)."
+   \_ [CRITICAL] Check package "Between: [17.08.2020 20:03:07] - [27.08.2020 09:56:35] there occurred 2757 event(s)."
       \_ [CRITICAL] EventId 642: Value "2757" is greater than threshold "1000"
 .EXAMPLE
    PS> Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warning 100 -Critical 1000 -IncludeEventId 1008
    [WARNING] Check package "EventLog" - [WARNING] EventId 1008
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
       \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
       \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
-   \_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occured 242 event(s)."
+   \_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occurred 242 event(s)."
       \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
    | 'eventid_1008'=726c;;
 .PARAMETER Warning
@@ -97,61 +97,61 @@
 
 function Invoke-IcingaCheckEventlog()
 {
-   param(
-      $Warning                  = $null,
-      $Critical                 = $null,
-      [string]$LogName,
-      [array]$IncludeEventId,
-      [array]$ExcludeEventId,
-      [array]$IncludeUsername,
-      [array]$ExcludeUsername,
-      [array]$IncludeEntryType,
-      [array]$ExcludeEntryType,
-      [array]$IncludeMessage,
-      [array]$ExcludeMessage,
-      [array]$IncludeSource,
-      [array]$ExcludeSource,
-      $After                    = $null,
-      $Before                   = $null,
-      [switch]$DisableTimeCache = $FALSE,
-      [switch]$NoPerfData,
-      [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity           = 0
-   );
+    param(
+        $Warning                  = $null,
+        $Critical                 = $null,
+        [string]$LogName,
+        [array]$IncludeEventId,
+        [array]$ExcludeEventId,
+        [array]$IncludeUsername,
+        [array]$ExcludeUsername,
+        [array]$IncludeEntryType,
+        [array]$ExcludeEntryType,
+        [array]$IncludeMessage,
+        [array]$ExcludeMessage,
+        [array]$IncludeSource,
+        [array]$ExcludeSource,
+        $After                    = $null,
+        $Before                   = $null,
+        [switch]$DisableTimeCache = $FALSE,
+        [switch]$NoPerfData,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity           = 0
+    );
 
-   $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity;
-   $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
-                                    -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
-                                    -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After -Before $Before -DisableTimeCache $DisableTimeCache;
+    $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity;
+    $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
+                           -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
+                           -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After -Before $Before -DisableTimeCache $DisableTimeCache;
 
-   [hashtable]$EventLogSource = @{};
+    [hashtable]$EventLogSource = @{};
 
-   if ($EventLogData.eventlog.Count -ne 0) {
-      foreach ($event in $EventLogData.eventlog.Keys) {
-         $eventEntry = $EventLogData.eventlog[$event];
+    if ($EventLogData.eventlog.Count -ne 0) {
+        foreach ($event in $EventLogData.eventlog.Keys) {
+            $eventEntry = $EventLogData.eventlog[$event];
 
-         $EventLogEntryPackage = New-IcingaCheckPackage -Name ([string]::Format('Between: [{0}] - [{1}] there occured {2} event(s).', $eventEntry.OldestEntry, $eventEntry.NewestEntry, $eventEntry.Count)) -OperatorAnd -Verbose $Verbosity;
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $EventLogData.eventlog[$event].EventId)) -Value $eventEntry.Count -NoPerfData;
-         $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-         $EventLogEntryPackage.AddCheck($IcingaCheck);
-         $EventMessage = New-IcingaCheck -Name ([string]::Format('Event Message: {0}', ($eventEntry.Message).Replace("`r`n", '').Replace("`n", ''))) -NoPerfData;
-         $EventLogEntryPackage.AddCheck($EventMessage);
+            $EventLogEntryPackage = New-IcingaCheckPackage -Name ([string]::Format('Between: [{0}] - [{1}] there occurred {2} event(s).', $eventEntry.OldestEntry, $eventEntry.NewestEntry, $eventEntry.Count)) -OperatorAnd -Verbose $Verbosity;
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $EventLogData.eventlog[$event].EventId)) -Value $eventEntry.Count -NoPerfData;
+            $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+            $EventLogEntryPackage.AddCheck($IcingaCheck);
+            $EventMessage = New-IcingaCheck -Name ([string]::Format('Event Message: {0}', ($eventEntry.Message).Replace("`r`n", '').Replace("`n", ''))) -NoPerfData;
+            $EventLogEntryPackage.AddCheck($EventMessage);
 
-         $EventLogPackage.AddCheck($EventLogEntryPackage);
-      }
+            $EventLogPackage.AddCheck($EventLogEntryPackage);
+        }
 
-      $EventLogCountPackage = New-IcingaCheckPackage -Name 'EventLog Count' -OperatorAnd -Verbose $Verbosity -Hidden;
+        $EventLogCountPackage = New-IcingaCheckPackage -Name 'EventLog Count' -OperatorAnd -Verbose $Verbosity -Hidden;
 
-      foreach ($event in $EventLogData.events.Keys) {
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $event)) -Value $EventLogData.events[$event] -Unit 'c';
-         $EventLogCountPackage.AddCheck($IcingaCheck);
-      }
+        foreach ($event in $EventLogData.events.Keys) {
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $event)) -Value $EventLogData.events[$event] -Unit 'c';
+            $EventLogCountPackage.AddCheck($IcingaCheck);
+        }
 
-      $EventLogPackage.AddCheck($EventLogCountPackage);
-   } else {
-      $IcingaCheck = New-IcingaCheck -Name 'No EventLogs found' -Value 0 -Unit 'c' -NoPerfData;
-      $EventLogPackage.AddCheck($IcingaCheck);
-   }
+        $EventLogPackage.AddCheck($EventLogCountPackage);
+    } else {
+        $IcingaCheck = New-IcingaCheck -Name 'No EventLogs found' -Value 0 -Unit 'c' -NoPerfData;
+        $EventLogPackage.AddCheck($IcingaCheck);
+    }
 
-   return (New-IcingaCheckResult -Name 'EventLog' -Check $EventLogPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckResult -Name 'EventLog' -Check $EventLogPackage -NoPerfData $NoPerfData -Compile);
 }

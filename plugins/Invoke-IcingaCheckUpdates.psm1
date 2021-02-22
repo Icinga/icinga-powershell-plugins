@@ -15,7 +15,7 @@
 .EXAMPLE
    PS> Invoke-IcingaCheckUpdates -Warning 4 -Critical 20
    [OK]: Check package "Updates" is [OK]
-   | 'Pending Update Count'=2;4;20 
+   | 'Pending Update Count'=2;4;20
 .PARAMETER Warning
    Used to specify a Warning threshold. In this case an integer value.
 .PARAMETER Critical
@@ -41,7 +41,7 @@ function Invoke-IcingaCheckUpdates()
     );
 
     $PendingUpdates = Get-IcingaUpdatesPending;
-    
+
     $UpdateCount    = New-IcingaCheckPackage -Name 'Pending Update Count' -OperatorAnd;
     $UpdateList     = New-IcingaCheckPackage -Name 'Update List' -OperatorAnd;
     $PendingCount   = 0;

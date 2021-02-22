@@ -6,7 +6,7 @@
    e.g There are 13 users logged on, WARNING is set to 8, CRITICAL is set to 15. In this case the check will return WARNING.
    More Information on https://github.com/Icinga/icinga-powershell-plugins
 .FUNCTIONALITY
-   This module is intended to check how many users are loged onto a host. 
+   This module is intended to check how many users are logged onto a host.
    Based on the thresholds set the status will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
 .ROLE
     ### WMI Permissions
@@ -28,7 +28,7 @@
    Used to specify a Critical threshold. In this case an integer value.
 .PARAMETER Username
    Used to specify an array of usernames to match against.
-   
+
    e.g 'Administrator', 'Icinga'
 .INPUTS
    System.String
@@ -48,34 +48,34 @@ function Invoke-IcingaCheckUsers()
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity      = 0
-   );
+    );
 
-   $UsersPackage  = New-IcingaCheckPackage -Name 'Users' -OperatorAnd -Verbose $Verbosity;
-   $LoggedOnUsers = Get-IcingaLoggedOnUsers -UserFilter $Username;
+    $UsersPackage  = New-IcingaCheckPackage -Name 'Users' -OperatorAnd -Verbose $Verbosity;
+    $LoggedOnUsers = Get-IcingaLoggedOnUsers -UserFilter $Username;
 
-   if ($Username.Count -ne 0) {
-      foreach ($User in $Username) {
-         $IcingaCheck = $null;
-         [int]$LoginCount = 0;
+    if ($Username.Count -ne 0) {
+        foreach ($User in $Username) {
+            $IcingaCheck = $null;
+            [int]$LoginCount = 0;
 
-         if ($LoggedOnUsers.users.ContainsKey($User)) {
-            $LoginCount = $LoggedOnUsers.users.$User.count;
-         }
+            if ($LoggedOnUsers.users.ContainsKey($User)) {
+                $LoginCount = $LoggedOnUsers.users.$User.count;
+            }
 
-         $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoginCount;
-         $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-         $UsersPackage.AddCheck($IcingaCheck);
-      }
-   } else {
-      foreach ($User in $LoggedOnUsers.users.Keys) {
-         $UsersPackage.AddCheck(
-            (New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoggedOnUsers.users.$User.count)
-         );
-      }
-      $IcingaCheck = New-IcingaCheck -Name 'Logged On Users' -Value $LoggedOnUsers.count;
-      $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-      $UsersPackage.AddCheck($IcingaCheck)
-   }
-   
-   return (New-IcingaCheckResult -Name 'Users' -Check $UsersPackage -NoPerfData $NoPerfData -Compile);
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoginCount;
+            $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+            $UsersPackage.AddCheck($IcingaCheck);
+        }
+    } else {
+        foreach ($User in $LoggedOnUsers.users.Keys) {
+            $UsersPackage.AddCheck(
+                (New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoggedOnUsers.users.$User.count)
+            );
+        }
+        $IcingaCheck = New-IcingaCheck -Name 'Logged On Users' -Value $LoggedOnUsers.count;
+        $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+        $UsersPackage.AddCheck($IcingaCheck)
+    }
+
+    return (New-IcingaCheckResult -Name 'Users' -Check $UsersPackage -NoPerfData $NoPerfData -Compile);
 }

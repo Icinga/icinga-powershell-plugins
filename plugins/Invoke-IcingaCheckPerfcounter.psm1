@@ -36,45 +36,45 @@
 
 function Invoke-IcingaCheckPerfcounter()
 {
-   param(
-      [array]$PerfCounter,
-      $Warning             = $null,
-      $Critical            = $null,
-      [switch]$NoPerfData,
-      [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity      = 0
-   );
+    param(
+        [array]$PerfCounter,
+        $Warning             = $null,
+        $Critical            = $null,
+        [switch]$NoPerfData,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity      = 0
+    );
 
-   $Counters     = New-IcingaPerformanceCounterArray -CounterArray $PerfCounter;
-   $CheckPackage = New-IcingaCheckPackage -Name 'Performance Counter' -OperatorAnd -Verbose $Verbosity;
+    $Counters     = New-IcingaPerformanceCounterArray -CounterArray $PerfCounter;
+    $CheckPackage = New-IcingaCheckPackage -Name 'Performance Counter' -OperatorAnd -Verbose $Verbosity;
 
-   foreach ($counter in $Counters.Keys) {
+    foreach ($counter in $Counters.Keys) {
 
-      $CounterPackage = New-IcingaCheckPackage -Name $counter -OperatorAnd -Verbose $Verbosity;
+        $CounterPackage = New-IcingaCheckPackage -Name $counter -OperatorAnd -Verbose $Verbosity;
 
-      if ([string]::IsNullOrEmpty($Counters[$counter].error) -eq $FALSE) {
-         $CheckPackage.AddCheck(
-            (
-               New-IcingaCheck -Name ([string]::Format('{0}: {1}', $counter, $Counters[$counter].error)) -NoPerfData
-            ).SetUnknown()
-         )
-         continue;
-      }
+        if ([string]::IsNullOrEmpty($Counters[$counter].error) -eq $FALSE) {
+            $CheckPackage.AddCheck(
+                (
+                    New-IcingaCheck -Name ([string]::Format('{0}: {1}', $counter, $Counters[$counter].error)) -NoPerfData
+                ).SetUnknown()
+            )
+            continue;
+        }
 
-      foreach ($instanceName in $Counters[$counter].Keys) {
-         $instance = $Counters[$counter][$instanceName];
-         if ($instance -isnot [hashtable]) {
-               $IcingaCheck  = New-IcingaCheck -Name $counter -Value $Counters[$counter].Value;
-               $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-               $CounterPackage.AddCheck($IcingaCheck);
-               break;
-         }
-         $IcingaCheck  = New-IcingaCheck -Name $instanceName -Value $instance.Value;
-         $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-         $CounterPackage.AddCheck($IcingaCheck);
-      }
-      $CheckPackage.AddCheck($CounterPackage);
-   }
+        foreach ($instanceName in $Counters[$counter].Keys) {
+            $instance = $Counters[$counter][$instanceName];
+            if ($instance -isnot [hashtable]) {
+                $IcingaCheck  = New-IcingaCheck -Name $counter -Value $Counters[$counter].Value;
+                $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+                $CounterPackage.AddCheck($IcingaCheck);
+                break;
+            }
+            $IcingaCheck  = New-IcingaCheck -Name $instanceName -Value $instance.Value;
+            $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+            $CounterPackage.AddCheck($IcingaCheck);
+        }
+        $CheckPackage.AddCheck($CounterPackage);
+    }
 
-   return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckresult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);
 }

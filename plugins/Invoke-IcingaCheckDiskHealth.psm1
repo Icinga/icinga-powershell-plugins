@@ -38,9 +38,9 @@
 .PARAMETER DiskReadSecWarning
     Warning threshold for disk Reads/sec is the rate of read operations on the disk.
 .PARAMETER DiskReadSecCritical
-    Critical treshold for disk Reads/sec is the rate of read operations on the disk.
+    Critical threshold for disk Reads/sec is the rate of read operations on the disk.
 .PARAMETER DiskWriteSecWarning
-    Warning theeshold for disk Writes/sec is the rate of write operations on the disk.
+    Warning threshold for disk Writes/sec is the rate of write operations on the disk.
 .PARAMETER DiskWriteSecCritical
     Critical threshold for disk Writes/sec is the rate of write operations on the disk.
 .PARAMETER DiskQueueLenWarning
@@ -231,7 +231,7 @@ function Invoke-IcingaCheckDiskHealth()
                     $ProviderEnums.DeviceStatus.OK
                 )
             );
-    
+
             $DiskOfflineCheck  = New-IcingaCheck `
                 -Name ([string]::Format('{0} Is Offline', $Partition)) `
                 -Value $DiskObjects.Data.IsOffline `

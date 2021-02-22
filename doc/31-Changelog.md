@@ -13,6 +13,8 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Enhancements
 
+* [#134](https://github.com/Icinga/icinga-powershell-plugins/pull/134) Adds autoloading for plugin information to standardize the development and projects and fixes plenty of spelling/code styling errosr
+
 ### Bugfixes
 
 * [#123](https://github.com/Icinga/icinga-powershell-plugins/pull/123) Fixes wrong documented user group for accessing Performance Counter objects which should be `Performance Monitor Users`

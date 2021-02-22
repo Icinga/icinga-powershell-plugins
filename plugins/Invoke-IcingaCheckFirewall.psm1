@@ -12,11 +12,11 @@
    PS> Invoke-IcingaCheckFirewall -Profile "Domain" -Verbosity 3
    [OK] Check package "Firewall profiles" (Match All)
    \_ [OK] Firewall Profile Domain is True
-   | 'firewall_profile_domain'=True;; 
+   | 'firewall_profile_domain'=True;;
 .EXAMPLE
    PS> Invoke-IcingaCheckFirewall -Profile "Domain", "Private" -Verbosity 1}
    [OK] Check package "Firewall profiles" (Match All)
-   | 'firewall_profile_domain'=True;; 'firewall_profile_private'=True;; 
+   | 'firewall_profile_domain'=True;; 'firewall_profile_private'=True;;
 .PARAMETER Profile
    Used to specify an array of profiles to check. Available profiles are 'Domain', 'Public', 'Private'
 
@@ -40,22 +40,22 @@
 
 function Invoke-IcingaCheckFirewall()
 {
-   param(
-      [array]$Profile,
-      [switch]$Enabled    = $FALSE,
-      [switch]$NoPerfData,
-      [ValidateSet(0, 1, 2, 3)]
-      [int]$Verbosity     = 0
-   );
+    param(
+        [array]$Profile,
+        [switch]$Enabled    = $FALSE,
+        [switch]$NoPerfData,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity     = 0
+    );
 
-   $FirewallPackage = New-IcingaCheckPackage -Name 'Firewall profiles' -OperatorAnd -Verbos $Verbosity;
+    $FirewallPackage = New-IcingaCheckPackage -Name 'Firewall profiles' -OperatorAnd -Verbose $Verbosity;
 
-   foreach ($singleprofile in $Profile) {
-      $FirewallData = (Get-NetFirewallProfile -Name $singleprofile -ErrorAction SilentlyContinue);
-      $FirewallCheck = New-IcingaCheck -Name "Firewall Profile $singleprofile" -Value $FirewallData.Enabled -ObjectExists $FirewallData -Translation @{ 'true' = 'Enabled'; 'false' = 'Disabled'};
-      $FirewallCheck.CritIfNotMatch([string]$Enabled) | Out-Null;
-      $FirewallPackage.AddCheck($FirewallCheck)
-   }
+    foreach ($singleprofile in $Profile) {
+        $FirewallData = (Get-NetFirewallProfile -Name $singleprofile -ErrorAction SilentlyContinue);
+        $FirewallCheck = New-IcingaCheck -Name "Firewall Profile $singleprofile" -Value $FirewallData.Enabled -ObjectExists $FirewallData -Translation @{ 'true' = 'Enabled'; 'false' = 'Disabled'};
+        $FirewallCheck.CritIfNotMatch([string]$Enabled) | Out-Null;
+        $FirewallPackage.AddCheck($FirewallCheck)
+    }
 
-   return (New-IcingaCheckResult -Check $FirewallPackage -NoPerfData $NoPerfData -Compile);
+    return (New-IcingaCheckResult -Check $FirewallPackage -NoPerfData $NoPerfData -Compile);
 }
