@@ -43,7 +43,7 @@ function Get-IcingaEventLog()
     if ($null -eq $After) {
         $After = [datetime]::Now.Subtract([TimeSpan]::FromHours(2));
     }
-    
+
     if ($null -ne $IncludeUsername -And $IncludeUsername.Count -ne 0) {
         $EventLogArguments.Add('UserName', $IncludeUsername);
     }
@@ -56,14 +56,14 @@ function Get-IcingaEventLog()
     if ($null -ne $Before) {
         $EventLogArguments.Add('Before', $Before);
     }
-    
+
     try {
         $events = Get-EventLog @EventLogArguments -ErrorAction Stop;
     } catch {
         Exit-IcingaThrowException -InputString $_.Exception -StringPattern 'ParameterBindingValidationException' -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLog;
         Exit-IcingaThrowException -InputString $_.Exception -StringPattern 'System.InvalidOperationException' -CustomMessage (-Join $LogName) -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLogLogName;
     }
-    
+
     if ($null -ne $IncludeEventId -Or $null -ne $ExcludeEventId -Or $null -ne $ExcludeUsername -Or $null -ne $ExcludeEntryType -Or $null -ne $ExcludeMessage -Or $null -ne $IncludeMessage -Or $null -ne $IncludeSource -Or $null -ne $ExcludeSource) {
         $filteredEvents = @();
         foreach ($event in $events) {
@@ -71,12 +71,12 @@ function Get-IcingaEventLog()
             if ($ExcludeEventId.Count -ne 0 -And $ExcludeEventId -contains $event.EventId) {
                 continue;
             }
-            
+
             # Filter out excluded events by username
             if ($ExcludeUsername.Count -ne 0 -And $ExcludeUsername -contains $event.UserName) {
                 continue;
             }
-            
+
             # Filter out excluded events by entry type (Error, Warning, ...)
             if ($ExcludeEntryType.Count -ne 0 -And $ExcludeEntryType -contains $event.EntryType) {
                 continue;
@@ -86,7 +86,7 @@ function Get-IcingaEventLog()
             if ($ExcludeSource.Count -ne 0 -And $ExcludeSource -contains $event.Source) {
                 continue;
             }
-            
+
             [bool]$skip = $FALSE;
             foreach ($exMessage in $ExcludeMessage) {
                 # Filter out excluded event IDs
@@ -95,7 +95,7 @@ function Get-IcingaEventLog()
                     break;
                 }
             }
-            
+
             if ($skip) {
                 continue;
             }
