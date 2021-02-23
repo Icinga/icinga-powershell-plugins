@@ -7,13 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
-## 1.4.0 (pending)
+## 1.4.0 (2021-03-02)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/5?closed=1)
 
 ### Enhancements
 
-* [#134](https://github.com/Icinga/icinga-powershell-plugins/pull/134) Adds autoloading for plugin information to standardize the development and projects and fixes plenty of spelling/code styling errosr
+* [#134](https://github.com/Icinga/icinga-powershell-plugins/pull/134) Adds autoloading for plugin information to standardize the development and projects and fixes plenty of spelling/code styling errors
+* [#135](https://github.com/Icinga/icinga-powershell-plugins/pull/135) Adds new check plugin `Invoke-IcingaCheckTCP`
 
 ### Bugfixes
 

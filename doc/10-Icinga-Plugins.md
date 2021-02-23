@@ -31,6 +31,7 @@ To test thresholds with different input values, you can use the Framework Cmdlet
 * [Invoke-IcingaCheckScheduledTask](plugins/19-Invoke-IcingaCheckScheduledTask.md)
 * [Invoke-IcingaCheckService](plugins/13-Invoke-IcingaCheckService.md)
 * [Invoke-IcingaCheckStoragePool](plugins/21-Invoke-IcingaCheckStoragePool.md)
+* [Invoke-IcingaCheckTCP](plugins/23-Invoke-IcingaCheckTCP.md)
 * [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md)
 * [Invoke-IcingaCheckUpdates](plugins/14-Invoke-IcingaCheckUpdates.md)
 * [Invoke-IcingaCheckUptime](plugins/15-Invoke-IcingaCheckUptime.md)
