@@ -6,9 +6,11 @@ Specific version upgrades are described below. Please note that version updates 
 
 For upgrading plugins, please have a look on the [installation docs](02-Installation.md).
 
-## Upgrading to v1.4.0 (pending)
+## Upgrading to v1.4.0 (2021-03-02)
 
-*No special steps required*
+### Invoke-IcingaCheckEventLog
+
+We made some slight adjustments to `Invoke-IcingaCheckEventLog` for the `-After` and `-Before` argument, which will now not only allow a fixed time stamp, like `2021/01/30`, but also threshold inputs like `5h` (to go back 5 hours), `1d` (to go back 1 day), and so on. There should be no impact on current implementations but you might wanna have a look on your checks and results after uprading.
 
 ## Upgrading to v1.3.0 (2020-12-01)
 

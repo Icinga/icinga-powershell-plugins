@@ -77,9 +77,18 @@
 .PARAMETER ExcludeSource
    Used to specify an array of message sources within the eventlog to be excluded.
 .PARAMETER After
-   Used to specify a date like dd.mm.yyyy and every eventlog entry after that date will be considered.
+   Used to specify time data of which point the plugin should start to read event logs from.
+   You can either use a fixed date and time like "2021/01/30 12:00:00", a fixed day "2021/01/30" or use more dynamic approaches like "1d", "10h" and so on.
+
+   Allowed units: ms, s, m, h, d, w, M, y
 .PARAMETER Before
-   Used to specify a date like dd.mm.yyyy and every eventlog entry before that date will be considered.
+   Used to specify time data of which point the plugin should stop considering event logs.
+   You can either use a fixed date and time like "2021/01/30 12:00:00", a fixed day "2021/01/30" or use more dynamic approaches like "1d", "10h" and so on.
+
+   By using "2h" for example, log files of the last 2 hours will be ignored. Please ensure to manually set the `-After` argument and ensure you go back
+   further in time with the `-After` argument than the `-Before` argument.
+
+   Allowed units: ms, s, m, h, d, w, M, y
 .PARAMETER DisableTimeCache
    Switch to disable the time cache on a check. If this parameter is set the time cache is disabled.
    After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended.
@@ -119,10 +128,13 @@ function Invoke-IcingaCheckEventlog()
         [int]$Verbosity           = 0
     );
 
+    $After  = Convert-IcingaPluginThresholds $After;
+    $Before = Convert-IcingaPluginThresholds $Before;
+
     $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity;
     $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
                            -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
-                           -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After -Before $Before -DisableTimeCache $DisableTimeCache;
+                           -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After.Value -Before $Before.Value -DisableTimeCache $DisableTimeCache;
 
     [hashtable]$EventLogSource = @{};
 

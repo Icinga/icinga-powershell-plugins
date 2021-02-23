@@ -28,20 +28,38 @@ function Get-IcingaEventLog()
     };
 
     # This will generate a unique hash for each possible configured EventLog check to store the last check time for each of these checks
-    [string]$CheckHash = (Get-StringSha1 ($LogName + $IncludeEventId + $ExcludeEventId + $IncludeUsername + $ExcludeUsername + $IncludeEntryType + $ExcludeEntryType + $IncludeMessage + $ExcludeMessage)) + '.lastcheck';
+    [string]$CheckHash    = (Get-StringSha1 ($LogName + $IncludeEventId + $ExcludeEventId + $IncludeUsername + $ExcludeUsername + $IncludeEntryType + $ExcludeEntryType + $IncludeMessage + $ExcludeMessage)) + '.lastcheck';
+    [string]$EventsAfter  = $null;
+    [string]$EventsBefore = $null;
 
-    if ($null -eq $After -and $DisableTimeCache -eq $FALSE) {
+    if ([string]::IsNullOrEmpty($After) -and $DisableTimeCache -eq $FALSE) {
         $time = Get-IcingaCacheData -Space 'provider' -CacheStore 'eventlog' -KeyName $CheckHash;
         Set-IcingaCacheData -Space 'provider' -CacheStore 'eventlog' -KeyName $CheckHash -Value ((Get-Date).ToFileTime());
 
         if ($null -ne $time) {
-            $After = [datetime]::FromFileTime($time);
+            $EventsAfter = ([datetime]::FromFileTime($time)).ToString('yyyy\/MM\/dd HH:mm:ss');
         }
     }
 
     # In case we are not having cached time execution and not have not overwritten the timestamp, only fetch values from 2 hours in the past
-    if ($null -eq $After) {
-        $After = [datetime]::Now.Subtract([TimeSpan]::FromHours(2));
+    if ([string]::IsNullOrEmpty($EventsAfter)) {
+        if ([string]::IsNullOrEmpty($After)) {
+            [string]$EventsAfter = ([datetime]::Now.Subtract([TimeSpan]::FromHours(2))).ToString('yyyy\/MM\/dd HH:mm:ss');
+        } else {
+            if ((Test-Numeric $After)) {
+                $EventsAfter = ([datetime]::Now.Subtract([TimeSpan]::FromSeconds($After))).ToString('yyyy\/MM\/dd HH:mm:ss');
+            } else {
+                $EventsAfter = $After;
+            }
+        }
+    }
+
+    if ([string]::IsNullOrEmpty($Before) -eq $FALSE) {
+        if ((Test-Numeric $Before)) {
+            $EventsBefore = ([datetime]::Now.Subtract([TimeSpan]::FromSeconds($Before))).ToString('yyyy\/MM\/dd HH:mm:ss');
+        } else {
+            $EventsBefore = $Before;
+        }
     }
 
     if ($null -ne $IncludeUsername -And $IncludeUsername.Count -ne 0) {
@@ -50,11 +68,11 @@ function Get-IcingaEventLog()
     if ($null -ne $IncludeEntryType -And $IncludeEntryType.Count -ne 0) {
         $EventLogArguments.Add('EntryType', $IncludeEntryType);
     }
-    if ($null -ne $After) {
-        $EventLogArguments.Add('After', $After);
+    if ([string]::IsNullOrEmpty($EventsAfter) -eq $FALSE) {
+        $EventLogArguments.Add('After', $EventsAfter);
     }
-    if ($null -ne $Before) {
-        $EventLogArguments.Add('Before', $Before);
+    if ([string]::IsNullOrEmpty($EventsBefore) -eq $FALSE) {
+        $EventLogArguments.Add('Before', $EventsBefore);
     }
 
     try {
