@@ -18,6 +18,8 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#136](https://github.com/Icinga/icinga-powershell-plugins/pull/136) Improves `Invoke-IcingaCheckEventLog` time filter by allowing simple input like `-After 5h` and fixes issue on filtering by formatting the time data into required format `yyyy/MM/dd HH:mm:ss`
+
 ## 1.3.1 (2021-02-04)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/6?closed=1)
