@@ -3,7 +3,7 @@
 
 ## Description
 
-Gets Network Time Protocol time(SNTP/NTP) from a specified server
+Gets Network Time Protocol time(SMTP/NTP) from a specified server
 
 Invoke-IcingaCheckTimeSync connects to an NTP server on UDP default port 123 and retrieves the current NTP time.
 Selected components of the returned time information are decoded and returned in a hashtable.
@@ -37,7 +37,7 @@ Invoke-IcingaCheckTimeSync -Server '0.pool.ntp.org' -TimeOffset 10ms -Warning 10
 ### Example Output 1
 
 ```powershell
-\_ [OK] Check package "Time Package" (Match All)\_ [OK] Sync Status: NoLeapWarning\_ [WARNING] Time Offset: Value "0.02s" is greater than threshold "0.01s"\_ [OK] Time Service: Running| 'time_offset'=0.02s;0.01;0.02 'time_service'=4;;4 0
+\_ [OK] Check package "Time Package" (Match All)\_ [OK] Sync Status: NoLeapWarning\_ [WARNING] Time Offset: Value "0.02s" is greater than threshold "0.01s"\_ [OK] Time Service: Running| 'time_offset'=0.02s;0.01;0.02 'time_service'=4;;40
 ```
 
 ### Example Command 2
@@ -49,5 +49,5 @@ Invoke-IcingaCheckTimeSync -Server 'time.versatel.de' -TimeOffset 50ms -Warning 
 ### Example Output 2
 
 ```powershell
-\_ [OK] Sync Status: NoLeapWarning\_ [OK] Time Offset: 0s\_ [OK] Time Service: Running| 'time_offset'=0s;0.01;0.02 'time_service'=4;;4 1
+\_ [OK] Sync Status: NoLeapWarning\_ [OK] Time Offset: 0s\_ [OK] Time Service: Running| 'time_offset'=0s;0.01;0.02 'time_service'=4;;41
 ```

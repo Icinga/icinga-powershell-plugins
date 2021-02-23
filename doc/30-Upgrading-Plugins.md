@@ -8,6 +8,10 @@ For upgrading plugins, please have a look on the [installation docs](02-Installa
 
 ## Upgrading to v1.4.0 (2021-03-02)
 
+### Plugin Configuration <span style="color:#F6BE00">(Breaking Changes)</span>
+
+The new package of the Icinga PowerShell Plugins is shipping with pre-compiled configuration for the Icinga Director and Icinga 2, which **only work with Icinga PowerShell Framework v1.4.0** or later. Please update your entire infrastructure to *Icinga for Windows v1.4.0* **before** using the pre-compiled configuration or configuration files created by the new *Icinga for Windows v1.4.0* config generator.
+
 ### Invoke-IcingaCheckEventLog
 
 We made some slight adjustments to `Invoke-IcingaCheckEventLog` for the `-After` and `-Before` argument, which will now not only allow a fixed time stamp, like `2021/01/30`, but also threshold inputs like `5h` (to go back 5 hours), `1d` (to go back 1 day), and so on. There should be no impact on current implementations but you might wanna have a look on your checks and results after uprading.
