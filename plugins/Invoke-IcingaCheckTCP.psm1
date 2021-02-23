@@ -78,8 +78,8 @@ function Invoke-IcingaCheckTCP()
         $Verbosity             = 0
     );
 
-    $Warning        = ConvertTo-SecondsFromIcingaThresholds $Warning;
-    $Critical       = ConvertTo-SecondsFromIcingaThresholds $Critical;
+    $Warning        = Convert-IcingaPluginThresholds $Warning;
+    $Critical       = Convert-IcingaPluginThresholds $Critical;
     $ConnectionData = Measure-IcingaTCPConnection -Address $Address -Ports $Ports;
     $CheckPackage   = New-IcingaCheckPackage -Name 'TCP Connections' -OperatorAnd -Verbose $Verbosity;
 
@@ -106,7 +106,7 @@ function Invoke-IcingaCheckTCP()
             -Unit 's' `
             -LabelName ([string]::Format('port_{0}_time', $port));
 
-        $ConnectionTimeCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+        $ConnectionTimeCheck.WarnOutOfRange($Warning.Value).CritOutOfRange($Critical.Value) | Out-Null;
 
         $ConnectionPackage.AddCheck($ConnectionCheck);
         $ConnectionPackage.AddCheck($ConnectionTimeCheck);
