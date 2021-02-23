@@ -18,10 +18,10 @@ No special permissions required.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Warning | Object | false | 100 | Treshold on which the plugin will return 'WARNING' for the response time in ms |
-| Critical | Object | false | 200 | Treshold on which the plugin will return 'CRITICAL' for the response time in ms |
-| WarningPl | Object | false | 20 | Treshold on which the plugin will return 'WARNING' for possible packet loss in % |
-| CriticalPl | Object | false | 50 | Treshold on which the plugin will return 'CRITICAL' for possible packet loss in % |
+| Warning | Object | false | 100 | Threshold on which the plugin will return 'WARNING' for the response time in ms |
+| Critical | Object | false | 200 | Threshold on which the plugin will return 'CRITICAL' for the response time in ms |
+| WarningPl | Object | false | 20 | Threshold on which the plugin will return 'WARNING' for possible packet loss in % |
+| CriticalPl | Object | false | 50 | Threshold on which the plugin will return 'CRITICAL' for possible packet loss in % |
 | Hostname | String | false |  | The target hosts IP or FQDN to send ICMP requests too |
 | PacketCount | Int32 | false | 5 | The amount of packets send to the target host |
 | PacketSize | Int32 | false | 64 | The size of each packet send to the target host |

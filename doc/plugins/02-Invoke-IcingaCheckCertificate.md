@@ -18,7 +18,7 @@ No special permissions required.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Trusted | SwitchParameter | false | False | Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root. Will return Critical in case of untrust.  Note: it is currently required that the root and intermediate CA is known and trusted by the local system. |
+| Trusted | SwitchParameter | false | False | Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root. Will return Critical in case of untrusted.  Note: it is currently required that the root and intermediate CA is known and trusted by the local system. |
 | CriticalStart | Object | false |  | Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully. Use format like: 'yyyy-MM-dd' |
 | WarningEnd | Object | false | 30d: | Used to specify a Warning range for the end date of an certificate. In this case a string. Allowed units include: ms, s, m, h, d, w, M, y |
 | CriticalEnd | Object | false | 10d: | Used to specify a Critical range for the end date of an certificate. In this case a string. Allowed units include: ms, s, m, h, d, w, M, y |
