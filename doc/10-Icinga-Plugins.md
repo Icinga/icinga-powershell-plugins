@@ -33,6 +33,7 @@ To test thresholds with different input values, you can use the Framework Cmdlet
 * [Invoke-IcingaCheckStoragePool](plugins/21-Invoke-IcingaCheckStoragePool.md)
 * [Invoke-IcingaCheckTCP](plugins/23-Invoke-IcingaCheckTCP.md)
 * [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md)
+* [Invoke-IcingaCheckUNCPath](plugins/24-Invoke-IcingaCheckUNCPath.md)
 * [Invoke-IcingaCheckUpdates](plugins/14-Invoke-IcingaCheckUpdates.md)
 * [Invoke-IcingaCheckUptime](plugins/15-Invoke-IcingaCheckUptime.md)
 * [Invoke-IcingaCheckUsedPartitionSpace](plugins/16-Invoke-IcingaCheckUsedPartitionSpace.md)
