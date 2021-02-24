@@ -22,6 +22,7 @@ If you are going to install this plugin release, please have a look on the [upgr
 * [#137](https://github.com/Icinga/icinga-powershell-plugins/pull/137) Adds new configuration for Icinga for Windows v1.4.0 to make future configuration changes unnecessary. Please read the [upgrading docs](30-Upgrading-Plugins.md) before upgrading!
 * [#139](https://github.com/Icinga/icinga-powershell-plugins/pull/139) Adds check note for the last boot time for `Invoke-IcingaCheckUptime` which is being displayed by using `-Verbosity 2` on the check configuration
 * [#140](https://github.com/Icinga/icinga-powershell-plugins/pull/140) Adds new plugin `Invoke-IcingaCheckUNCPath` to test for network share paths or other volumes to fetch the size and free space from them
+* [#141](https://github.com/Icinga/icinga-powershell-plugins/pull/141) Update Icinga Director and Icinga 2 conf files with new DSL parser for array elements to properly escape string values with single quotes. Please read the [upgrading docs](30-Upgrading-Plugins.md)
 
 ### Bugfixes
 
