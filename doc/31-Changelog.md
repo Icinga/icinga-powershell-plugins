@@ -15,6 +15,8 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#144](https://github.com/Icinga/icinga-powershell-plugins/pull/144) Fixes filtering for `Invoke-IcingaCheckEventLog` which resulted in wrong results, depending on the plugin configuration
+
 ## 1.4.0 (2021-03-02)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/5?closed=1)
