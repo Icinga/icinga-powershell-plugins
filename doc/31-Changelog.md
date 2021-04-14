@@ -11,6 +11,12 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/7?closed=1)
 
+### New Plugins
+
+#### Invoke-IcingaCheckHTTPStatus
+
+[#163](https://github.com/Icinga/icinga-powershell-plugins/issues/163) Checks the response time, the return code and content of HTTP requests.
+
 ### Enhancements
 
 * [#71](https://github.com/Icinga/icinga-powershell-plugins/pull/71) Rework `Invoke-IcingaCheckUsedPartitionSpace` to properly use Framework v1.5.0 functionality and resolve upper/lower case drive filtering
