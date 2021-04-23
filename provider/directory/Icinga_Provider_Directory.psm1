@@ -114,7 +114,7 @@ function Get-IcingaDirectorySizeSmallerThan()
         $DirectoryData
     );
     $FileSizeSmallerThanValue = (Convert-Bytes $FileSizeSmallerThan -Unit B).value
-    $DirectoryData = ($DirectoryData | Where-Object {$_.Length -gt $FileSizeSmallerThanValue})
+    $DirectoryData = ($DirectoryData | Where-Object {$_.Length -lt $FileSizeSmallerThanValue})
 
     return $DirectoryData;
 }
