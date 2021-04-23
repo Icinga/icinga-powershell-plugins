@@ -4,16 +4,16 @@ function Get-IcingaEventLog()
 {
     param(
         [string]$LogName,
-        [array]$IncludeEventId,
-        [array]$ExcludeEventId,
-        [array]$IncludeUsername,
-        [array]$ExcludeUsername,
-        [array]$IncludeEntryType,
-        [array]$ExcludeEntryType,
-        [array]$IncludeMessage,
-        [array]$ExcludeMessage,
-        [array]$IncludeSource,
-        [array]$ExcludeSource,
+        [array]$IncludeEventId   = @(),
+        [array]$ExcludeEventId   = @(),
+        [array]$IncludeUsername  = @(),
+        [array]$ExcludeUsername  = @(),
+        [array]$IncludeEntryType = @(),
+        [array]$ExcludeEntryType = @(),
+        [array]$IncludeMessage   = @(),
+        [array]$ExcludeMessage   = @(),
+        [array]$IncludeSource    = @(),
+        [array]$ExcludeSource    = @(),
         $After,
         $Before,
         [bool]$DisableTimeCache
@@ -128,16 +128,18 @@ function Get-IcingaEventLog()
                         break;
                     }
                 }
+            } else {
+                $skip = $FALSE;
             }
 
-            # We might be looking for specific event ids and 
-            if ($IncludeEventId.Count -ne 0 -And $IncludeEventId -contains $event.EventId) {
-                $skip = $FALSE;
+            # We might be looking for specific event ids
+            if ($IncludeEventId.Count -ne 0 -And $IncludeEventId -NotContains $event.EventId) {
+                $skip = $TRUE;
             }
 
             # We might be looking for specific event sources
-            if ($IncludeSource.Count -ne 0 -And $IncludeSource -contains $event.Source) {
-                $skip = $FALSE;
+            if ($IncludeSource.Count -ne 0 -And $IncludeSource -NotContains $event.Source) {
+                $skip = $TRUE;
             }
 
             if ($skip) {
