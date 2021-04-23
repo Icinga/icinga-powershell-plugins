@@ -41,7 +41,7 @@
 .PARAMETER FileNames
    Used to specify an array of filenames or expressions to match against results to filter for specific files.
 
-   e.g '*.txt', '*.sql' # Fiends all files ending with .txt and .sql
+   e.g '*.txt', '*.sql', finds all files ending with .txt and .sql
 .PARAMETER Recurse
    A switch, which can be set to search through directories recursively.
 .PARAMETER ChangeYoungerThan
@@ -89,8 +89,8 @@ function Invoke-IcingaCheckDirectory()
 {
     param(
         [string]$Path,
-        [array]$FileNames,
-        [switch]$Recurse,
+        [array]$FileNames   = @( '*' ),
+        [switch]$Recurse    = $FALSE,
         $Critical           = $null,
         $Warning            = $null,
         [string]$ChangeTimeEqual,
