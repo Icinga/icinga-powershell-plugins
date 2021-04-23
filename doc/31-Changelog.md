@@ -13,6 +13,8 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Enhancements
 
+* [#156](https://github.com/Icinga/icinga-powershell-plugins/issues/156) Adds feature to modify the output status of `Invoke-IcingaCheckCertificate` from `UNKNOWN` to `OK` in case no certificate was found by setting the new argument `-IgnoreEmpty`
+
 ### Bugfixes
 
 * [#144](https://github.com/Icinga/icinga-powershell-plugins/pull/144) Fixes filtering for `Invoke-IcingaCheckEventLog` which resulted in wrong results, depending on the plugin configuration

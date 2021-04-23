@@ -28,7 +28,8 @@ No special permissions required.
 | CertStorePath | Object | false | * | Used to specify which path within the CertStore should be checked. |
 | CertPaths | Array | false |  | Used to specify an array of paths on your system, where certificate files are. Use with CertName. |
 | CertName | Array | false |  | Used to specify an array of certificate names of certificate files to check. Use with CertPaths. |
-| Recurse | SwitchParameter | false | False |  |
+| Recurse | SwitchParameter | false | False | Includes sub-directories and entries while looking for certificates on a given path |
+| IgnoreEmpty | SwitchParameter | false | False | Will return `OK` instead of `UNKNOWN`, in case no certificates for the given filter and path were found |
 | Verbosity | Int32 | false | 3 | Other |
 
 ## Examples
