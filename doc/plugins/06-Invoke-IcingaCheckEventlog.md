@@ -29,16 +29,16 @@ To execute this plugin you will require to grant the following user permissions.
 | Warning | Object | false |  | Used to specify a Warning threshold. |
 | Critical | Object | false |  | Used to specify a Critical threshold. |
 | LogName | String | false |  | Used to specify a certain log. |
-| IncludeEventId | Array | false |  | Used to specify an array of events identified by their id to be included. |
-| ExcludeEventId | Array | false |  | Used to specify an array of events identified by their id to be excluded. |
-| IncludeUsername | Array | false |  | Used to specify an array of usernames within the eventlog to be included. |
-| ExcludeUsername | Array | false |  | Used to specify an array of usernames within the eventlog to be excluded. |
-| IncludeEntryType | Array | false |  | Used to specify an array of entry types within the eventlog to be included. |
-| ExcludeEntryType | Array | false |  | Used to specify an array of entry types within the eventlog to be excluded. |
-| IncludeMessage | Array | false |  | Used to specify an array of messages within the eventlog to be included. |
-| ExcludeMessage | Array | false |  | Used to specify an array of messages within the eventlog to be excluded. |
-| IncludeSource | Array | false |  | Used to specify an array of message sources within the eventlog to be included. |
-| ExcludeSource | Array | false |  | Used to specify an array of message sources within the eventlog to be excluded. |
+| IncludeEventId | Array | false | @() | Used to specify an array of events identified by their id to be included. |
+| ExcludeEventId | Array | false | @() | Used to specify an array of events identified by their id to be excluded. |
+| IncludeUsername | Array | false | @() | Used to specify an array of usernames within the eventlog to be included. |
+| ExcludeUsername | Array | false | @() | Used to specify an array of usernames within the eventlog to be excluded. |
+| IncludeEntryType | Array | false | @() | Used to specify an array of entry types within the eventlog to be included. |
+| ExcludeEntryType | Array | false | @() | Used to specify an array of entry types within the eventlog to be excluded. |
+| IncludeMessage | Array | false | @() | Used to specify an array of messages within the eventlog to be included. |
+| ExcludeMessage | Array | false | @() | Used to specify an array of messages within the eventlog to be excluded. |
+| IncludeSource | Array | false | @() | Used to specify an array of message sources within the eventlog to be included. |
+| ExcludeSource | Array | false | @() | Used to specify an array of message sources within the eventlog to be excluded. |
 | After | Object | false |  | Used to specify time data of which point the plugin should start to read event logs from. You can either use a fixed date and time like "2021/01/30 12:00:00", a fixed day "2021/01/30" or use more dynamic approaches like "1d", "10h" and so on.  Allowed units: ms, s, m, h, d, w, M, y |
 | Before | Object | false |  | Used to specify time data of which point the plugin should stop considering event logs. You can either use a fixed date and time like "2021/01/30 12:00:00", a fixed day "2021/01/30" or use more dynamic approaches like "1d", "10h" and so on.  By using "2h" for example, log files of the last 2 hours will be ignored. Please ensure to manually set the `-After` argument and ensure you go back further in time with the `-After` argument than the `-Before` argument.  Allowed units: ms, s, m, h, d, w, M, y |
 | DisableTimeCache | SwitchParameter | false | False | Switch to disable the time cache on a check. If this parameter is set the time cache is disabled. After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended. This is due to the time cache, when disabled the whole eventlog is checked instead. |

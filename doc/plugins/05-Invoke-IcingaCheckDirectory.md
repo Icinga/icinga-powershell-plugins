@@ -21,7 +21,7 @@ No special permissions required.
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
 | Path | String | false |  | Used to specify a path. e.g. 'C:\Users\Icinga\Downloads' |
-| FileNames | Array | false |  | Used to specify an array of filenames or expressions to match against results to filter for specific files.  e.g '*.txt', '*.sql' # Fiends all files ending with .txt and .sql |
+| FileNames | Array | false | @( '*' ) | Used to specify an array of filenames or expressions to match against results to filter for specific files.  e.g '*.txt', '*.sql', finds all files ending with .txt and .sql |
 | Recurse | SwitchParameter | false | False | A switch, which can be set to search through directories recursively. |
 | Critical | Object | false |  | Used to specify a Critical threshold. Follows the Icinga plugin threshold |
 | Warning | Object | false |  | Used to specify a Warning threshold. Follows the Icinga plugin threshold |
