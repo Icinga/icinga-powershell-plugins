@@ -69,6 +69,12 @@
 .PARAMETER CertName
    Used to specify an array of certificate names of certificate files to check. Use with CertPaths.
 
+.PARAMETER Recurse
+    Includes sub-directories and entries while looking for certificates on a given path
+
+.PARAMETER IgnoreEmpty
+    Will return `OK` instead of `UNKNOWN`, in case no certificates for the given filter and path were found
+
 .INPUTS
    System.String
 .OUTPUTS
@@ -96,6 +102,7 @@ function Invoke-IcingaCheckCertificate()
         [array]$CertPaths      = $null,
         [array]$CertName       = $null,
         [switch]$Recurse       = $FALSE,
+        [switch]$IgnoreEmpty   = $FALSE,
         #Other
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity        = 3
@@ -104,7 +111,7 @@ function Invoke-IcingaCheckCertificate()
     $CertData    = Get-IcingaCertificateData `
         -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject `
         -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath -Recurse $Recurse;
-    $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity;
+    $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmpty;
 
     if ($null -ne $CriticalStart) {
         try {
