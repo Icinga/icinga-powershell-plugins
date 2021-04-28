@@ -913,14 +913,14 @@
     'NoLeapWarning'       = 0;
     'PositiveLeapSecond'  = 1;
     'NegativeLeapSecond'  = 2;
-    'ClockNotSynhronized' = 3;
+    'ClockNotSynchronized' = 3;
 }
 
 [hashtable]$TimeSyncStatusName = @{
     0 = 'NoLeapWarning';
     1 = 'PositiveLeapSecond';
     2 = 'NegativeLeapSecond';
-    3 = 'ClockNotSynhronized';
+    3 = 'ClockNotSynchronized';
 }
 
 [hashtable]$ClientMode = @{

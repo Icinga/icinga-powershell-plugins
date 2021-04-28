@@ -86,7 +86,7 @@ function Invoke-IcingaCheckTimeSync()
         -Translation $ProviderEnums.TimeSyncStatusName `
         -NoPerfData;
 
-    $SyncStatus.CritIfMatch($ProviderEnums.TimeSyncStatus.ClockNotSynhronized) | Out-Null;
+    $SyncStatus.CritIfMatch($ProviderEnums.TimeSyncStatus.ClockNotSynchronized) | Out-Null;
 
     $CheckPackage = New-IcingaCheckPackage `
         -Name 'Time Package' `
