@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#156](https://github.com/Icinga/icinga-powershell-plugins/issues/156) Adds feature to modify the output status of `Invoke-IcingaCheckCertificate` from `UNKNOWN` to `OK` in case no certificate was found by setting the new argument `-IgnoreEmpty`
+* [#159](https://github.com/Icinga/icinga-powershell-plugins/issues/159) Replaces the deprecated function `Get-EventLog` with `Get-WinEvent`. In addition, the plugin received a new argument `-MaxEntries` to allow additional filtering for the number of events fetched to improve performance in addition. The EventLog now also supports an array with list items, allowing easier filtering for severities which are allowed inside the EventLog.
 
 ### Bugfixes
 

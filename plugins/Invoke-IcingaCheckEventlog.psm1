@@ -65,9 +65,11 @@
 .PARAMETER ExcludeUsername
    Used to specify an array of usernames within the eventlog to be excluded.
 .PARAMETER IncludeEntryType
-   Used to specify an array of entry types within the eventlog to be included.
+   Used to specify an array of entry types within the eventlog to be included. Please note that
+   `SuccessAudit` and `FailureAudit` only apply to the `Security` EventLog.
 .PARAMETER ExcludeEntryType
-   Used to specify an array of entry types within the eventlog to be excluded.
+   Used to specify an array of entry types within the eventlog to be excluded. Please note that
+   `SuccessAudit` and `FailureAudit` only apply to the `Security` EventLog.
 .PARAMETER IncludeMessage
    Used to specify an array of messages within the eventlog to be included.
 .PARAMETER ExcludeMessage
@@ -89,6 +91,9 @@
    further in time with the `-After` argument than the `-Before` argument.
 
    Allowed units: ms, s, m, h, d, w, M, y
+.PARAMETER MaxEntries
+    Allows to limit the amount of log entries fetched by Get-WinEvent, to increase performance and reduce system load impact
+    Should match the average amount of log files written for the intended time range filtered
 .PARAMETER DisableTimeCache
    Switch to disable the time cache on a check. If this parameter is set the time cache is disabled.
    After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended.
@@ -114,7 +119,9 @@ function Invoke-IcingaCheckEventlog()
         [array]$ExcludeEventId    = @(),
         [array]$IncludeUsername   = @(),
         [array]$ExcludeUsername   = @(),
+        [ValidateSet('Information', 'Warning', 'Error', 'SuccessAudit', 'FailureAudit')]
         [array]$IncludeEntryType  = @(),
+        [ValidateSet('Information', 'Warning', 'Error', 'SuccessAudit', 'FailureAudit')]
         [array]$ExcludeEntryType  = @(),
         [array]$IncludeMessage    = @(),
         [array]$ExcludeMessage    = @(),
@@ -122,6 +129,7 @@ function Invoke-IcingaCheckEventlog()
         [array]$ExcludeSource     = @(),
         $After                    = $null,
         $Before                   = $null,
+        [int]$MaxEntries          = 40000,
         [switch]$DisableTimeCache = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
@@ -134,7 +142,7 @@ function Invoke-IcingaCheckEventlog()
     $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity;
     $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
                            -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
-                           -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After.Value -Before $Before.Value -DisableTimeCache $DisableTimeCache;
+                           -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After.Value -Before $Before.Value -MaxEntries $MaxEntries -DisableTimeCache $DisableTimeCache;
 
     [hashtable]$EventLogSource = @{};
 

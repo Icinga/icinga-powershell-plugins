@@ -16,16 +16,13 @@ function Get-IcingaEventLog()
         [array]$ExcludeSource    = @(),
         $After,
         $Before,
+        [int]$MaxEntries         = 40000,
         [bool]$DisableTimeCache
     );
 
     if ([string]::IsNullOrEmpty($LogName)) {
         Exit-IcingaThrowException -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLog -Force;
     }
-
-    [hashtable]$EventLogArguments = @{
-        LogName = $LogName;
-    };
 
     # This will generate a unique hash for each possible configured EventLog check to store the last check time for each of these checks
     [string]$CheckHash    = (Get-StringSha1 ($LogName + $IncludeEventId + $ExcludeEventId + $IncludeUsername + $ExcludeUsername + $IncludeEntryType + $ExcludeEntryType + $IncludeMessage + $ExcludeMessage)) + '.lastcheck';
@@ -60,48 +57,122 @@ function Get-IcingaEventLog()
         } else {
             $EventsBefore = $Before;
         }
+    } else {
+        $EventsBefore = ([datetime]::FromFileTime(((Get-Date).ToFileTime()))).ToString('yyyy\/MM\/dd HH:mm:ss')
     }
 
+    [hashtable]$UserFilter     = @{ };
+    [hashtable]$SeverityFilter = @{ };
+
     if ($null -ne $IncludeUsername -And $IncludeUsername.Count -ne 0) {
-        $EventLogArguments.Add('UserName', $IncludeUsername);
+        foreach ($entry in $IncludeUsername) {
+            $UserId = (Get-IcingaUserSID -User $entry);
+
+            if ($UserFilter.ContainsKey($UserId)) {
+                continue;
+            }
+
+            $UserFilter.Add(
+                $UserId,
+                'include'
+            )
+        }
     }
+
+    if ($null -ne $ExcludeUsername -And $ExcludeUsername.Count -ne 0) {
+        foreach ($entry in $ExcludeUsername) {
+            $UserId = (Get-IcingaUserSID -User $entry);
+
+            if ($UserFilter.ContainsKey($UserId)) {
+                if ($UserFilter[$entry] -eq 'include') {
+                    $UserFilter[$entry] = 'exclude';
+                }
+                continue;
+            }
+
+            $UserFilter.Add(
+                $UserId,
+                'exclude'
+            )
+        }
+    }
+
     if ($null -ne $IncludeEntryType -And $IncludeEntryType.Count -ne 0) {
-        $EventLogArguments.Add('EntryType', $IncludeEntryType);
+        foreach ($entry in $IncludeEntryType) {
+            [string]$EntryId = $ProviderEnums.EventLogSeverity[$entry];
+
+            if ($SeverityFilter.ContainsKey($EntryId)) {
+                continue;
+            }
+
+            $SeverityFilter.Add(
+                $EntryId,
+                'include'
+            )
+        }
     }
-    if ([string]::IsNullOrEmpty($EventsAfter) -eq $FALSE) {
-        $EventLogArguments.Add('After', $EventsAfter);
-    }
-    if ([string]::IsNullOrEmpty($EventsBefore) -eq $FALSE) {
-        $EventLogArguments.Add('Before', $EventsBefore);
+
+    if ($null -ne $ExcludeEntryType -And $ExcludeEntryType.Count -ne 0) {
+        foreach ($entry in $ExcludeEntryType) {
+            [string]$EntryId = $ProviderEnums.EventLogSeverity[$entry];
+
+            if ($SeverityFilter.ContainsKey($EntryId)) {
+                if ($SeverityFilter[$EntryId] -eq 'include') {
+                    $SeverityFilter[$EntryId] = 'exclude';
+                }
+                continue;
+            }
+
+            $SeverityFilter.Add(
+                $EntryId,
+                'exclude'
+            )
+        }
     }
 
     try {
-        $events = Get-EventLog @EventLogArguments -ErrorAction Stop;
+        $events = Get-WinEvent -LogName $LogName -MaxEvents $MaxEntries -ErrorAction Stop;
     } catch {
-        Exit-IcingaThrowException -InputString $_.Exception -StringPattern 'ParameterBindingValidationException' -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLog;
-        Exit-IcingaThrowException -InputString $_.Exception -StringPattern 'System.InvalidOperationException' -CustomMessage (-Join $LogName) -ExceptionType 'Input' -ExceptionThrown $IcingaExceptions.Inputs.EventLogLogName;
+        Exit-IcingaThrowException -InputString $_.FullyQualifiedErrorId -StringPattern 'ParameterArgumentValidationError' -ExceptionList $IcingaPluginExceptions -ExceptionType 'Input' -ExceptionThrown $IcingaPluginExceptions.Inputs.EventLogNegativeEntries;
+        Exit-IcingaThrowException -InputString $_.FullyQualifiedErrorId -StringPattern 'CannotConvertArgumentNoMessage' -ExceptionList $IcingaPluginExceptions -ExceptionType 'Input' -ExceptionThrown $IcingaPluginExceptions.Inputs.EventLogNoMessageEntries;
+        Exit-IcingaThrowException -InputString $_.FullyQualifiedErrorId -StringPattern 'NoMatchingLogsFound' -CustomMessage (-Join $LogName) -ExceptionList $IcingaPluginExceptions -ExceptionType 'Input' -ExceptionThrown $IcingaPluginExceptions.Inputs.EventLogLogName;
     }
 
-    if ($null -ne $IncludeEventId -Or $null -ne $ExcludeEventId -Or $null -ne $ExcludeUsername -Or $null -ne $ExcludeEntryType -Or $null -ne $ExcludeMessage -Or $null -ne $IncludeMessage -Or $null -ne $IncludeSource -Or $null -ne $ExcludeSource) {
+    if ($UserFilter.Count -ne 0 -Or $SeverityFilter.Count -ne 0 -Or $null -ne $IncludeEventId -Or $null -ne $ExcludeEventId -Or $null -ne $ExcludeUsername -Or $null -ne $ExcludeEntryType -Or $null -ne $ExcludeMessage -Or $null -ne $IncludeMessage -Or $null -ne $IncludeSource -Or $null -ne $ExcludeSource) {
         $filteredEvents = @();
         foreach ($event in $events) {
+
+            if ($event.TimeCreated -lt $EventsAfter) {
+                break;
+            }
+
+            if ($event.TimeCreated -gt $EventsBefore) {
+                continue;
+            }
+
             # Filter out excluded event IDs
-            if ($ExcludeEventId.Count -ne 0 -And $ExcludeEventId -contains $event.EventId) {
+            if ($ExcludeEventId.Count -ne 0 -And $ExcludeEventId -contains $event.Id) {
                 continue;
             }
 
             # Filter out excluded events by username
-            if ($ExcludeUsername.Count -ne 0 -And $ExcludeUsername -contains $event.UserName) {
+            if ($UserFilter.Count -ne 0 -And $UserFilter.ContainsKey([string]$event.UserId.Value) -And $UserFilter[[string]$event.UserId.Value] -eq 'exclude') {
                 continue;
             }
 
-            # Filter out excluded events by entry type (Error, Warning, ...)
-            if ($ExcludeEntryType.Count -ne 0 -And $ExcludeEntryType -contains $event.EntryType) {
-                continue;
+            if ($LogName.ToLower() -ne 'security') {
+                # Filter out excluded events by entry type (Error, Warning, ...)
+                if ($SeverityFilter.Count -ne 0 -And $SeverityFilter.ContainsKey([string]$event.Level) -And $SeverityFilter[[string]$event.Level] -eq 'exclude') {
+                    continue;
+                }
+            } else {
+                if ($SeverityFilter.Count -ne 0 -And $SeverityFilter.ContainsKey([string]$event.Keywords) -And $SeverityFilter[[string]$event.Keywords] -eq 'exclude') {
+                    continue;
+                }
             }
 
             # Filter out excluded events message source
-            if ($ExcludeSource.Count -ne 0 -And $ExcludeSource -contains $event.Source) {
+            if ($ExcludeSource.Count -ne 0 -And $ExcludeSource -contains $event.ProviderName) {
                 continue;
             }
 
@@ -133,13 +204,29 @@ function Get-IcingaEventLog()
             }
 
             # We might be looking for specific event ids
-            if ($IncludeEventId.Count -ne 0 -And $IncludeEventId -NotContains $event.EventId) {
+            if ($IncludeEventId.Count -ne 0 -And $IncludeEventId -NotContains $event.Id) {
                 $skip = $TRUE;
             }
 
             # We might be looking for specific event sources
-            if ($IncludeSource.Count -ne 0 -And $IncludeSource -NotContains $event.Source) {
+            if ($IncludeSource.Count -ne 0 -And $IncludeSource -NotContains $event.ProviderName) {
                 $skip = $TRUE;
+            }
+
+            # Filter out excluded events by username
+            if ($UserFilter.Count -ne 0 -And $UserFilter.ContainsKey([string]$event.UserId.Value) -eq $FALSE) {
+                $skip = $TRUE;
+            }
+
+            # Filter out excluded events by entry type (Error, Warning, ...)
+            if ($LogName.ToLower() -ne 'security') {
+                if ($SeverityFilter.Count -ne 0 -And $SeverityFilter.ContainsKey([string]$event.Level) -eq $FALSE) {
+                    $skip = $TRUE;
+                }
+            } else {
+                if ($SeverityFilter.Count -ne 0 -And $SeverityFilter.ContainsKey([string]$event.Keywords) -eq $FALSE) {
+                    continue;
+                }
             }
 
             if ($skip) {
@@ -153,14 +240,14 @@ function Get-IcingaEventLog()
     }
 
     $groupedEvents = @{
-        'eventlog' = @{};
-        'events'   = @{};
+        'eventlog' = @{ };
+        'events'   = @{ };
     };
 
     foreach ($event in $events) {
         [string]$EventIdentifier = [string]::Format('{0}-{1}',
-            $event.EventId,
-            $event.Source
+            $event.Id,
+            $event.ProviderName
         );
 
         [string]$EventHash = Get-StringSha1 $EventIdentifier;
@@ -169,24 +256,24 @@ function Get-IcingaEventLog()
             $groupedEvents.eventlog.Add(
                 $EventHash,
                 @{
-                    NewestEntry = $event.TimeGenerated;
-                    OldestEntry = $event.TimeGenerated;
-                    EventId     = $event.EventId;
+                    NewestEntry = $event.TimeCreated;
+                    OldestEntry = $event.TimeCreated;
+                    EventId     = $event.Id;
                     Message     = $event.Message;
-                    Severity    = $event.EntryType;
-                    Source      = $event.Source;
+                    Severity    = $ProviderEnums.EventLogSeverityName[$event.Level];
+                    Source      = $event.ProviderName;
                     Count       = 1;
                 }
             );
         } else {
-            $groupedEvents.eventlog[$EventHash].OldestEntry = $event.TimeGenerated;
+            $groupedEvents.eventlog[$EventHash].OldestEntry = $event.TimeCreated;
             $groupedEvents.eventlog[$EventHash].Count       += 1;
         }
 
-        if ($groupedEvents.events.ContainsKey($event.EventId) -eq $FALSE) {
-            $groupedEvents.events.Add($event.EventId, 1);
+        if ($groupedEvents.events.ContainsKey($event.Id) -eq $FALSE) {
+            $groupedEvents.events.Add($event.Id, 1);
         } else {
-            $groupedEvents.events[$event.EventId] += 1;
+            $groupedEvents.events[$event.Id] += 1;
         }
     }
 
