@@ -20,6 +20,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#144](https://github.com/Icinga/icinga-powershell-plugins/pull/144) Fixes filtering for `Invoke-IcingaCheckEventLog` which resulted in wrong results, depending on the plugin configuration
 * [#147](https://github.com/Icinga/icinga-powershell-plugins/pull/1470) Fixes wrong comparison for file size on `Get-IcingaDirectorySizeSmallerThan`, used by `Invoke-IcingaCheckDirectory`
 * [#154](https://github.com/Icinga/icinga-powershell-plugins/issues/154) Fixes `Invoke-IcingaCheckDirectory` by setting `-FileNames` argument to `*` as default for allowing to fetch all files for a given directory by default
+* [#160](https://github.com/Icinga/icinga-powershell-plugins/issues/160) While filtering for certain services with `Get-IcingaServices`, there were some attributes missing from the collection. These are now added resulting in always correct output data.
 
 ## 1.4.0 (2021-03-02)
 
