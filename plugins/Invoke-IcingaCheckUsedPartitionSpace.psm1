@@ -142,7 +142,7 @@ function Invoke-IcingaCheckUsedPartitionSpace()
             $IcingaCheckByte.WarnOutOfRange($DiskTotalWarning).CritOutOfRange($DiskTotalCritical) | Out-Null;
         } else {
             if ($SkipUnknown -eq $FALSE) {
-                $IcingaCheck.SetUnknown() | Out-Null;
+                $IcingaCheckByte.SetUnknown() | Out-Null;
             }
         }
         $DiskBytePackage.AddCheck($IcingaCheckByte);
