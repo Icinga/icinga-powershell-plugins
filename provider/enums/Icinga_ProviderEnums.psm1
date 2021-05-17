@@ -432,6 +432,26 @@
 }
 
 <##################################################################################################
+################# /lib/provider/eventlog ###############################################################
+##################################################################################################>
+
+[hashtable]$EventLogSeverity = @{
+    'Information'  = 4;
+    'SuccessAudit' = -9214364837600034816;
+    'Warning'      = 3;
+    'Error'        = 2;
+    'FailureAudit' = -9218868437227405312;
+}
+
+[hashtable]$EventLogSeverityName = @{
+    4                    = 'Information';
+    -9214364837600034816 = 'SuccessAudit';
+    3                    = 'Warning';
+    2                    = 'Error';
+    -9218868437227405312 ='FailureAudit';
+}
+
+<##################################################################################################
 ################# /lib/provider/cpu ###############################################################
 ##################################################################################################>
 
@@ -992,79 +1012,82 @@
 
 [hashtable]$ProviderEnums = @{
     #/lib/provider/bios
-    BiosCharacteristics            = $BiosCharacteristics;
+    BiosCharacteristics             = $BiosCharacteristics;
     #/lib/provider/disks
-    DiskCapabilities               = $DiskCapabilities;
-    DiskBusType                    = $DiskBusType;
-    DiskOperationalStatus          = $DiskOperationalStatus;
-    DiskOperationalStatusName      = $DiskOperationalStatusName;
-    DeviceAccess                   = $DeviceAccess;
-    DeviceAccessName               = $DeviceAccessName;
-    DeviceStatus                   = $DeviceStatus;
-    DeviceAvailability             = $DeviceAvailability;
-    DeviceAvailabilityName         = $DeviceAvailabilityName;
+    DiskCapabilities                = $DiskCapabilities;
+    DiskBusType                     = $DiskBusType;
+    DiskOperationalStatus           = $DiskOperationalStatus;
+    DiskOperationalStatusName       = $DiskOperationalStatusName;
+    DeviceAccess                    = $DeviceAccess;
+    DeviceAccessName                = $DeviceAccessName;
+    DeviceStatus                    = $DeviceStatus;
+    DeviceAvailability              = $DeviceAvailability;
+    DeviceAvailabilityName          = $DeviceAvailabilityName;
     #/lib/provider/storage
-    StoragePoolUsage               = $StoragePoolUsage;
-    StoragePoolUsageName           = $StoragePoolUsageName;
-    StorageHealthStatus            = $StorageHealthStatus
-    StorageHealthStatusName        = $StorageHealthStatusName
-    StorageOperationalStatus       = $StorageOperationalStatus;
-    StorageOperationalStatusName   = $StorageOperationalStatusName;
-    RetireMissingPhysicalDisks     = $RetireMissingPhysicalDisks;
-    RetireMissingPhysicalDisksName = $RetireMissingPhysicalDisksName;
+    StoragePoolUsage                = $StoragePoolUsage;
+    StoragePoolUsageName            = $StoragePoolUsageName;
+    StorageHealthStatus             = $StorageHealthStatus
+    StorageHealthStatusName         = $StorageHealthStatusName
+    StorageOperationalStatus        = $StorageOperationalStatus;
+    StorageOperationalStatusName    = $StorageOperationalStatusName;
+    RetireMissingPhysicalDisks      = $RetireMissingPhysicalDisks;
+    RetireMissingPhysicalDisksName  = $RetireMissingPhysicalDisksName;
     ThinProvisioningAlertThresholds = $ThinProvisioningAlertThresholds;
+    #/lib/provider/eventlog
+    EventLogSeverity                = $EventLogSeverity;
+    EventLogSeverityName            = $EventLogSeverityName;
     #/lib/provider/cpu
-    CPUArchitecture                = $CPUArchitecture;
-    CPUProcessorType               = $CPUProcessorType;
-    CPUStatusInfo                  = $CPUStatusInfo;
-    CPUFamily                      = $CPUFamily;
-    CPUConfigManagerErrorCode      = $CPUConfigManagerErrorCode;
-    CPUAvailability                = $CPUAvailability;
-    CPUPowerManagementCapabilities = $CPUPowerManagementCapabilities;
+    CPUArchitecture                 = $CPUArchitecture;
+    CPUProcessorType                = $CPUProcessorType;
+    CPUStatusInfo                   = $CPUStatusInfo;
+    CPUFamily                       = $CPUFamily;
+    CPUConfigManagerErrorCode       = $CPUConfigManagerErrorCode;
+    CPUAvailability                 = $CPUAvailability;
+    CPUPowerManagementCapabilities  = $CPUPowerManagementCapabilities;
     #/lib/provider/memory
-    MemoryFormFactor               = $MemoryFormFactor;
-    MemoryInterleavePosition       = $MemoryInterleavePosition;
-    MemoryMemoryType               = $MemoryMemoryType;
-    MemoryTypeDetail               = $MemoryTypeDetail;
+    MemoryFormFactor                = $MemoryFormFactor;
+    MemoryInterleavePosition        = $MemoryInterleavePosition;
+    MemoryMemoryType                = $MemoryMemoryType;
+    MemoryTypeDetail                = $MemoryTypeDetail;
     #/lib/provider/windows
-    WindowsOSProductSuite          = $WindowsOSProductSuite;
-    WindowsProductType             = $WindowsProductType;
-    WindowsOSType                  = $WindowsOSType;
+    WindowsOSProductSuite           = $WindowsOSProductSuite;
+    WindowsProductType              = $WindowsProductType;
+    WindowsOSType                   = $WindowsOSType;
     #/lib/provider/services
-    ServiceStatus                  = $ServiceStatus;
-    ServiceStatusName              = $ServiceStatusName;
-    ServiceStartupType             = $ServiceStartupType;
-    ServiceStartupTypeName         = $ServiceStartupTypeName;
-    ServiceWmiStartupType          = $ServiceWmiStartupType;
+    ServiceStatus                   = $ServiceStatus;
+    ServiceStatusName               = $ServiceStatusName;
+    ServiceStartupType              = $ServiceStartupType;
+    ServiceStartupTypeName          = $ServiceStartupTypeName;
+    ServiceWmiStartupType           = $ServiceWmiStartupType;
     #/lib/provider/tasks
-    ScheduledTaskStatus            = $ScheduledTaskStatus;
-    ScheduledTaskName              = $ScheduledTaskName;
+    ScheduledTaskStatus             = $ScheduledTaskStatus;
+    ScheduledTaskName               = $ScheduledTaskName;
     #/lib/provider/NtpChecks
-    TimeSyncStatus                 = $TimeSyncStatus;
-    TimeSyncStatusName             = $TimeSyncStatusName;
-    ClientMode                     = $ClientMode;
-    ClientModeName                 = $ClientModeName;
-    Stratum                        = $Stratum;
-    StratumTxt                     = $StratumTxt;
+    TimeSyncStatus                  = $TimeSyncStatus;
+    TimeSyncStatusName              = $TimeSyncStatusName;
+    ClientMode                      = $ClientMode;
+    ClientModeName                  = $ClientModeName;
+    Stratum                         = $Stratum;
+    StratumTxt                      = $StratumTxt;
     #/lib/provider/NetworkDevices
-    OperationalMode                = $OperationalMode;
-    OperationalModeName            = $OperationalModeName;
-    AdministrativeMode             = $AdministrativeMode;
-    AdministrativeModeName         = $AdministrativeModeName;
-    SlaveEnabledState              = $SlaveEnabledState;
-    SlaveEnabledStateName          = $SlaveEnabledStateName;
-    TeamingMode                    = $TeamingMode;
-    TeamingModeName                = $TeamingModeName;
-    InterfaceTeamStatus            = $InterfaceTeamStatus;
-    InterfaceTeamStatusName        = $InterfaceTeamStatusName;
-    InterfaceAdminStatus           = $InterfaceAdminStatus;
-    InterfaceAdminStatusName       = $InterfaceAdminStatusName;
-    InterfaceOperationalStatus     = $InterfaceOperationalStatus;
-    InterfaceOperationalStatusName = $InterfaceOperationalStatusName;
-    NetConnectionStatus            = $NetConnectionStatus;
-    NetConnectionStatusName        = $NetConnectionStatusName;
-    LoadBalancingAlgorithm         = $LoadBalancingAlgorithm;
-    LoadBalancingAlgorithmName     = $LoadBalancingAlgorithmName;
+    OperationalMode                 = $OperationalMode;
+    OperationalModeName             = $OperationalModeName;
+    AdministrativeMode              = $AdministrativeMode;
+    AdministrativeModeName          = $AdministrativeModeName;
+    SlaveEnabledState               = $SlaveEnabledState;
+    SlaveEnabledStateName           = $SlaveEnabledStateName;
+    TeamingMode                     = $TeamingMode;
+    TeamingModeName                 = $TeamingModeName;
+    InterfaceTeamStatus             = $InterfaceTeamStatus;
+    InterfaceTeamStatusName         = $InterfaceTeamStatusName;
+    InterfaceAdminStatus            = $InterfaceAdminStatus;
+    InterfaceAdminStatusName        = $InterfaceAdminStatusName;
+    InterfaceOperationalStatus      = $InterfaceOperationalStatus;
+    InterfaceOperationalStatusName  = $InterfaceOperationalStatusName;
+    NetConnectionStatus             = $NetConnectionStatus;
+    NetConnectionStatusName         = $NetConnectionStatusName;
+    LoadBalancingAlgorithm          = $LoadBalancingAlgorithm;
+    LoadBalancingAlgorithmName      = $LoadBalancingAlgorithmName;
 }
 
 Export-ModuleMember -Variable @('ProviderEnums');
