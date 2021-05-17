@@ -86,78 +86,61 @@ function Invoke-IcingaCheckUsedPartitionSpace()
         [int]$Verbosity            = 0
     );
 
-    $DiskFree        = Get-IcingaDiskPartitions;
-    $DiskPackage     = New-IcingaCheckPackage -Name 'Used Partition Space' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks;
-    $DiskBytePackage = New-IcingaCheckPackage -Name 'Used Partition Space in Bytes' -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks -Hidden;
+    $Disks       = Get-IcingaPhysicalDiskInfo;
+    $DiskPackage = New-IcingaCheckPackage -Name 'Used Partition Space' -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks -OperatorAnd;
 
-    foreach ($Letter in $DiskFree.Keys) {
-        if ($Include.Count -ne 0) {
-            $Include = $Include.trim(' :/\');
-            if (-Not ($Include.Contains($Letter))) {
+    foreach ($disk in $Disks.Values) {
+
+        foreach ($partitions in $disk.PartitionLayout.Keys) {
+            $partition        =  $disk.PartitionLayout[$partitions];
+            $ProcessPartition = $TRUE;
+
+            if ([string]::IsNullOrEmpty($partition.DriveLetter)) {
                 continue;
             }
-        }
 
-        if ($Exclude.Count -ne 0) {
-            $Exclude = $Exclude.trim(' :/\');
-            if ($Exclude.Contains($Letter)) {
+            if ($disk.DriveReference.ContainsKey($partition.DriveLetter) -eq $FALSE) {
                 continue;
             }
-        }
 
-        $SetUnknown = $FALSE;
-        $CheckName  = [string]::Format('Partition {0}', $Letter);
+            $PartitionId = $disk.DriveReference[$partition.DriveLetter];
 
-        $Unit               = Get-UnitPrefixIEC $DiskFree.([string]::Format($Letter))."Size";
-        $PerfUnit           = Get-UnitPrefixSI  $DiskFree.([string]::Format($Letter))."Size";
-        $FreeSpace          = (100-($DiskFree.([string]::Format($Letter))."Free Space"));
-        $Bytes              = [math]::Round(($DiskFree.([string]::Format($Letter))."Size") * $FreeSpace / 100);
-        $ByteString         = [string]::Format('{0}B', $Bytes);
-        $ByteValueConverted = Convert-Bytes -Value $ByteString -Unit $Unit;
-        $DiskSizeBytes      = $DiskFree[$Letter]['Size'];
-
-        if ([string]::IsNullOrEmpty($DiskFree.([string]::Format($Letter))."Size") -Or [string]::IsNullOrEmpty($DiskFree.([string]::Format($Letter))."Free Space")) {
-            $SetUnknown = $TRUE;
-            $CheckName  = [string]::Format('Partition {0}: No data available for calculation', $Letter);
-            $FreeSpace  = $null;
-        }
-
-        if ($null -eq $DiskSizeBytes) {
-            $DiskSizeBytes = 0;
-        }
-
-        $DiskSize           = Convert-Bytes -Value ([string]::Format('{0}B', $DiskSizeBytes)) -Unit $Unit;
-        $DiskTotalWarning   = $null;
-        $DiskTotalCritical  = $null;
-
-        if ($null -ne $Warning -And $DiskSize.Value -ne 0) {
-            $DiskTotalWarning = $DiskSize.Value / 100 * $Warning;
-        }
-        if ($null -ne $Critical -And $DiskSize.Value -ne 0) {
-            $DiskTotalCritical = $DiskSize.Value / 100 * $Critical;
-        }
-
-        $IcingaCheckByte = New-IcingaCheck -Name ([string]::Format( 'Used Space Partition {0}', $Letter )) -Value $ByteValueConverted.Value -Unit $PerfUnit -Minimum 0 -Maximum $DiskSize.Value -NoPerfData:$SetUnknown;
-        if ($SetUnknown -eq $FALSE) {
-            $IcingaCheckByte.WarnOutOfRange($DiskTotalWarning).CritOutOfRange($DiskTotalCritical) | Out-Null;
-        } else {
-            if ($SkipUnknown -eq $FALSE) {
-                $IcingaCheckByte.SetUnknown() | Out-Null;
+            if ($partitions -ne $PartitionId) {
+                continue;
             }
-        }
-        $DiskBytePackage.AddCheck($IcingaCheckByte);
 
-        $IcingaCheck = New-IcingaCheck -Name $CheckName -Value $FreeSpace -Unit '%' -NoPerfData:$SetUnknown;
-        if ($SetUnknown -eq $FALSE) {
-            $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-        } else {
-            if ($SkipUnknown -eq $FALSE) {
-                $IcingaCheck.SetUnknown() | Out-Null;
+            foreach ($entry in $Include) {
+                $ProcessPartition = $FALSE;
+                if ($entry.Replace(':', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
+                    $ProcessPartition = $TRUE;
+                    break;
+                }
             }
-        }
-        $DiskPackage.AddCheck($IcingaCheck);
+            foreach ($entry in $Exclude) {
+                if ($entry.Replace(':', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
+                    $ProcessPartition = $FALSE;
+                    break;
+                }
+            }
 
-        $DiskPackage.AddCheck($DiskBytePackage);
+            if ($ProcessPartition -eq $FALSE) {
+                continue;
+            }
+
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+
+            if ([string]::IsNullOrEmpty($partition.FreeSpace) -Or [string]::IsNullOrEmpty($partition.Size)) {
+                if ($SkipUnknown -eq $FALSE) {
+                    $IcingaCheck.SetUnknown('No disk size and/or free space available', $TRUE) | Out-Null;
+                } else {
+                    $IcingaCheck.SetOk('No disk size and/or free space available', $TRUE) | Out-Null;
+                }
+            } else {
+                $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+            }
+
+            $DiskPackage.AddCheck($IcingaCheck);
+        }
     }
 
     return (New-IcingaCheckResult -Check $DiskPackage -NoPerfData $NoPerfData -Compile);
