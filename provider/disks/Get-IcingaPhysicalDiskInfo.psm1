@@ -54,8 +54,8 @@ function Get-IcingaPhysicalDiskInfo()
             'FirmwareRevision'            = $disk.FirmwareRevision;
             'Description'                 = $disk.Description;
             'PartitionStyle'              = ''; # Set later on partition check
-            'PartitionLayout'             = @{};
-            'DriveReference'              = @{}; # Set later on partition check
+            'PartitionLayout'             = @{ };
+            'DriveReference'              = @{ }; # Set later on partition check
             'Caption'                     = $disk.Caption;
             'IsSystem'                    = $disk.IsSystem;
             'TotalHeads'                  = $disk.TotalHeads;
@@ -197,8 +197,17 @@ function Get-IcingaPhysicalDiskInfo()
             foreach ($logical_disk in $LogicalDisk) {
                 if ($logical_disk.DeviceId -eq $DriveLetter) {
                     if ($null -ne $LogicalDisk) {
+                        $UsedSpace = 0;
+
+                        if ([string]::IsNullOrEmpty($DiskInfo.PartitionLayout[$PartitionIndex].Size) -eq $FALSE -And [string]::IsNullOrEmpty($logical_disk.FreeSpace) -eq $FALSE) {
+                            $UsedSpace = $DiskInfo.PartitionLayout[$PartitionIndex].Size - $logical_disk.FreeSpace;
+                        }
+
                         $DiskInfo.PartitionLayout[$PartitionIndex].Add(
                             'FreeSpace', $logical_disk.FreeSpace
+                        );
+                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                            'UsedSpace', $UsedSpace
                         );
                         $DiskInfo.PartitionLayout[$PartitionIndex].Add(
                             'VolumeName', $logical_disk.VolumeName

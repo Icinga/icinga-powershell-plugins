@@ -13,6 +13,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Enhancements
 
+* [#71](https://github.com/Icinga/icinga-powershell-plugins/pull/71) Rework `Invoke-IcingaCheckUsedPartitionSpace` to properly use Framework v1.5.0 functionality and resolve upper/lower case drive filtering
 * [#156](https://github.com/Icinga/icinga-powershell-plugins/issues/156) Adds feature to modify the output status of `Invoke-IcingaCheckCertificate` from `UNKNOWN` to `OK` in case no certificate was found by setting the new argument `-IgnoreEmpty`
 
 ### Bugfixes
