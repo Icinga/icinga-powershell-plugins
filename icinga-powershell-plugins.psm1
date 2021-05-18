@@ -65,6 +65,15 @@ function Publish-IcingaPluginDocumentation()
     Add-Content -Path $PluginDocFile -Value '';
     Add-Content -Path $PluginDocFile -Value 'To test thresholds with different input values, you can use the Framework Cmdlet `Get-IcingaHelpThresholds`.';
     Add-Content -Path $PluginDocFile -Value '';
+    Add-Content -Path $PluginDocFile -Value 'Each plugin ships with a constant Framework argument `-ThresholdInterval`. This can be used to modify the value your thresholds are compared against from the current, fetched value to one collected over time by the Icinga for Windows daemon. In case you [registered service checks](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/) for specific time intervals, you can for example set the argument to `15m` to get the average value of 15m as base for your monitoring values. Please note that in this example, you will require to have collected the `15m` average for `Invoke-IcingaCheckCPU`.';
+    Add-Content -Path $PluginDocFile -Value '';
+    Add-Content -Path $PluginDocFile -Value '```powershell';
+    Add-Content -Path $PluginDocFile -Value 'icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -ThresholdInterval 15m }'
+    Add-Content -Path $PluginDocFile -Value ''
+    Add-Content -Path $PluginDocFile -Value '[WARNING] CPU Load: [WARNING] Core Total (29,14817700%)'
+    Add-Content -Path $PluginDocFile -Value '\_ [WARNING] Core Total: 29,14817700% is greater than threshold 20% (15m avg.)';
+    Add-Content -Path $PluginDocFile -Value "| 'core_total_1'=31.545677%;;;0;100 'core_total_15'=29.148177%;20;40;0;100 'core_total_5'=28.827410%;;;0;100 'core_total_20'=30.032942%;;;0;100 'core_total_3'=27.731669%;;;0;100 'core_total'=33.87817%;;;0;100";
+    Add-Content -Path $PluginDocFile -Value '```';
 
     $AvailablePlugins = Get-ChildItem -Path $PluginDir -Recurse -Filter *.psm1;
     foreach ($plugin in $AvailablePlugins) {
@@ -141,6 +150,8 @@ function Publish-IcingaPluginDocumentation()
                 );
                 Add-Content -Path $PluginDescriptionFile -Value $TableContent;
             }
+
+            Add-Content -Path $PluginDescriptionFile -Value '| ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |';
         }
 
         if ($null -ne $PluginHelp.examples) {

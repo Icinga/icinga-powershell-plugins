@@ -19,6 +19,7 @@ No special permissions required.
 | Profile | String | false |  | Used to specify the profile to check. Available profiles are 'DomainAuthenticated', 'Public', 'Private' |
 | Verbosity | Int32 | false | 0 |  |
 | NICs | Array | false |  | Used to specify the NICs where to check the filewall profile. When not presented every nic which is active will be checked |
+| ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples
 
