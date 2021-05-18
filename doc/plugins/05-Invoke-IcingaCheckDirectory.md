@@ -35,6 +35,7 @@ No special permissions required.
 | FileSizeSmallerThan | String | false |  | String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.  Thereby all files with a size of 5 MB or less are considered within the check. |
 | Verbosity | Int32 | false | 0 |  |
 | NoPerfData | SwitchParameter | false | False |  |
+| ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples
 

@@ -66,6 +66,7 @@ To execute this plugin you will require to grant the following user permissions.
 | CheckLogicalOnly | SwitchParameter | false | False | Set this to include only disks that have drive letters like C:, D:, ..., assigned to them. Can be combined with include/exclude filters |
 | NoPerfData | SwitchParameter | false | False |  |
 | Verbosity | Int32 | false | 0 |  |
+| ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples
 
