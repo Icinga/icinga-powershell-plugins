@@ -17,13 +17,21 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [#163](https://github.com/Icinga/icinga-powershell-plugins/issues/163) Checks the response time, the return code and content of HTTP requests.
 
+### Reworked Plugins
+
+Please have a look on the [upgrading docs](30-Upgrading-Plugins) for these plugins
+
+* Invoke-IcingaCheckNetworkInterface
+* Invoke-IcingaCheckMemory
+* Invoke-IcingaCheckUsedPartitionSpace
+
 ### Enhancements
 
 * [#14](https://github.com/Icinga/icinga-powershell-plugins/issues/14) Rework of `Invoke-IcingaCheckMemory` to use new features from 1.5.0 for % handling and added page file check content including arguments. Please have a look on the [upgrading docs](30-Upgrading-Plugins.md)
 * [#71](https://github.com/Icinga/icinga-powershell-plugins/pull/71) Rework `Invoke-IcingaCheckUsedPartitionSpace` to properly use Framework v1.5.0 functionality and resolve upper/lower case drive filtering
 * [#156](https://github.com/Icinga/icinga-powershell-plugins/issues/156) Adds feature to modify the output status of `Invoke-IcingaCheckCertificate` from `UNKNOWN` to `OK` in case no certificate was found by setting the new argument `-IgnoreEmpty`
 * [#159](https://github.com/Icinga/icinga-powershell-plugins/issues/159) Replaces the deprecated function `Get-EventLog` with `Get-WinEvent`. In addition, the plugin received a new argument `-MaxEntries` to allow additional filtering for the number of events fetched to improve performance in addition. The EventLog now also supports an array with list items, allowing easier filtering for severities which are allowed inside the EventLog.
-* [#167](https://github.com/Icinga/icinga-powershell-plugins/issues/167) Upgrades plugin configuration files to Framework version 1.5.0
+* [#167](https://github.com/Icinga/icinga-powershell-plugins/issues/167) Upgrades plugin configuration files to Framework version 1.5.0. Please have a look on the [upgrading docs](30-Upgrading-Plugins)
 
 ### Bugfixes
 

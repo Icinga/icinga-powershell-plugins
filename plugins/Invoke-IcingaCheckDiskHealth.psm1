@@ -87,6 +87,12 @@
     Ignores any disk which is having the state `Read Only` and returns `Ok` instead of `Warning` for this specific state
 .PARAMETER CheckLogicalOnly
     Set this to include only disks that have drive letters like C:, D:, ..., assigned to them. Can be combined with include/exclude filters
+.PARAMETER Verbosity
+    Changes the behavior of the plugin output which check states are printed:
+    0 (default): Only service checks/packages with state not OK will be printed
+    1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+    2: Everything will be printed regardless of the check state
+    3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .EXAMPLE
     PS> Invoke-IcingaCheckDiskHealth  -DiskReadSecWarning 0 -DiskReadSecCritical 1 -DiskAvgTransSecWarning 5s -DiskAvgTransSecCritical 10s -DiskReadByteSecWarning 3000 -DiskReadByteSecCritical 5000 -Verbosity 2
     [OK] Check package "Physical Disk Package" (Match All)
@@ -150,14 +156,15 @@ function Invoke-IcingaCheckDiskHealth()
         [switch]$IgnoreReadOnlyDisks = $FALSE,
         [switch]$CheckLogicalOnly    = $FALSE,
         [switch]$NoPerfData          = $FALSE,
-        [ValidateSet(0, 1, 2)]
+        [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity             = 0
     )
 
     $CheckPackage = New-IcingaCheckPackage `
         -Name 'Physical Disk Package' `
         -OperatorAnd `
-        -Verbose $Verbosity;
+        -Verbose $Verbosity `
+        -AddSummaryHeader;
     $SortedDisks = Join-IcingaPhysicalDiskDataPerfCounter -DiskCounter @(
         '\PhysicalDisk(*)\disk read bytes/sec',
         '\PhysicalDisk(*)\disk write bytes/sec',
@@ -173,13 +180,6 @@ function Invoke-IcingaCheckDiskHealth()
         -ExcludeDisk $ExcludeDisk `
         -IncludePartition $IncludePartition `
         -ExcludePartition $ExcludePartition;
-
-    $DiskAvgReadSecWarning   = ConvertTo-SecondsFromIcingaThresholds $DiskAvgReadSecWarning;
-    $DiskAvgReadSecCritical  = ConvertTo-SecondsFromIcingaThresholds $DiskAvgReadSecCritical;
-    $DiskAvgWriteSecWarning  = ConvertTo-SecondsFromIcingaThresholds $DiskAvgWriteSecWarning;
-    $DiskAvgWriteSecCritical = ConvertTo-SecondsFromIcingaThresholds $DiskAvgWriteSecCritical;
-    $DiskAvgTransSecWarning  = ConvertTo-SecondsFromIcingaThresholds $DiskAvgTransSecWarning;
-    $DiskAvgTransSecCritical = ConvertTo-SecondsFromIcingaThresholds $DiskAvgTransSecCritical;
 
     foreach ($DiskPart in $SortedDisks.Keys) {
         $DiskObjects      = $SortedDisks[$DiskPart];

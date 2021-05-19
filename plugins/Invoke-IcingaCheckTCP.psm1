@@ -32,6 +32,7 @@
     0 (default): Only service checks/packages with state not OK will be printed
     1: Only services with not OK will be printed including OK checks of affected check packages including Package config
     2: Everything will be printed regardless of the check state
+    3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .EXAMPLE
    Invoke-IcingaCheckTCP -Address 'example.com' -Ports 443, 80, 5665, 3001;
 
@@ -74,12 +75,10 @@ function Invoke-IcingaCheckTCP()
         $Warning               = $null,
         $Critical              = $null,
         [switch]$NoPerfData    = $FALSE,
-        [ValidateSet(0, 1, 2)]
+        [ValidateSet(0, 1, 2, 3)]
         $Verbosity             = 0
     );
 
-    $Warning        = Convert-IcingaPluginThresholds $Warning;
-    $Critical       = Convert-IcingaPluginThresholds $Critical;
     $ConnectionData = Measure-IcingaTCPConnection -Address $Address -Ports $Ports;
     $CheckPackage   = New-IcingaCheckPackage -Name 'TCP Connections' -OperatorAnd -Verbose $Verbosity;
 

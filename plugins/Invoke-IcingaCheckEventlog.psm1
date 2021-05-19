@@ -100,6 +100,12 @@
    This is due to the time cache, when disabled the whole eventlog is checked instead.
 .PARAMETER NoPerfData
    Used to disable PerfData.
+.PARAMETER Verbosity
+   Changes the behavior of the plugin output which check states are printed:
+   0 (default): Only service checks/packages with state not OK will be printed
+   1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+   2: Everything will be printed regardless of the check state
+   3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .INPUTS
    System.String
 .OUTPUTS
@@ -139,10 +145,10 @@ function Invoke-IcingaCheckEventlog()
     $After  = Convert-IcingaPluginThresholds $After;
     $Before = Convert-IcingaPluginThresholds $Before;
 
-    $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity;
+    $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
     $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
-                           -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
-                           -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After.Value -Before $Before.Value -MaxEntries $MaxEntries -DisableTimeCache $DisableTimeCache;
+        -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
+        -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After.Value -Before $Before.Value -MaxEntries $MaxEntries -DisableTimeCache $DisableTimeCache;
 
     [hashtable]$EventLogSource = @{};
 

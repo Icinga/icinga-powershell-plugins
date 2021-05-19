@@ -33,7 +33,7 @@ No special permissions required.
 | CreationYoungerThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.  Thereby all files which have a creation date younger then 20 days are considered within the check. |
 | FileSizeGreaterThan | String | false |  | String that expects input format like "20MB", which translates to the filze size 20 MB. Allowed units: B, KB, MB, GB, TB.  Thereby all files with a size of 20 MB or larger are considered within the check. |
 | FileSizeSmallerThan | String | false |  | String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.  Thereby all files with a size of 5 MB or less are considered within the check. |
-| Verbosity | Int32 | false | 0 |  |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | NoPerfData | SwitchParameter | false | False |  |
 | ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 

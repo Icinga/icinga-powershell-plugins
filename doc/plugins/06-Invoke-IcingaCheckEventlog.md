@@ -44,7 +44,7 @@ To execute this plugin you will require to grant the following user permissions.
 | MaxEntries | Int32 | false | 40000 | Allows to limit the amount of log entries fetched by Get-WinEvent, to increase performance and reduce system load impact Should match the average amount of log files written for the intended time range filtered |
 | DisableTimeCache | SwitchParameter | false | False | Switch to disable the time cache on a check. If this parameter is set the time cache is disabled. After the check has been run once, the next check instance will filter through the eventlog from the point the last check ended. This is due to the time cache, when disabled the whole eventlog is checked instead. |
 | NoPerfData | SwitchParameter | false | False | Used to disable PerfData. |
-| Verbosity | Int32 | false | 0 |  |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples

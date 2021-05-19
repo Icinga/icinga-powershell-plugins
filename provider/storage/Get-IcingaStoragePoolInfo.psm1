@@ -86,7 +86,7 @@ function Get-IcingaStoragePoolInfo()
     }
 
     if ($StorageData.Count -eq 0) {
-        Exit-IcingaThrowException -ExceptionType 'Custom' -CustomMessage 'NotFound' -InputString 'It could not be found any storage pools on your system.' -Force;
+        Exit-IcingaThrowException -ExceptionType 'Custom' -CustomMessage 'NotFound' -InputString 'No storage pools were found on your system.' -Force;
     }
 
     return $StorageData;

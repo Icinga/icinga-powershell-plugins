@@ -6,7 +6,7 @@
 Checks on memory usage
 
 Invoke-IcingaCheckMemory returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-e.g memory is currently at 60% usage, WARNING is set to 50, CRITICAL is set to 90. In this case the check will return WARNING.
+e.g memory is currently at 60% usage, WARNING is set to 50%, CRITICAL is set to 90%. In this case the check will return WARNING.
 
 More Information on https://github.com/Icinga/icinga-powershell-plugins
 
