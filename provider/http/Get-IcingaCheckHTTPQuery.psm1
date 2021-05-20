@@ -31,6 +31,7 @@ function Get-IcingaCheckHTTPQuery()
         $InvokeArguments.Add('-Uri', $SingleUrl);
         $InvokeArguments.Add('-TimeoutSec', $Timeout);
         $InvokeArguments.Add('-ErrorAction', 'Stop');
+        $InvokeArguments.Add('-UseBasicParsing', $TRUE);
 
         # Converting headers suitable for -Headers as hashtable/dictionary
 
