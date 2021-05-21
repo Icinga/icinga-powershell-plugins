@@ -31,6 +31,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#154](https://github.com/Icinga/icinga-powershell-plugins/issues/154) Fixes `Invoke-IcingaCheckDirectory` by setting `-FileNames` argument to `*` as default for allowing to fetch all files for a given directory by default
 * [#160](https://github.com/Icinga/icinga-powershell-plugins/issues/160) While filtering for certain services with `Get-IcingaServices`, there were some attributes missing from the collection. These are now added resulting in always correct output data.
 * [#161](https://github.com/Icinga/icinga-powershell-plugins/issues/161) Fixes a copy & paste error on `Invoke-IcingaCheckUsedPartitionSpace`, as a wrong check variable was used for forcing `Unknown` results
+* [#171](https://github.com/Icinga/icinga-powershell-plugins/issues/171) Fixes wrong OK states for `Invoke-IcingaCheckPerfCounter`, in case counters for categories with instances were not present
 
 ## 1.4.0 (2021-03-02)
 
