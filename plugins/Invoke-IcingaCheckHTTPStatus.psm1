@@ -95,7 +95,7 @@ function Invoke-IcingaCheckHTTPStatus()
         [string]$ProxyServer         = '',
         [array]$Content              = @(),
         [array]$StatusCode           = @(),
-        [int]$Minimum                = 0,
+        [int]$Minimum                = -1,
         [switch]$Negate              = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
@@ -105,11 +105,11 @@ function Invoke-IcingaCheckHTTPStatus()
     $HTTPData = (Get-IcingaCheckHTTPQuery -Url $Url -VHost $VHost -Headers $Headers -Timeout $Timeout -Username $Username -Password $Password -ProxyUsername $ProxyUsername -ProxyPassword $ProxyPassword -ProxyServer $ProxyServer -Content $Content -StatusCode $StatusCode);
 
     # In case -Minimum isn't set, implied -OperatorAnd
-    if ($Minimum -eq 0) {
+    if ($Minimum -eq -1) {
         $Minimum = $Url.Count;
     }
 
-    $HTTPAllStatusPackage = New-IcingaCheckPackage -Name "HTTP Status Check" -OperatorMin $Minimum -Verbose $Verbosity -AddSummaryHeader;
+    $HTTPAllStatusPackage = New-IcingaCheckPackage -Name "HTTP Status Check" -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
 
     foreach ($SingleUrl in $Url) {
 
@@ -168,9 +168,9 @@ function Invoke-IcingaCheckHTTPStatus()
 
         # Content Package
         if ($HTTPData.$SingleUrl.'StatusCodes'.Value -ne $null) {
-            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -OperatorMin 1 -Verbose $Verbosity -IgnoreEmptyPackage;
+            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -OperatorMin $Minimum -Verbose $Verbosity -IgnoreEmptyPackage;
         } else {
-            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -OperatorMin 1 -Verbose $Verbosity -IgnoreEmptyPackage -Hidden;
+            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -OperatorMin $Minimum -Verbose $Verbosity -IgnoreEmptyPackage -Hidden;
         }
 
         # Found & Not Found
