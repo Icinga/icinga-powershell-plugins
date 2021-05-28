@@ -53,6 +53,7 @@ If you are going to install this plugin release, please have a look on the [upgr
 
 ### Enhancements
 
+* [#114](https://github.com/Icinga/icinga-powershell-plugins/pull/114) Adds possibility to exclude certificates matching a certain pattern
 * [#134](https://github.com/Icinga/icinga-powershell-plugins/pull/134) Adds autoloading for plugin information to standardize the development and projects and fixes plenty of spelling/code styling errors
 * [#135](https://github.com/Icinga/icinga-powershell-plugins/pull/135) Adds new check plugin `Invoke-IcingaCheckTCP`
 * [#137](https://github.com/Icinga/icinga-powershell-plugins/pull/137) Adds new configuration for Icinga for Windows v1.4.0 to make future configuration changes unnecessary. Please read the [upgrading docs](30-Upgrading-Plugins.md) before upgrading!

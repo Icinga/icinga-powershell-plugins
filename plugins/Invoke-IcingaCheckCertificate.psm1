@@ -74,12 +74,17 @@
 
 .PARAMETER IgnoreEmpty
     Will return `OK` instead of `UNKNOWN`, in case no certificates for the given filter and path were found
+
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
     1: Only services with not OK will be printed including OK checks of affected check packages including Package config
     2: Everything will be printed regardless of the check state
     3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
+
+.PARAMETER ExcludePattern
+   Used to specify an array of exclusions, tested against Subject, Subject Alternative Name and Issuer.
+
 .INPUTS
    System.String
 .OUTPUTS
@@ -102,6 +107,7 @@ function Invoke-IcingaCheckCertificate()
         [string]$CertStore     = '*',
         [array]$CertThumbprint = $null,
         [array]$CertSubject    = $null,
+        [array]$ExcludePattern = $null,
         $CertStorePath         = '*',
         #Local Certs
         [array]$CertPaths      = $null,
@@ -114,13 +120,13 @@ function Invoke-IcingaCheckCertificate()
     );
 
     $CertData    = Get-IcingaCertificateData `
-        -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject `
+        -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject -ExcludePattern $ExcludePattern `
         -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath -Recurse $Recurse;
     $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmpty -AddSummaryHeader;
 
     if ($null -ne $CriticalStart) {
         try {
-            [datetime]$CritDateTime = $CriticalStart
+            [datetime]$CritDateTime = $CriticalStart;
         } catch {
             Exit-IcingaThrowException -ExceptionType 'Custom' -CustomMessage 'DateTimeParseError' -InputString (
                 [string]::Format('The provided value "{0}" for argument "CriticalStart" could not be parsed as DateTime.', $CriticalStart)
@@ -147,6 +153,9 @@ function Invoke-IcingaCheckCertificate()
         }
 
         $CertName = $CertName -ireplace '(cn|ou)=', '';
+        if (($CertName -eq '') -or ($CertName -eq '')) {
+            $CertName = $Cert.DnsNameList.Unicode.Split([System.Environment]::NewLine)[0]
+        }
         $CheckNamePrefix = "Certificate '${CertName}'";
         if ($data.ContainsKey('Path')) {
             $CheckNamePrefix += (" at " + $data.Path)
