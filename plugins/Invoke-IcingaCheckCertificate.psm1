@@ -74,7 +74,12 @@
 
 .PARAMETER IgnoreEmpty
     Will return `OK` instead of `UNKNOWN`, in case no certificates for the given filter and path were found
-
+.PARAMETER Verbosity
+    Changes the behavior of the plugin output which check states are printed:
+    0 (default): Only service checks/packages with state not OK will be printed
+    1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+    2: Everything will be printed regardless of the check state
+    3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .INPUTS
    System.String
 .OUTPUTS
@@ -105,13 +110,13 @@ function Invoke-IcingaCheckCertificate()
         [switch]$IgnoreEmpty   = $FALSE,
         #Other
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity        = 3
+        [int]$Verbosity        = 0
     );
 
     $CertData    = Get-IcingaCertificateData `
         -CertStore $CertStore -CertThumbprint $CertThumbprint -CertSubject $CertSubject `
         -CertPaths $CertPaths -CertName $CertName -CertStorePath $CertStorePath -Recurse $Recurse;
-    $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmpty;
+    $CertPackage = New-IcingaCheckPackage -Name 'Certificates' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmpty -AddSummaryHeader;
 
     if ($null -ne $CriticalStart) {
         try {
@@ -166,7 +171,7 @@ function Invoke-IcingaCheckCertificate()
         if (($null -ne $WarningEnd) -Or ($null -ne $CriticalEnd)) {
             $ValidityInfo = ([string]::Format('valid until {0} : {1}d', $Cert.NotAfter.ToString('yyyy-MM-dd'), $SpanTilAfter.Days));
             $IcingaCheck  = New-IcingaCheck -Name "${CheckNamePrefix} ($ValidityInfo) valid for" -Value (New-TimeSpan -End $Cert.NotAfter.DateTime).TotalSeconds;
-            $IcingaCheck.WarnOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $WarningEnd)).CritOutOfRange((ConvertTo-SecondsFromIcingaThresholds -Threshold $CriticalEnd)) | Out-Null;
+            $IcingaCheck.WarnOutOfRange($WarningEnd).CritOutOfRange($CriticalEnd) | Out-Null;
             $checks += $IcingaCheck;
         }
 

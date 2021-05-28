@@ -21,7 +21,7 @@ No special permissions required.
 | Algorithm | String | false | SHA256 | Used to specify a string, which contains the algorithm to be used.  Allowed algorithms: 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MD5' |
 | Hash | String | false |  |  |
 | NoPerfData | SwitchParameter | false | False |  |
-| Verbosity | Int32 | false | 0 |  |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples

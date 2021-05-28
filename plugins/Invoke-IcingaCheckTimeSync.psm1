@@ -21,6 +21,12 @@
     Seconds before connection times out (default: 10)
 .PARAMETER IPV4
     Use IPV4 connection. Default $FALSE
+.PARAMETER Verbosity
+    Changes the behavior of the plugin output which check states are printed:
+    0 (default): Only service checks/packages with state not OK will be printed
+    1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+    2: Everything will be printed regardless of the check state
+    3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .EXAMPLE
     PS> Invoke-IcingaCheckTimeSync -Server '0.pool.ntp.org' -TimeOffset 10ms -Warning 10ms -Critical 20ms -Verbosity 2
     \_ [OK] Check package "Time Package" (Match All)
@@ -54,14 +60,12 @@ function Invoke-IcingaCheckTimeSync()
         [switch]$IPV4       = $FALSE,
         [int]$Port          = 123,
         [switch]$NoPerfData = $FALSE,
-        [ValidateSet(0, 1, 2)]
+        [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity     = 0
     );
 
     $TimeData    = Get-IcingaNtpData -Server $Server -Port $Port -TimeOffset $TimeOffset -Timeout $Timeout -IPV4:$IPV4;
-    $TimeService = (Get-IcingaServices 'W32Time').W32time; 
-    $Warning     = ConvertTo-SecondsFromIcingaThresholds $Warning;
-    $Critical    = ConvertTo-SecondsFromIcingaThresholds $Critical;
+    $TimeService = (Get-IcingaServices 'W32Time').W32time;
 
     $OffsetCheck = New-IcingaCheck `
         -Name 'Time Offset' `

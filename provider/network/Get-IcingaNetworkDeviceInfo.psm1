@@ -167,6 +167,7 @@ function Get-IcingaNetworkDeviceInfo()
                 $NetworkInfo.DriverDescription                                = $msft_device.DriverDescription;
                 $NetworkInfo.MediaConnectState                                = $msft_device.MediaConnectState;
                 $NetworkInfo.TransmitLinkSpeed                                = $msft_device.TransmitLinkSpeed;
+                $NetworkInfo.TransmitLinkSpeedBytes                           = ($msft_device.TransmitLinkSpeed / 8);
                 $NetworkInfo.ReceiveLinkSpeed                                 = $msft_device.ReceiveLinkSpeed;
                 $NetworkInfo.NotUserRemovable                                 = $msft_device.NotUserRemovable;
                 $NetworkInfo.NetworkAddresses                                 = $msft_device.NetworkAddresses;

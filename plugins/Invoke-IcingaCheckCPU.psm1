@@ -30,6 +30,12 @@
     Used to specify a Critical threshold. In this case an integer value.
 .PARAMETER Core
     Used to specify a single core to check for. For the average load across all cores use `_Total`
+.PARAMETER Verbosity
+    Changes the behavior of the plugin output which check states are printed:
+    0 (default): Only service checks/packages with state not OK will be printed
+    1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+    2: Everything will be printed regardless of the check state
+    3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .INPUTS
     System.String
 .OUTPUTS
@@ -53,7 +59,7 @@ function Invoke-IcingaCheckCPU()
     $CpuCounter       = New-IcingaPerformanceCounterArray '\Processor(*)\% processor time';
     $CounterStructure = New-IcingaPerformanceCounterStructure -CounterCategory 'Processor' -PerformanceCounterHash $CpuCounter;
     $CpuPackage       = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
-    [int]$CpuCount    = ([string](Get-IcingaCpuCount -CounterArray $CounterStructure)).Length;
+    [int]$CpuCount    = ([string](Get-IcingaCPUCount -CounterArray $CounterStructure)).Length;
 
     foreach ($counter in $CounterStructure.Keys) {
         if ($Core -ne '*' -And $counter -ne $Core) {

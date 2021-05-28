@@ -35,8 +35,13 @@
 .PARAMETER Critical
    Used to specify a Critical threshold. In this case an integer value.
 .PARAMETER Process
-   Used to specify an array of processes to count and match against.
-   e.g. conhost,wininit
+   Used to specify an array of processes to count and match against. e.g. conhost,wininit
+.PARAMETER Verbosity
+   Changes the behavior of the plugin output which check states are printed:
+   0 (default): Only service checks/packages with state not OK will be printed
+   1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+   2: Everything will be printed regardless of the check state
+   3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .INPUTS
    System.String
 .OUTPUTS
@@ -59,7 +64,7 @@ function Invoke-IcingaCheckProcessCount()
 
     $ProcessInformation = (Get-IcingaProcessData -Name $Process)
 
-    $ProcessPackage = New-icingaCheckPackage -Name "Process Check" -OperatorAnd -Verbose $Verbosity -NoPerfData $NoPerfData;
+    $ProcessPackage = New-icingaCheckPackage -Name "Process Check" -OperatorAnd -Verbose $Verbosity -NoPerfData $NoPerfData -AddSummaryHeader;
 
     if ($Process.Count -eq 0) {
         $ProcessCount = $ProcessInformation['Process Count'];

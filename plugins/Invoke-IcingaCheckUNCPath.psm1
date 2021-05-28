@@ -49,6 +49,7 @@
     0 (default): Only service checks/packages with state not OK will be printed
     1: Only services with not OK will be printed including OK checks of affected check packages including Package config
     2: Everything will be printed regardless of the check state
+    3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .EXAMPLE
     icinga { Invoke-IcingaCheckUNCPath -Path '\\example.com\Shares\Icinga' -Critical '20TB:' }
 
@@ -88,7 +89,7 @@ function Invoke-IcingaCheckUNCPath()
         $WarningTotal         = $null,
         $CriticalTotal        = $null,
         [switch]$NoPerfData   = $FALSE,
-        [ValidateSet(0, 1, 2)]
+        [ValidateSet(0, 1, 2, 3)]
         $Verbosity            = 0
     );
 
@@ -98,10 +99,6 @@ function Invoke-IcingaCheckUNCPath()
         $DisplayName = $DisplayAlias;
     }
 
-    $Warning       = Convert-IcingaPluginThresholds $Warning;
-    $Critical      = Convert-IcingaPluginThresholds $Critical;
-    $WarningTotal  = Convert-IcingaPluginThresholds $WarningTotal;
-    $CriticalTotal = Convert-IcingaPluginThresholds $CriticalTotal;
     $PathData      = Get-IcingaUNCPathSize -Path $Path;
     $CheckPackage  = New-IcingaCheckPackage -Name ([string]::Format('{0} Share', $DisplayName)) -OperatorAnd -Verbose $Verbosity;
 

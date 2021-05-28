@@ -76,6 +76,12 @@
    String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.
 
    Thereby all files with a size of 5 MB or less are considered within the check.
+.PARAMETER Verbosity
+   Changes the behavior of the plugin output which check states are printed:
+   0 (default): Only service checks/packages with state not OK will be printed
+   1: Only services with not OK will be printed including OK checks of affected check packages including Package config
+   2: Everything will be printed regardless of the check state
+   3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .INPUTS
    System.String
 .OUTPUTS
@@ -107,19 +113,15 @@ function Invoke-IcingaCheckDirectory()
     );
 
     $DirectoryData  = Get-IcingaDirectoryAll -Path $Path -FileNames $FileNames -Recurse $Recurse `
-                        -ChangeYoungerThan $ChangeYoungerThan -ChangeOlderThan $ChangeOlderThan `
-                        -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
-                        -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
-                        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
+        -ChangeYoungerThan $ChangeYoungerThan -ChangeOlderThan $ChangeOlderThan `
+        -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
+        -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
+        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
     $DirectoryCheck = New-IcingaCheck -Name 'File Count' -Value $DirectoryData.Count;
 
-    $DirectoryCheck.WarnOutOfRange(
-        ($Warning)
-    ).CritOutOfRange(
-        ($Critical)
-    ) | Out-Null;
+    $DirectoryCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
-    $DirectoryPackage = New-IcingaCheckPackage -Name $Path -OperatorAnd -Checks $DirectoryCheck -Verbose $Verbosity;
+    $DirectoryPackage = New-IcingaCheckPackage -Name $Path -OperatorAnd -Checks $DirectoryCheck -Verbose $Verbosity -AddSummaryHeader;
 
     return (New-IcingaCheckResult -Check $DirectoryPackage -NoPerfData $NoPerfData -Compile);
 }

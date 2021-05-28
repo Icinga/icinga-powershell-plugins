@@ -69,6 +69,11 @@ function Get-IcingaDirectory()
         [array]$FileNames
     );
 
+    if ((Test-Path $Path) -eq $FALSE) {
+        Exit-IcingaThrowException -ExceptionType 'Input' -CustomMessage 'Path not found' -ExceptionThrown 'Plugin execution failed because the defined -Path does not exist on this system' -Force;
+        return @();
+    }
+
     $DirectoryData = Get-ChildItem -Path $Path |
         Where-Object {
             foreach ($element in $FileNames) {
@@ -87,6 +92,11 @@ function Get-IcingaDirectoryRecurse()
         [string]$Path,
         [array]$FileNames
     );
+
+    if ((Test-Path $Path) -eq $FALSE) {
+        Exit-IcingaThrowException -ExceptionType 'Input' -CustomMessage 'Path not found' -ExceptionThrown 'Plugin execution failed because the defined -Path does not exist on this system' -Force;
+        return @();
+    }
 
     $DirectoryData = Get-ChildItem -Recurse -Include $FileNames -Path $Path;
 
