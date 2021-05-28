@@ -28,10 +28,12 @@ To execute this plugin you will require to grant the following user permissions.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Critical | String | false |  | Used to specify a Critical threshold. In this case an string value. The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" This is using the default Icinga threshold handling. |
-| Warning | String | false |  | Used to specify a Warning threshold. In this case an string value. The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" This is using the default Icinga threshold handling. |
-| CriticalPercent | Object | false |  | Used to specify a Critical threshold for the memory usage in percent, like 30 for 30%. This is using the default Icinga threshold handling. |
-| WarningPercent | Object | false |  | Used to specify a Warning threshold for the memory usage in percent, like 30 for 30%. This is using the default Icinga threshold handling. |
+| Warning | Object | false |  | Used to specify a Warning threshold. In this case an string value. The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" This is using the default Icinga threshold handling. It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
+| Critical | Object | false |  | Used to specify a Critical threshold. In this case an string value. The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB" This is using the default Icinga threshold handling. It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
+| PageFileWarning | Object | false |  | Allows to check the used page file and compare it against a size value, like "200MB" This is using the default Icinga threshold handling.  It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
+| PageFileCritical | Object | false |  | Allows to check the used page file and compare it against a size value, like "200MB" This is using the default Icinga threshold handling. It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
+| IncludePageFile | Array | false | @() | Allows to filter for page files being included for the check |
+| ExcludePageFile | Array | false | @() | Allows to filter for page files being excluded for the check |
 | Verbosity | Int32 | false | 0 |  |
 | NoPerfData | SwitchParameter | false | False |  |
 | ThresholdInterval | Object |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
