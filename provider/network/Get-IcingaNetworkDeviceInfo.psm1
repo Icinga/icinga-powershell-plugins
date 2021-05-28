@@ -54,7 +54,7 @@ function Get-IcingaNetworkDeviceInfo()
             'HardwareInterface'                                = $null;
             'HealthState'                                      = $null;
             'Hidden'                                           = $null;
-            'HigherLayerInterfaceIndices'                      = @{};
+            'HigherLayerInterfaceIndices'                      = @{ };
             'IdentifyingDescriptions'                          = $null;
             'IMFilter'                                         = $null;
             'InstallDate'                                      = $network.InstallDate;
@@ -118,25 +118,27 @@ function Get-IcingaNetworkDeviceInfo()
             'Virtual'                                          = $null;
             'VlanID'                                           = $null;
             'WdmInterface'                                     = $networkWdmInterface;
-            'AdminStatus'                                      = @{};
-            'DriverFileName'                                   = @{};
-            'DriverInformation'                                = @{};
-            'ifOperStatus'                                     = @{};
-            'LinkSpeed'                                        = @{};
+            'AdminStatus'                                      = @{ };
+            'DriverFileName'                                   = @{ };
+            'DriverInformation'                                = @{ };
+            'ifOperStatus'                                     = @{ };
+            'LinkSpeed'                                        = @{ };
             'MACAddress'                                       = $network.MAcAddress;
-            'MediaConnectionState'                             = @{};
-            'MediaType'                                        = @{};
-            'NdisVersion'                                      = @{};
-            'PhysicalMediaType'                                = @{};
+            'MediaConnectionState'                             = @{ };
+            'MediaType'                                        = @{ };
+            'NdisVersion'                                      = @{ };
+            'PhysicalMediaType'                                = @{ };
             'Status'                                           = $network.Status;
             'ConfigManagerUserConfig'                          = $null;
         }
 
-        # Add MSFT Netowrk Device information to which we get from the WMI class
+        # Add MSFT Network Device information to which we get from the WMI class
         foreach ($msft_device in $MSFT_Devices) {
             if ((($GetTeamInfo.ContainsKey($msft_device.Name)) -eq $TRUE) -And $msft_device.Name -ne $TeamName) {
                 $TeamName = $msft_device.Name;
-                $TeamDetails.Add($msft_device.Name, $GetTeamInfo[$msft_device.Name]);
+                if ($TeamDetails.ContainsKey($msft_device.Name) -eq $FALSE) {
+                    $TeamDetails.Add($msft_device.Name, $GetTeamInfo[$msft_device.Name]);
+                }
             }
 
             if ($network.GUID -Contains $msft_device.InstanceID) {
