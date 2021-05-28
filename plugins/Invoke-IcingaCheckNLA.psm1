@@ -41,7 +41,7 @@ function Invoke-IcingaCheckNLA()
     $NLAPackage = New-IcingaCheckPackage -Name 'NLA' -OperatorAnd -Verbose $Verbosity;
 
     if ($NICs.Count -eq 0) {
-        foreach ($NLAData in Get-NetConnectionProfile) {
+        foreach ($NLAData in (Get-NetConnectionProfile -ErrorAction Stop)) {
             $NLAName = $NLAData.InterfaceAlias;
             $NLACheck = New-IcingaCheck -Name "NLA for $NLAName" $NLAData.NetworkCategory -ObjectExists $NLAData -NoPerfData;
             $NLACheck.CritIfNotMatch([string]$Profile) | Out-Null;
@@ -49,7 +49,7 @@ function Invoke-IcingaCheckNLA()
         }
     } else {
         foreach ($NIC in $NICs) {
-            $NLAData = (Get-NetConnectionProfile -InterfaceAlias $NIC);
+            $NLAData = (Get-NetConnectionProfile -InterfaceAlias $NIC -ErrorAction Stop);
             $NLACheck = New-IcingaCheck -Name "NLA for $NIC" -Value $NLAData.NetworkCategory -ObjectExists $NLAData -NoPerfData;
             $NLACheck.CritIfNotMatch([string]$Profile) | Out-Null;
             $NLAPackage.AddCheck($NLACheck);
