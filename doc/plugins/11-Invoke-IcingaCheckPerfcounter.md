@@ -1,5 +1,5 @@
 
-# Invoke-IcingaCheckPerfcounter
+# Invoke-IcingaCheckPerfCounter
 
 ## Description
 

@@ -29,7 +29,7 @@ No special permissions required.
 | ProxyServer | String | false |  | Used to specify a proxy server as string to authenticate with. |
 | Content | Array | false | @() | Used to specify an array of regex-match-strings to match against the content of the webrequest response. |
 | StatusCode | Array | false | @() |  |
-| Minimum | Int32 | false | 0 |  |
+| Minimum | Int32 | false | -1 |  |
 | Negate | SwitchParameter | false | False | A switch used to invert check results. |
 | NoPerfData | SwitchParameter | false | False | Used to disable PerfData. |
 | Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state |
