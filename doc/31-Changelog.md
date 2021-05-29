@@ -32,6 +32,7 @@ Please have a look on the [upgrading docs](30-Upgrading-Plugins) for these plugi
 * [#156](https://github.com/Icinga/icinga-powershell-plugins/issues/156) Adds feature to modify the output status of `Invoke-IcingaCheckCertificate` from `UNKNOWN` to `OK` in case no certificate was found by setting the new argument `-IgnoreEmpty`
 * [#159](https://github.com/Icinga/icinga-powershell-plugins/issues/159) Replaces the deprecated function `Get-EventLog` with `Get-WinEvent`. In addition, the plugin received a new argument `-MaxEntries` to allow additional filtering for the number of events fetched to improve performance in addition. The EventLog now also supports an array with list items, allowing easier filtering for severities which are allowed inside the EventLog.
 * [#167](https://github.com/Icinga/icinga-powershell-plugins/issues/167) Upgrades plugin configuration files to Framework version 1.5.0. Please have a look on the [upgrading docs](30-Upgrading-Plugins)
+* [#181](https://github.com/Icinga/icinga-powershell-plugins/pull/181) Improves the handling for the Network Interface plugin and moves the `Get-IcingaNetworkInterfaceUnits` from the plugin repository into the Framework
 
 ### Bugfixes
 

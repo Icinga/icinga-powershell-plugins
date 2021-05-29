@@ -7,7 +7,7 @@ function Get-IcingaNetworkSpeedChecks()
         $LinkSpeedCritical
     );
 
-    [hashtable]$NetworkChecks = @{};
+    [hashtable]$NetworkChecks = @{ };
     $InterfaceSpeed           = Get-IcingaNetworkInterfaceUnits -Value $LinkSpeed;
 
     $NetworkChecks.Add(
@@ -15,7 +15,8 @@ function Get-IcingaNetworkSpeedChecks()
         (
             New-IcingaCheck `
                 -Name ([string]::Format('{0}: LinkSpeed', $Name)) `
-                -Value $InterfaceSpeed `
+                -Value $InterfaceSpeed.LinkSpeed `
+                -Unit $InterfaceSpeed.Unit `
                 -NoPerfData
         ).WarnIfMatch(
             $LinkSpeedWarning
