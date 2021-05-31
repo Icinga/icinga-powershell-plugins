@@ -54,7 +54,7 @@ function Invoke-IcingaCheckUptime()
     );
 
     $WindowsData = Get-IcingaWindows;
-    $Name        = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value)));
+    $Name        = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value).Replace(',', '.')));
 
     $CheckPackage = New-IcingaCheckPackage -Name $Name -OperatorAnd -Verbose $Verbosity;
 
