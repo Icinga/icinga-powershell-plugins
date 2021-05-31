@@ -54,7 +54,7 @@ function Invoke-IcingaCheckUsers()
         [int]$Verbosity      = 0
     );
 
-    $UsersPackage  = New-IcingaCheckPackage -Name 'Users' -OperatorAnd -Verbose $Verbosity;
+    $UsersPackage  = New-IcingaCheckPackage -Name 'Users' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
     $LoggedOnUsers = Get-IcingaLoggedOnUsers -UserFilter $Username;
 
     if ($Username.Count -ne 0) {
