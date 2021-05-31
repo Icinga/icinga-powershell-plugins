@@ -45,6 +45,11 @@ In addition we added page file monitoring capabilities to the plugin with additi
 
 As for both previous plugins, we reworked used partition space with changes for % values with Icinga for Windows 1.5.0 and fixed minor issues from the ground up.
 
+#### Invoke-IcingaCheckPerfCounter
+
+We fixed a spelling issue on the command itself, which was `Invoke-IcingaCheckPerfcounter` before and now properly displays `Invoke-IcingaCheckPerfCounter`. For that reason your current plugin configuration will change.
+To resolve this beforehand, rename the custom variable within your Icinga Director to match the new uppercase `C` for `Counter`, before importing new configuration baskets.
+
 ## Upgrading to v1.4.0 (2021-03-02)
 
 ### Plugin Configuration <span style="color:#F6BE00">(Breaking Changes)</span>
