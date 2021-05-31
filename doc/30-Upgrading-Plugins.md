@@ -12,7 +12,7 @@ For upgrading plugins, please have a look on the [installation docs](02-Installa
 
 Please note that in general plugins should no longer ship % values performance data and only the actually values including thresholds and min/max input. With the new Icinga for Windows Framework, you can use your graphing solution to properly calculate % values there on your own for display context. Monitoring is for most plugins possible, by simply adding a % sign behind your threshold.
 
-In case the plugin does not support this input for this specifiy argument, you will receive a `UNKNOWN` output.
+In case the plugin does not support this input for this specify argument, you will receive a `UNKNOWN` output.
 
 #### Invoke-IcingaCheckNetworkInterface
 
