@@ -46,6 +46,7 @@ Please have a look on the [upgrading docs](30-Upgrading-Plugins) for these plugi
 * [#176](https://github.com/Icinga/icinga-powershell-plugins/issues/176) Fixes offset calculation for `Invoke-IcingaCheckTimeSync`, to allow negative offset as well
 * [#178](https://github.com/Icinga/icinga-powershell-plugins/pull/178) Fixes exception handling for `Invoke-IcingaCheckNLA` to properly handle errors while checking for connection profiles
 * [#185](https://github.com/Icinga/icinga-powershell-plugins/pull/185) Fixes Network interface percent for teams not working
+* [#186](https://github.com/Icinga/icinga-powershell-plugins/pull/186) Fixes possible exception on Icinga for Windows installation, if plugins were removed, no new shell session was created and therefor plugins are not able to load
 
 ## 1.4.0 (2021-03-02)
 
