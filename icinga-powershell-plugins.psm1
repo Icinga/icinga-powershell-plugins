@@ -17,6 +17,10 @@ function Import-IcingaPlugins()
 
     [string]$module = Join-Path -Path $PSScriptRoot -ChildPath $Directory;
 
+    if ((Test-Path $module) -eq $FALSE) {
+        return;
+    }
+
     # Load modules from directory
     if ((Test-Path $module -PathType Container)) {
         Get-ChildItem -Path $module -Recurse -Filter *.psm1 |
