@@ -318,48 +318,6 @@ function Invoke-IcingaCheckNetworkInterface()
             )
         );
 
-        $NetworkEntryCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('{0}: bytes total/sec', $InterfaceName)) `
-                    -Value $NetworkDeviceObject.PerfCounter['bytes total/sec'].value `
-                    -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
-                    -Unit 'B'
-            ).WarnOutOfRange(
-                $DeviceTotalBytesSecWarn
-            ).CritOutOfRange(
-                $DeviceTotalBytesSecCrit
-            )
-        );
-
-        $NetworkEntryCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('{0}: bytes sent/sec', $InterfaceName)) `
-                    -Value $NetworkDeviceObject.PerfCounter['bytes sent/sec'].value `
-                    -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
-                    -Unit 'B'
-            ).WarnOutOfRange(
-                $DeviceSentBytesSecWarn
-            ).CritOutOfRange(
-                $DeviceSentBytesSecCrit
-            )
-        );
-
-        $NetworkEntryCheckPackage.AddCheck(
-            (
-                New-IcingaCheck `
-                    -Name ([string]::Format('{0}: bytes received/sec', $InterfaceName)) `
-                    -Value $NetworkDeviceObject.PerfCounter['bytes received/sec'].value `
-                    -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
-                    -Unit 'B'
-            ).WarnOutOfRange(
-                $DeviceReceivedBytesSecWarn
-            ).CritOutOfRange(
-                $DeviceReceivedBytesSecCrit
-            )
-        );
-
         # Add VLAN Id to system if present
         $NetworkEntryCheckPackage.AddCheck(
             (
@@ -460,11 +418,96 @@ function Invoke-IcingaCheckNetworkInterface()
                 $HiddenCheckPackage.AddCheck($LinkChecks.PerfDataLinkSpeed);
 
                 $CheckPackage.AddCheck($TeamMemberPackage);
+
+                $NetworkEntryCheckPackage.AddCheck(
+                    (
+                        New-IcingaCheck `
+                            -Name ([string]::Format('{0}: bytes total/sec', $InterfaceName)) `
+                            -Value $NetworkDeviceObject.PerfCounter['bytes total/sec'].value `
+                            -BaseValue $TeamMember.TransmitLinkSpeedBytes `
+                            -Unit 'B'
+                    ).WarnOutOfRange(
+                        $DeviceTotalBytesSecWarn
+                    ).CritOutOfRange(
+                        $DeviceTotalBytesSecCrit
+                    )
+                );
+
+                $NetworkEntryCheckPackage.AddCheck(
+                    (
+                        New-IcingaCheck `
+                            -Name ([string]::Format('{0}: bytes sent/sec', $InterfaceName)) `
+                            -Value $NetworkDeviceObject.PerfCounter['bytes sent/sec'].value `
+                            -BaseValue $TeamMember.TransmitLinkSpeedBytes `
+                            -Unit 'B'
+                    ).WarnOutOfRange(
+                        $DeviceSentBytesSecWarn
+                    ).CritOutOfRange(
+                        $DeviceSentBytesSecCrit
+                    )
+                );
+
+                $NetworkEntryCheckPackage.AddCheck(
+                    (
+                        New-IcingaCheck `
+                            -Name ([string]::Format('{0}: bytes received/sec', $InterfaceName)) `
+                            -Value $NetworkDeviceObject.PerfCounter['bytes received/sec'].value `
+                            -BaseValue $TeamMember.TransmitLinkSpeedBytes `
+                            -Unit 'B'
+                    ).WarnOutOfRange(
+                        $DeviceReceivedBytesSecWarn
+                    ).CritOutOfRange(
+                        $DeviceReceivedBytesSecCrit
+                    )
+                );
             }
 
             $InterfaceTeamsPackage.AddCheck($NetworkEntryCheckPackage);
         } else {
             # All remaining data for regular interfaces not part of a team
+
+            $NetworkEntryCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0}: bytes total/sec', $InterfaceName)) `
+                        -Value $NetworkDeviceObject.PerfCounter['bytes total/sec'].value `
+                        -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
+                        -Unit 'B'
+                ).WarnOutOfRange(
+                    $DeviceTotalBytesSecWarn
+                ).CritOutOfRange(
+                    $DeviceTotalBytesSecCrit
+                )
+            );
+
+            $NetworkEntryCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0}: bytes sent/sec', $InterfaceName)) `
+                        -Value $NetworkDeviceObject.PerfCounter['bytes sent/sec'].value `
+                        -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
+                        -Unit 'B'
+                ).WarnOutOfRange(
+                    $DeviceSentBytesSecWarn
+                ).CritOutOfRange(
+                    $DeviceSentBytesSecCrit
+                )
+            );
+
+            $NetworkEntryCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0}: bytes received/sec', $InterfaceName)) `
+                        -Value $NetworkDeviceObject.PerfCounter['bytes received/sec'].value `
+                        -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
+                        -Unit 'B'
+                ).WarnOutOfRange(
+                    $DeviceReceivedBytesSecWarn
+                ).CritOutOfRange(
+                    $DeviceReceivedBytesSecCrit
+                )
+            );
+
             $NetworkEntryCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `

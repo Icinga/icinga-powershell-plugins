@@ -42,6 +42,7 @@ function Get-IcingaNetworkInterfaceTeamInfo ()
                 $Team_details.Add('ReceiveLinkSpeed', $team.ReceiveLinkSpeed);
                 $Team_details.Add('Team', $team.Team);
                 $Team_details.Add('TransmitLinkSpeed', $team.TransmitLinkSpeed);
+                $Team_details.Add('TransmitLinkSpeedBytes', ($team.TransmitLinkSpeed / 8));
                 $Team_details.Add('Default', $team.Default);
                 $Team_details.Add('Primary', $team.Primary);
                 $Team_details.Add('VlanID', $team.VlanID);
@@ -83,6 +84,7 @@ function Get-IcingaNetworkInterfaceTeamInfo ()
                         'ReceiveLinkSpeed'         = $team_member.ReceiveLinkSpeed;
                         'Team'                     = $team_member.Team;
                         'TransmitLinkSpeed'        = $team_member.TransmitLinkSpeed;
+                        'TransmitLinkSpeedBytes'   = ($team_member.TransmitLinkSpeed / 8);
                         'Default'                  = $team_member.Default;
                         'Primary'                  = $team_member.Primary;
                         'VlanID'                   = $team_member.VlanID;
