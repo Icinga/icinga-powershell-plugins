@@ -34,6 +34,7 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 * [Invoke-IcingaCheckHTTPStatus](plugins/25-Invoke-IcingaCheckHTTPStatus.md)
 * [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md)
 * [Invoke-IcingaCheckMemory](plugins/09-Invoke-IcingaCheckMemory.md)
+* [Invoke-IcingaCheckMPIO](plugins/26-Invoke-IcingaCheckMPIO.md)
 * [Invoke-IcingaCheckNetworkInterface](plugins/21-Invoke-IcingaCheckNetworkInterface.md)
 * [Invoke-IcingaCheckNLA](plugins/10-Invoke-IcingaCheckNLA.md)
 * [Invoke-IcingaCheckPerfcounter](plugins/11-Invoke-IcingaCheckPerfcounter.md)

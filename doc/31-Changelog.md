@@ -17,6 +17,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [#163](https://github.com/Icinga/icinga-powershell-plugins/issues/163) Checks the response time, the return code and content of HTTP requests.
 
+#### Invoke-IcingaCheckMPIO
+
+[#172](https://github.com/Icinga/icinga-powershell-plugins/pull/172) Checks the number of paths for each MPIO driver on your system.
+
 ### Reworked Plugins
 
 Please have a look on the [upgrading docs](30-Upgrading-Plugins) for these plugins
