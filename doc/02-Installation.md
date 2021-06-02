@@ -30,28 +30,28 @@ Install-Module 'icinga-powershell-plugins';
 
 If PowerShell Gallery is no option for you because it is not available or you prefer the installation from GitHub releases directly, you can use the component installer of the Icinga PowerShell Framework which was introduced with `v1.1.0`:
 
-Install latest stable release:
+Install/Update latest stable release:
 
 ```powershell
 Use-Icinga;
 Install-IcingaFrameworkComponent -Name plugins -Release;
 ```
 
-Install latest snapshot
+Install/Update latest snapshot
 
 ```powershell
 Use-Icinga;
 Install-IcingaFrameworkComponent -Name plugins -Snapshot;
 ```
 
-Custom repository source
+Install/Update custom repository source
 
 ```powershell
 Use-Icinga;
 Install-IcingaFrameworkComponent -Name plugins -Url 'url to your .zip file';
 ```
 
-### Manual Installation
+### Manual Installation/Update
 
 For manual installation either download the [latest release .zip](https://github.com/Icinga/icinga-powershell-plugins/releases) or the [latest master .zip](https://github.com/Icinga/icinga-powershell-plugins) and extract the content into the correct PowerShell modules folder.
 
