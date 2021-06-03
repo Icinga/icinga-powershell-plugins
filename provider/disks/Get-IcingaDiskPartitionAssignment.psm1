@@ -50,6 +50,11 @@ function Get-IcingaDiskPartitionAssignment()
         }
 
         $PartitionInformation[$DiskId].DriveLetters += $PartitionReference;
+
+        if ($PartitionInformation[$DiskId].Partitions.ContainsKey($PartitionId)) {
+            continue;
+        }
+
         $PartitionInformation[$DiskId].Partitions.Add(
             $PartitionId, $PartitionReference
         );
