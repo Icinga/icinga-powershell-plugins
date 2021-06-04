@@ -42,9 +42,11 @@
     [OK]: Check package "Used Partition Space" is [OK]
     | 'Partition C'=8,06204986572266%;60;;0;100
 .PARAMETER Warning
-    Used to specify a Warning threshold. In this case an integer value.
+    Used to specify a Warning threshold. This can either be a byte-value type like '10GB'
+    or a %-value, like '10%'
 .PARAMETER Critical
-    Used to specify a Critical threshold. In this case an integer value.
+    Used to specify a Critical threshold. This can either be a byte-value type like '10GB'
+    or a %-value, like '10%'
 .PARAMETER Exclude
     Used to specify an array of partitions to be excluded.
     e.g. 'C:\','D:\'
