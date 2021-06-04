@@ -7,6 +7,7 @@ Checks how much space on a partition is used.
 
 Invoke-IcingaCheckUsedPartition returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
 e.g 'C:' is at 8% usage, WARNING is set to 60, CRITICAL is set to 80. In this case the check will return OK.
+Beside that the preset for percentage or unit measurement now free to define as shown in example 3 & 4.
 
 The plugin will return `UNKNOWN` in case partition data (size and free space) can not be fetched. This is
 normally happening in case the user the plugin is running with does not have permissions to fetch this
@@ -80,4 +81,20 @@ Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:\"
 
 ```powershell
 [OK]: Check package "Used Partition Space" is [OK]| 'Partition C'=8,06204986572266%;60;;0;100
+```
+
+### Example Output 4
+
+```
+Invoke-IcingaCheckUsedPartitionSpace -Warning '1TB' -Critical '1.5TB' -Verbosity 3
+```
+
+### Example Output 4
+
+```
+[CRITICAL] Used Partition Space: 1 Critical 1 Warning 1 Ok [CRITICAL] Partition G: (1.37TiB) [WARNING] Partition R: (1.13TiB) (All must be [OK])
+\_ [OK] Partition C: 785.27GiB
+\_ [CRITICAL] Partition G: 1.37TiB is greater than threshold 1.36TiB
+\_ [WARNING] Partition R: 1.13TiB is greater than threshold 931.32GiB
+| 'partition_c'=843179600000B;1000000000000;1500000000000;0;999527800000 'partition_g'=1501377000000B;1000000000000;1500000000000;0;2000381000000 'partition_r'=1245040000000B;1000000000000;1500000000000;0;4000768000000
 ```
