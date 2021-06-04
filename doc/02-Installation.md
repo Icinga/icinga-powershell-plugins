@@ -1,6 +1,6 @@
 # Installation
 
-Like any other PowerShell module, the installation itself is very simple and straight forward. As of before, there are many ways to deploy a PowerShell module on a Windows host.
+Like any other PowerShell module, the installation itself is very simple and straight forward. As before, there are many ways to deploy a PowerShell module on a Windows host.
 
 Regardless of the method: In order to make this module work properly, you will have to install it into the same folder as your [Icinga PowerShell Framework](https://icinga.com/docs/windows) module is installed to.
 
