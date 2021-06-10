@@ -36,8 +36,8 @@ To execute this plugin you will require to grant the following user permissions.
 | ---      | ---  | ---      | ---     | ---         |
 | Warning | Object | false |  | Used to specify a Warning threshold. This can either be a byte-value type like '10GB' or a %-value, like '10%' |
 | Critical | Object | false |  | Used to specify a Critical threshold. This can either be a byte-value type like '10GB' or a %-value, like '10%' |
-| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked. e.g. 'C:\','D:\' |
-| Exclude | Array | false | @() | Used to specify an array of partitions to be excluded. e.g. 'C:\','D:\' |
+| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked. e.g. 'C:','D:' |
+| Exclude | Array | false | @() | Used to specify an array of partitions to be excluded. e.g. 'C:','D:' |
 | IgnoreEmptyChecks | SwitchParameter | false | False | Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example). Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set. |
 | NoPerfData | SwitchParameter | false | False | Disables the performance data output of this plugin |
 | SkipUnknown | SwitchParameter | false | False | Allows to set Unknown partitions to Ok in case no metrics could be loaded. |
@@ -61,7 +61,7 @@ Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:\"
+Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:"
 ```
 
 ### Example Output 2
@@ -73,7 +73,7 @@ Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:\"
 ### Example Command 3
 
 ```powershell
-Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:\"
+Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:"
 ```
 
 ### Example Output 3
