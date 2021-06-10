@@ -34,11 +34,11 @@
     [OK]: Check package "Used Partition Space" is [OK]
     | 'Partition C'=8,06204986572266%;60;;0;100 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100
 .EXAMPLE
-    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:\"
+    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:"
     [OK]: Check package "Used Partition Space" is [OK]
     | 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100
 .EXAMPLE
-    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:\"
+    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:"
     [OK]: Check package "Used Partition Space" is [OK]
     | 'Partition C'=8,06204986572266%;60;;0;100
 .PARAMETER Warning
@@ -49,10 +49,10 @@
     or a %-value, like '10%'
 .PARAMETER Exclude
     Used to specify an array of partitions to be excluded.
-    e.g. 'C:\','D:\'
+    e.g. 'C:','D:'
 .PARAMETER Include
     Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.
-    e.g. 'C:\','D:\'
+    e.g. 'C:','D:'
 .PARAMETER IgnoreEmptyChecks
     Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example).
     Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set.
