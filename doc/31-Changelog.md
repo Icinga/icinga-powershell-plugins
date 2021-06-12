@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.6.0 (pending)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/8?closed=1)
+
+### Bugfixes
+
+[#187](https://github.com/Icinga/icinga-powershell-plugins/issues/187) Fixes `Invoke-IcingaCheckUsedPartitionSpace` in case mirrored disks are used within the system, causing an exception on duplicate partition id's
+
 ## 1.5.0 (2021-06-02)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/7?closed=1)
