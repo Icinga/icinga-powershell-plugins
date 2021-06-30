@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.5.1 (pending)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/9?closed=1)
+
+## Bugfixes
+
+[#202](https://github.com/Icinga/icinga-powershell-plugins/pull/202) Fixes `\` and `/` which are now removed again for `-Include` and `-Exclude` arrays on `Invoke-IcingaCheckUsedPartitionSpace`.
+
 ## 1.5.0 (2021-06-02)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/7?closed=1)

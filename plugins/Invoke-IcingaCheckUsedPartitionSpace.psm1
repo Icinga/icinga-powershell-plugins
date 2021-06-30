@@ -114,13 +114,13 @@ function Invoke-IcingaCheckUsedPartitionSpace()
 
             foreach ($entry in $Include) {
                 $ProcessPartition = $FALSE;
-                if ($entry.Replace(':', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
+                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
                     $ProcessPartition = $TRUE;
                     break;
                 }
             }
             foreach ($entry in $Exclude) {
-                if ($entry.Replace(':', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
+                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
                     $ProcessPartition = $FALSE;
                     break;
                 }
