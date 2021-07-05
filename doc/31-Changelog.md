@@ -13,8 +13,8 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ## Bugfixes
 
-[#196](https://github.com/Icinga/icinga-powershell-plugins/issues/196) Fixes unhandled PermissionDenied exceptions for `Invoke-IcingaCheckDirectory`, in case required permissions for files and folders were not set
-[#202](https://github.com/Icinga/icinga-powershell-plugins/pull/202) Fixes `\` and `/` which are now removed again for `-Include` and `-Exclude` arrays on `Invoke-IcingaCheckUsedPartitionSpace`.
+* [#196](https://github.com/Icinga/icinga-powershell-plugins/issues/196) Fixes unhandled PermissionDenied exceptions for `Invoke-IcingaCheckDirectory`, in case required permissions for files and folders were not set
+* [#202](https://github.com/Icinga/icinga-powershell-plugins/pull/202) Fixes `\` and `/` which are now removed again for `-Include` and `-Exclude` arrays on `Invoke-IcingaCheckUsedPartitionSpace`.
 
 ## 1.5.0 (2021-06-02)
 
