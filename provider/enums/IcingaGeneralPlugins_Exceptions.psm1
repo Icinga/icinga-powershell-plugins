@@ -4,9 +4,14 @@
     EventLogNoMessageEntries = 'Failed to fetch EventLog information. The argument `-MaxEntries` requires to be greater or equal 1';
 };
 
+[hashtable]$FileSystem = @{
+    PermissionDenied = 'You are not permitted to access the defined path.';
+}
+
 if ($null -eq $IcingaPluginExceptions) {
     [hashtable]$IcingaPluginExceptions = @{
-        Inputs = $Inputs;
+        Inputs     = $Inputs;
+        FileSystem = $FileSystem;
     }
 }
 
