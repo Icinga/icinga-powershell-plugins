@@ -74,14 +74,26 @@ function Get-IcingaDirectory()
         return @();
     }
 
-    $DirectoryData = Get-ChildItem -Path $Path |
-        Where-Object {
-            foreach ($element in $FileNames) {
-                if ($_.Name -like $element) {
-                    return $_.Name
+    try {
+        $DirectoryData = Get-ChildItem -Path $Path -ErrorAction Stop |
+            Where-Object {
+                foreach ($element in $FileNames) {
+                    if ($_.Name -like $element) {
+                        return $_.Name
+                    }
                 }
             }
-        }
+    }  catch {
+        $ExMsg = $_.Exception.Message;
+        Write-IcingaConsoleNotice $_.CategoryInfo;
+        Exit-IcingaThrowException `
+            -InputString $_.CategoryInfo `
+            -StringPattern 'PermissionDenied' `
+            -ExceptionType 'Input' `
+            -ExceptionThrown $IcingaPluginExceptions.FileSystem.PermissionDenied;
+
+        Exit-IcingaThrowException -ExceptionType 'Input' -CustomMessage 'Filesystem Exception' -ExceptionThrown $ExMsg -Force;
+    }
 
     return $DirectoryData;
 }
@@ -98,7 +110,18 @@ function Get-IcingaDirectoryRecurse()
         return @();
     }
 
-    $DirectoryData = Get-ChildItem -Recurse -Include $FileNames -Path $Path;
+    try {
+        $DirectoryData = Get-ChildItem -Recurse -Include $FileNames -Path $Path -ErrorAction Stop;
+    } catch {
+        $ExMsg = $_.Exception.Message;
+        Exit-IcingaThrowException `
+            -InputString $_.CategoryInfo `
+            -StringPattern 'PermissionDenied' `
+            -ExceptionType 'Input' `
+            -ExceptionThrown $IcingaPluginExceptions.FileSystem.PermissionDenied;
+
+        Exit-IcingaThrowException -ExceptionType 'Input' -CustomMessage 'Filesystem Exception' -ExceptionThrown $ExMsg -Force;
+    }
 
     return $DirectoryData;
 }
