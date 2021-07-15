@@ -4,9 +4,9 @@ function Get-IcingaScheduledTask()
         [array]$TaskName
     );
 
-    $Tasks      = @();
-    $TaskFilter = @{};
-    $TaskNames  = @{};
+    $Tasks      = @( );
+    $TaskFilter = @{ };
+    $TaskNames  = @{ };
 
     if ($TaskName.Count -eq 0) {
         $Tasks = Get-ScheduledTask -TaskName '*';
@@ -18,10 +18,10 @@ function Get-IcingaScheduledTask()
         if ($TaskFilter.ContainsKey($task.TaskPath) -eq $FALSE) {
             $TaskFilter.Add(
                 $task.TaskPath,
-                @( $task )
+                @( (New-IcingaTaskObject -Task $task) )
             );
         } else {
-            $TaskFilter[$task.TaskPath] += $task;
+            $TaskFilter[$task.TaskPath] += (New-IcingaTaskObject -Task $task);
         }
 
         if ($TaskNames.ContainsKey($task.TaskName) -eq $FALSE) {
@@ -40,7 +40,7 @@ function Get-IcingaScheduledTask()
         }
 
         if ($TaskNames.ContainsKey($task) -eq $FALSE) {
-            $TaskFilter['Unknown Tasks'] += $task;
+            $TaskFilter['Unknown Tasks'] += (New-IcingaTaskObject -Task $task);
         }
     }
 
