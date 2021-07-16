@@ -13,6 +13,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ## Bugfixes
 
+* [#200](https://github.com/Icinga/icinga-powershell-plugins/issues/200) Fixes `UNKNOWN` for `Invoke-IcingaCheckUsedPartitionSpace`, in case the main partition has no space left which should return `CRITICAL` instead
 * [#233](https://github.com/Icinga/icinga-powershell-plugins/pull/233) Fixes used partition space plugin performance by fetching only partition space data instead of entire disk information collection and renamed it to represent the new method of being able to toggle between free and used space for partitions
 * [#235](https://github.com/Icinga/icinga-powershell-plugins/pull/235) Fixes operational status monitoring output for `Invoke-IcingaCheckDiskHealth`
 
