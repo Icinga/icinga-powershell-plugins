@@ -34,13 +34,13 @@ function Get-IcingaDiskAttributes()
     $DISK_ATTRIBUTE_OFFLINE         = 0x0000000000000001;
     $DISK_ATTRIBUTE_READ_ONLY       = 0x0000000000000002;
 
-    Add-Type -TypeDefinition @"
+    $IcingaDiskAttributesClass      = @"
         using System;
         using System.IO;
         using System.Diagnostics;
         using System.Runtime.InteropServices;
 
-        public static class kernel32 {
+        public static class IcingaDiskAttributes {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
             public static extern IntPtr CreateFile(
                 [MarshalAs(UnmanagedType.LPTStr)] string filename,
@@ -75,14 +75,27 @@ function Get-IcingaDiskAttributes()
         }
 "@
 
+    if ((Test-IcingaAddTypeExist 'IcingaDiskAttributes') -eq $FALSE) {
+        try {
+            Add-Type -TypeDefinition $IcingaDiskAttributesClass;
+        } catch {
+            [string]$ExErrorId = $_.FullyQualifiedErrorId;
+
+            Exit-IcingaThrowCritical `
+                -Message 'Failed to process disk related checks. Based on the error your local Windows disk partition has no space left' `
+                -FilterString $ExErrorId `
+                -SearchString 'System.IO.IOException';
+        }
+    }
+
     [bool]$DiskOffline  = $FALSE;
     [bool]$DiskReadOnly = $FALSE;
-    $KernelHandle       = [kernel32]::CreateFile($PhysicalDisk, 0, [System.IO.FileShare]::ReadWrite, [System.IntPtr]::Zero, [System.IO.FileMode]::Open, 0, [System.IntPtr]::Zero);
+    $KernelHandle       = [IcingaDiskAttributes]::CreateFile($PhysicalDisk, 0, [System.IO.FileShare]::ReadWrite, [System.IntPtr]::Zero, [System.IO.FileMode]::Open, 0, [System.IntPtr]::Zero);
 
     if ($KernelHandle) {
-        $DiskData = New-Object -TypeName Kernel32+Icinga_Disk_Data;
+        $DiskData = New-Object -TypeName IcingaDiskAttributes+Icinga_Disk_Data;
         $Value    = New-Object -TypeName UInt32;
-        $Result   = [kernel32]::DeviceIoControl($KernelHandle, $IOCTL_DISK_GET_DISK_ATTRIBUTES, [System.IntPtr]::Zero, 0, [ref]$DiskData, [System.Runtime.InteropServices.Marshal]::SizeOf($DiskData), [ref]$Value, [System.IntPtr]::Zero);
+        $Result   = [IcingaDiskAttributes]::DeviceIoControl($KernelHandle, $IOCTL_DISK_GET_DISK_ATTRIBUTES, [System.IntPtr]::Zero, 0, [ref]$DiskData, [System.Runtime.InteropServices.Marshal]::SizeOf($DiskData), [ref]$Value, [System.IntPtr]::Zero);
         if ($Result) {
             if (($DiskData.attributes -band $DISK_ATTRIBUTE_OFFLINE) -eq $DISK_ATTRIBUTE_OFFLINE) {
                 $DiskOffline = $TRUE;
@@ -91,7 +104,7 @@ function Get-IcingaDiskAttributes()
                 $DiskReadOnly = $TRUE;
             }
         }
-        $Result = [kernel32]::CloseHandle($KernelHandle);
+        $Result = [IcingaDiskAttributes]::CloseHandle($KernelHandle);
     }
 
     return @{
