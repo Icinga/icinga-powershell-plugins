@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.6.0 (pending)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/8?closed=1)
+
+## Bugfixes
+
+* [#200](https://github.com/Icinga/icinga-powershell-plugins/issues/200) Fixes `UNKNOWN` for `Invoke-IcingaCheckUsedPartitionSpace`, in case the main partition has no space left which should return `CRITICAL` instead
+
 ## 1.5.1 (2021-07-07)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/9?closed=1)
