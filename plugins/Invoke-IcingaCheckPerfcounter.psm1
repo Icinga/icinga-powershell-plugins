@@ -20,9 +20,12 @@
    [WARNING]: Check package "Performance Counter" is [WARNING]
    | 'processor1_processor_time'=68.95;60;90 'processor3_processor_time'=4.21;60;90 'processor5_processor_time'=9.5;60;90 'processor_Total_processor_time'=20.6;60;90 'processor0_processor_time'=5.57;60;90 'processor2_processor_time'=0;60;90 'processor4_processor_time'=6.66;60;90
 .PARAMETER Warning
-   Used to specify a Warning threshold. In this case an ??? value.
+   Used to specify a Warning threshold.
 .PARAMETER Critical
-   Used to specify a Critical threshold. In this case an ??? value.
+   Used to specify a Critical threshold.
+.PARAMETER IgnoreEmptyChecks
+    Overrides the default behaviour of the plugin in case no check element was found and
+    prevent the plugin from exiting UNKNOWN and returns OK instead
 .PARAMETER PerfCounter
    Used to specify an array of performance counter to check against.
 .PARAMETER Verbosity
@@ -44,19 +47,20 @@ function Invoke-IcingaCheckPerfCounter()
 {
     param(
         [array]$PerfCounter,
-        $Warning             = $null,
-        $Critical            = $null,
+        $Warning                   = $null,
+        $Critical                  = $null,
+        [switch]$IgnoreEmptyChecks = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity      = 0
+        [int]$Verbosity            = 0
     );
 
     $Counters     = New-IcingaPerformanceCounterArray -CounterArray $PerfCounter;
-    $CheckPackage = New-IcingaCheckPackage -Name 'Performance Counter' -OperatorAnd -Verbose $Verbosity;
+    $CheckPackage = New-IcingaCheckPackage -Name 'Performance Counter' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks;
 
     foreach ($counter in $Counters.Keys) {
 
-        $CounterPackage = New-IcingaCheckPackage -Name $counter -OperatorAnd -Verbose $Verbosity;
+        $CounterPackage = New-IcingaCheckPackage -Name $counter -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks;
 
         if ([string]::IsNullOrEmpty($Counters[$counter].error) -eq $FALSE) {
             $CheckPackage.AddCheck(
