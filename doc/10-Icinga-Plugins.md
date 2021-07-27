@@ -31,6 +31,7 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 * [Invoke-IcingaCheckDiskHealth](plugins/20-Invoke-IcingaCheckDiskHealth.md)
 * [Invoke-IcingaCheckEventlog](plugins/06-Invoke-IcingaCheckEventlog.md)
 * [Invoke-IcingaCheckFirewall](plugins/07-Invoke-IcingaCheckFirewall.md)
+* [Invoke-IcingaCheckFreePartitionSpace](plugins/27-Invoke-IcingaCheckFreePartitionSpace.md)
 * [Invoke-IcingaCheckHTTPStatus](plugins/25-Invoke-IcingaCheckHTTPStatus.md)
 * [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md)
 * [Invoke-IcingaCheckMemory](plugins/09-Invoke-IcingaCheckMemory.md)
