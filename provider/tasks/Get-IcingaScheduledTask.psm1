@@ -4,9 +4,9 @@ function Get-IcingaScheduledTask()
         [array]$TaskName
     );
 
-    $Tasks      = @();
-    $TaskFilter = @{};
-    $TaskNames  = @{};
+    $Tasks      = @( );
+    $TaskFilter = @{ };
+    $TaskNames  = @{ };
 
     if ($TaskName.Count -eq 0) {
         $Tasks = Get-ScheduledTask -TaskName '*';
@@ -15,13 +15,15 @@ function Get-IcingaScheduledTask()
     }
 
     foreach ($task in $Tasks) {
+        $CreatedTask = (New-IcingaTaskObject -Task $task)
+
         if ($TaskFilter.ContainsKey($task.TaskPath) -eq $FALSE) {
             $TaskFilter.Add(
                 $task.TaskPath,
-                @( $task )
+                @( $CreatedTask )
             );
         } else {
-            $TaskFilter[$task.TaskPath] += $task;
+            $TaskFilter[$task.TaskPath] += $CreatedTask;
         }
 
         if ($TaskNames.ContainsKey($task.TaskName) -eq $FALSE) {
