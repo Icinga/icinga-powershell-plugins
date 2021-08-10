@@ -15,6 +15,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#208](https://github.com/Icinga/icinga-powershell-plugins/issues/208) Adds additional features to `Invoke-IcingaCheckScheduledTask`, allowing to monitor exit codes, missed runs and last/next run time of a task
 * [#217](https://github.com/Icinga/icinga-powershell-plugins/issues/217) Adds feature for `Invoke-IcingaCheckPerfCounter` with new switch `-IgnoreEmptyChecks` to change the output from `UNKNOWN` to `OK`, in case no performance counters were found
+* [#222](https://github.com/Icinga/icinga-powershell-plugins/pull/222) Replaces `Get-FileHash` with own implementation as `Get-IcingaFileHash`, to work with new JEA integration
 
 ## 1.5.1 (2021-07-07)
 
