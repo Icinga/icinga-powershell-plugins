@@ -63,7 +63,7 @@ function Invoke-IcingaCheckCheckSum()
         Exit-IcingaThrowException -Force -CustomMessage '"-Path" is not directing to a file' -ExceptionType 'Configuration' -ExceptionThrown $IcingaExceptions.Configuration.PluginArgumentConflict;
     }
 
-    [string]$FileHash = (Get-FileHash $Path -Algorithm $Algorithm).Hash
+    [string]$FileHash = (Get-IcingaFileHash $Path -Algorithm $Algorithm).Hash
     $CheckSumCheck    = New-IcingaCheck -Name "CheckSum $Path" -Value $FileHash;
 
     If (([string]::IsNullOrEmpty($Hash)) -eq $FALSE) {
