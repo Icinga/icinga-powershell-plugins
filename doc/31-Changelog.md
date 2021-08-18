@@ -11,6 +11,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/8?closed=1)
 
+## Bugfixes
+
+* [#224](https://github.com/Icinga/icinga-powershell-plugins/pull/224) Fixes `Invoke-IcingaCheckUsedPartitionSpace` label names, which might have caused conflicts with Graphite/InfluxDB, because of changed metric unit
+
 ### Enhancements
 
 * [#208](https://github.com/Icinga/icinga-powershell-plugins/issues/208) Adds additional features to `Invoke-IcingaCheckScheduledTask`, allowing to monitor exit codes, missed runs and last/next run time of a task
