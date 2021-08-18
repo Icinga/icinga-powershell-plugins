@@ -112,15 +112,17 @@ function Invoke-IcingaCheckUsedPartitionSpace()
                 continue;
             }
 
+            $FormattedLetter = $partition.DriveLetter.Replace(':', '').ToLower();
+
             foreach ($entry in $Include) {
                 $ProcessPartition = $FALSE;
-                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
+                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
                     $ProcessPartition = $TRUE;
                     break;
                 }
             }
             foreach ($entry in $Exclude) {
-                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $partition.DriveLetter.Replace(':', '').ToLower()) {
+                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
                     $ProcessPartition = $FALSE;
                     break;
                 }
@@ -130,7 +132,7 @@ function Invoke-IcingaCheckUsedPartitionSpace()
                 continue;
             }
 
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
 
             if ([string]::IsNullOrEmpty($partition.FreeSpace) -Or [string]::IsNullOrEmpty($partition.Size)) {
                 if ($SkipUnknown -eq $FALSE) {
