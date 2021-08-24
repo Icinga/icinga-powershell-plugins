@@ -12,22 +12,24 @@ function Get-IcingaUNCPathSize()
             -Force;
     }
 
-    # Register our kernel32.dll Windows API function call
-Add-Type -TypeDefinition @"
-    using System;
-    using System.Runtime.InteropServices;
+    if ((Test-IcingaAddTypeExist -Type 'IcingaUNCPath') -eq $FALSE) {
+        # Register our kernel32.dll Windows API function call
+        Add-Type -TypeDefinition @"
+            using System;
+            using System.Runtime.InteropServices;
 
-    public static class kernel32 {
-        [DllImport("kernel32.dll", PreserveSig = true, CharSet = CharSet.Auto)]
+            public static class IcingaUNCPath {
+                [DllImport("kernel32.dll", PreserveSig = true, CharSet = CharSet.Auto)]
 
-        public static extern int GetDiskFreeSpaceEx(
-            IntPtr lpDirectoryName,           // UNC Path for share
-            out long lpFreeBytesAvailable,    // Free Bytes available on path
-            out long lpTotalNumberOfBytes,    // Bytes available on target disk / path
-            out long lpTotalNumberOfFreeBytes // Total available space on target disk / path
-        );
-    }
+                public static extern int GetDiskFreeSpaceEx(
+                    IntPtr lpDirectoryName,           // UNC Path for share
+                    out long lpFreeBytesAvailable,    // Free Bytes available on path
+                    out long lpTotalNumberOfBytes,    // Bytes available on target disk / path
+                    out long lpTotalNumberOfFreeBytes // Total available space on target disk / path
+                );
+            }
 "@
+    }
 
     # Setup variables as object which we can use to reference data into
     $ShareFree = New-Object -TypeName long;
@@ -38,7 +40,7 @@ Add-Type -TypeDefinition @"
     [System.IntPtr]$ptrPath = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAuto($Path);
 
     # Call our function we registered within the Add-Type definition
-    [kernel32]::GetDiskFreeSpaceEx($ptrPath, [ref]$ShareFree, [ref]$ShareSize, [ref]$TotalFree) | Out-Null;
+    [IcingaUNCPath]::GetDiskFreeSpaceEx($ptrPath, [ref]$ShareFree, [ref]$ShareSize, [ref]$TotalFree) | Out-Null;
     $ShareFreePercent = 0;
 
     if ($ShareSize -ne 0) {
