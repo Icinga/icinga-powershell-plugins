@@ -21,6 +21,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#217](https://github.com/Icinga/icinga-powershell-plugins/issues/217) Adds feature for `Invoke-IcingaCheckPerfCounter` with new switch `-IgnoreEmptyChecks` to change the output from `UNKNOWN` to `OK`, in case no performance counters were found
 * [#222](https://github.com/Icinga/icinga-powershell-plugins/pull/222) Replaces `Get-FileHash` with own implementation as `Get-IcingaFileHash`, to work with new JEA integration
 * [#223](https://github.com/Icinga/icinga-powershell-plugins/pull/223) Removes the function `Get-IcingaServices`, as this function has been moved to the Icinga PowerShell Framework
+* [#225](https://github.com/Icinga/icinga-powershell-plugins/pull/225) Adds support for plugins to work in JEA context
 
 ## 1.5.1 (2021-07-07)
 

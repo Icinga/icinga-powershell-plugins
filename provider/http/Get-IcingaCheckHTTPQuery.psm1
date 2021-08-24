@@ -100,29 +100,20 @@ function Get-IcingaCheckHTTPQuery()
         } else {
             # Defaults
             if (Test-Numeric $HTTPInformation.StatusCode) {
-                switch ($HTTPInformation.StatusCode) {
-                    { $_ -eq $null } { 
-                        $Status = $IcingaEnums.IcingaExitCode.Unknown
-                    };
-                    { $_ -lt 200 } { # < 200 Unknown
-                        $Status = $IcingaEnums.IcingaExitCode.Unknown
-                    }
-                    { $_ -ge 600 } { # >= 600 Unknown
-                        $Status = $IcingaEnums.IcingaExitCode.Unknown
-                    }
-                    { $_ -In 200..399 } { # 200-399 OK
-                        $Status = $IcingaEnums.IcingaExitCode.OK
-                    }
-                    { $_ -In 400..499 } { # 400-499 Warning
-                        $Status = $IcingaEnums.IcingaExitCode.Warning
-                    }
-                    { $_ -In 500..599 } { # 500-599 Critical
-                        $Status = $IcingaEnums.IcingaExitCode.Critical
-                    }
-                    # Proprietary
-                    Default {
-                        $Status = $IcingaEnums.IcingaExitCode.Unknown
-                    }
+                if ($HTTPInformation.StatusCode -eq $null) {
+                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                } elseif ($HTTPInformation.StatusCode -lt 200) { # < 200 Unknown
+                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                } elseif ($HTTPInformation.StatusCode -ge 600) { # >= 600 Unknown
+                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                } elseif ($HTTPInformation.StatusCode -In 200..399) { # 200-399 OK
+                    $Status = $IcingaEnums.IcingaExitCode.OK;
+                } elseif ($HTTPInformation.StatusCode -In 400..499) { # 400-499 Warning
+                    $Status = $IcingaEnums.IcingaExitCode.Warning;
+                } elseif ($HTTPInformation.StatusCode -In 500..599) { # 500-599 Critical
+                    $Status = $IcingaEnums.IcingaExitCode.Critical;
+                } else {
+                    $Status = $IcingaEnums.IcingaExitCode.Unknown; # Proprietary
                 }
             } else {
                 $Status = $IcingaEnums.IcingaExitCode.Unknown;
