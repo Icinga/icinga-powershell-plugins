@@ -966,25 +966,21 @@
 }
 
 [hashtable]$Stratum = @{
-    'UnspecifiedOrUnavailable'    = 0;
-    'PrimaryReference'            = 1;
-    'SecondaryReferenceNTPOrSNTP' = {$_ -ge 2 -and $_ -le 15};
-    'Reserved'                    = {$_ -gt 16};
+    'UnspecifiedOrUnavailable' = 0;
+    'PrimaryReference'         = 1;
 }
 
 [hashtable]$StratumTxt = @{
-    0                         = 'UnspecifiedOrUnavailable';
-    1                         = 'PrimaryReference';
-    {$_ -ge 2 -and $_ -le 15} = 'SecondaryReferenceNTPOrSNTP';
-    {$_ -gt 16}               = 'Reserved';
+    0 = 'UnspecifiedOrUnavailable';
+    1 = 'PrimaryReference';
 }
 
 [hashtable]$DeviceAccessName = @{
-    0  = 'Unknown';
-    1  = 'Readable';
-    2  = 'Writeable';
-    3  = 'Read/Write Supported';
-    4  = 'Write Once'; 
+    0 = 'Unknown';
+    1 = 'Readable';
+    2 = 'Writeable';
+    3 = 'Read/Write Supported';
+    4 = 'Write Once';
 }
 
 [hashtable]$DeviceAccess = @{

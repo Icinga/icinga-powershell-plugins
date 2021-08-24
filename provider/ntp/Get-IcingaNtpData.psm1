@@ -123,7 +123,6 @@ function Get-IcingaNtpData()
         'LocalTime'        = $LocalDateTime;
         'SyncStatus'       = $SyncStatus;
         'Stratum'          = $Stratum;
-        'StratumTxt'       = $ProviderEnums.StratumTxt[$Stratum];
         'Mode'             = $Mode;
         'ModeTxt'          = $ProviderEnums.ClientModeName[$Mode];
     };
