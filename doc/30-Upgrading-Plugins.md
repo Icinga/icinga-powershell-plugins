@@ -6,6 +6,16 @@ Specific version upgrades are described below. Please note that version updates 
 
 For upgrading plugins, please have a look on the [installation docs](02-Installation.md).
 
+## Upgrading to v1.7.0 (2021-11-09)
+
+### Invoke-IcingaCheckUsedPartitionSpace
+
+We have renamed the plugin from `Invoke-IcingaCheckUsedPartitionSpace` to `Invoke-IcingaCheckPartitionSpace`. For monitoring, there is no restriction as an alias was added, allowing both commands being used at the same time.
+
+In addition, we changed the default behaviour of the plugin which now defaults to monitor the free space available for a partition instead of the used space. With the new flag `-CheckUsedSpace`, you can switch back to the old behaviour for monitoring for used space.
+
+Before upgrading, you can import the latest configuration basket or use the latest Icinga 2 configuration files and set `CheckUsedSpace` to `true`, to not break current monitoring configuration.
+
 ## Upgrading to v1.5.0 (2021-06-02)
 
 ### Reworked plugins and removed arguments
