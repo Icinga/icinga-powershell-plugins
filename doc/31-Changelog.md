@@ -13,6 +13,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ## Bugfixes
 
+* [#221](https://github.com/Icinga/icinga-powershell-plugins/issues/221) Fixes `Invoke-IcingaCheckFirewall` to not use variable with name `-Profile` as argument, as it is reserved for PowerShell internals
 * [#224](https://github.com/Icinga/icinga-powershell-plugins/pull/224) Fixes `Invoke-IcingaCheckUsedPartitionSpace` label names, which might have caused conflicts with Graphite/InfluxDB, because of changed metric unit
 * [#226](https://github.com/Icinga/icinga-powershell-plugins/pull/226) Fixes class names of `Add-Type` for `Get-IcingaDiskAttributes` and `Get-IcingaUNCPathSize` and adds checks if the class was already added inside the session
 

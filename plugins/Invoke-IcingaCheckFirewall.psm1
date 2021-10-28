@@ -17,7 +17,7 @@
    PS> Invoke-IcingaCheckFirewall -Profile "Domain", "Private" -Verbosity 1}
    [OK] Check package "Firewall profiles" (Match All)
    | 'firewall_profile_domain'=True;; 'firewall_profile_private'=True;;
-.PARAMETER Profile
+.PARAMETER FirewallProfile
    Used to specify an array of profiles to check. Available profiles are 'Domain', 'Public', 'Private'
 
 .PARAMETER Enabled
@@ -44,7 +44,7 @@
 function Invoke-IcingaCheckFirewall()
 {
     param(
-        [array]$Profile,
+        [Alias("Profile")][Array]$FirewallProfile,
         [switch]$Enabled    = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
@@ -53,7 +53,7 @@ function Invoke-IcingaCheckFirewall()
 
     $FirewallPackage = New-IcingaCheckPackage -Name 'Firewall profiles' -OperatorAnd -Verbose $Verbosity;
 
-    foreach ($singleprofile in $Profile) {
+    foreach ($singleprofile in $FirewallProfile) {
         $FirewallData = (Get-NetFirewallProfile -Name $singleprofile -ErrorAction SilentlyContinue);
         $FirewallCheck = New-IcingaCheck -Name "Firewall Profile $singleprofile" -Value $FirewallData.Enabled -ObjectExists $FirewallData -Translation @{ 'true' = 'Enabled'; 'false' = 'Disabled'};
         $FirewallCheck.CritIfNotMatch([string]$Enabled) | Out-Null;
