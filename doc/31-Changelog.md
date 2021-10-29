@@ -15,6 +15,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#235](https://github.com/Icinga/icinga-powershell-plugins/pull/235) Fixes operational status monitoring output for `Invoke-IcingaCheckDiskHealth`
 
+### Enhancements
+
+* [#199](https://github.com/Icinga/icinga-powershell-plugins/issues/199) Adds additional metadata to `Invoke-IcingaCheckDiskHealth` for disk serial number, assigned partitions, boot device, device id, system device and device name
+
 ## 1.6.0 (2021-09-07)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/8?closed=1)
