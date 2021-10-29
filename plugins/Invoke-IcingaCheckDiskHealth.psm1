@@ -197,28 +197,27 @@ function Invoke-IcingaCheckDiskHealth()
                 $Partition = $DiskObjects.Data.DriveReference.Keys;
             }
 
-            $OperationalStatus = $DiskObjects.Data.OperationalStatus;
-            $OperCount = $OperationalStatus.Count;
+            $OperationalStatusPackage = New-IcingaCheckPackage -Name ([string]::Format('{0} Operational Status', $Partition)) -OperatorAnd -IgnoreEmptyPackage -Verbose $Verbosity;
 
-            if (($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Ok)) -or ($OperCount -eq 1 -And $OperationalStatus.ContainsKey($ProviderEnums.DiskOperationalStatusName.Online))) {
-                $PartCheckPackage.AddCheck(
-                    (
-                        New-IcingaCheck `
-                            -Name ([string]::Format('{0} Operational Status', $Partition)) `
-                            -Value 'OK' `
-                            -NoPerfData
-                    )
-                )
-            } else {
-                $PartCheckPackage.AddCheck(
-                    (
-                        New-IcingaCheck `
-                            -Name ([string]::Format('{0} Operational Status', $Partition)) `
-                            -Value ([string]::Join(',', $OperationalStatus.Values)) `
-                            -NoPerfData
-                    ).SetCritical()
-                )
+            foreach ($statusData in $DiskObjects.Data.OperationalStatus.Keys) {
+                $statusValue      = $DiskObjects.Data.OperationalStatus[$statusData];
+                $operationalCheck = New-IcingaCheck -Name $statusValue -NoPerfData;
+                $ProblemName      = $statusData;
+
+                if ($ProviderEnums.DiskOperationalStatus.ContainsKey($statusData)) {
+                    $ProblemName = $ProviderEnums.DiskOperationalStatus[$statusData];
+                }
+
+                if ($statusData -ne $ProviderEnums.DiskOperationalStatusName.Ok -And $statusData -ne $ProviderEnums.DiskOperationalStatusName.Online) {
+                    $operationalCheck.SetCritical([string]::Format('Problem detected: {0}', $ProblemName), $TRUE) | Out-Null;
+                } else {
+                    $operationalCheck.SetOk('No problems found', $TRUE) | Out-Null;
+                }
+
+                $OperationalStatusPackage.AddCheck($operationalCheck);
             }
+
+            $PartCheckPackage.AddCheck($OperationalStatusPackage);
 
             # Check for Disk Status
             $PartCheckPackage.AddCheck(
