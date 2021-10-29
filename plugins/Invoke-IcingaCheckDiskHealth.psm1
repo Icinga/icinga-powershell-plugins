@@ -252,6 +252,55 @@ function Invoke-IcingaCheckDiskHealth()
             # Check for Disk OperationalStatus
             $PartCheckPackage.AddCheck($DiskOfflineCheck);
             $PartCheckPackage.AddCheck($DiskReadOnlyCheck);
+
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Serial Number', $Partition)) `
+                        -Value ([string]$DiskObjects.Data.SerialNumber) `
+                        -NoPerfData
+                ).SetOk([string]$DiskObjects.Data.SerialNumber, $TRUE)
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Is System', $Partition)) `
+                        -Value ([bool]$DiskObjects.Data.IsSystem) `
+                        -NoPerfData
+                )
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Is Boot', $Partition)) `
+                        -Value $DiskObjects.Data.IsBoot `
+                        -NoPerfData
+                )
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Device ID', $Partition)) `
+                        -Value $DiskObjects.Data.DeviceID `
+                        -NoPerfData
+                )
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Caption', $Partition)) `
+                        -Value ([string]$DiskObjects.Data.Caption) `
+                        -NoPerfData
+                ).SetOk([string]$DiskObjects.Data.Caption, $TRUE)
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Assigned Partitions', $Partition)) `
+                        -Value ($DiskObjects.Data.DriveReference.Keys | Out-String).Replace("`r`n", ' ').Replace("`n", ' ') `
+                        -NoPerfData
+                )
+            );
         } else {
             if ($CheckLogicalOnly) {
                 continue;
