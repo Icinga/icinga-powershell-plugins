@@ -126,12 +126,26 @@ function Get-IcingaPhysicalDiskInfo()
                 $DiskInfo.HealthStatus      = $msft_disk.HealthStatus;
                 if ($null -ne $msft_disk.OperationalStatus) {
                     $OperationalStatus = @{ };
+
                     foreach ($entry in $msft_disk.OperationalStatus) {
-                        Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value ($ProviderEnums.DiskOperationalStatus[[int]$entry]) | Out-Null;
+                        if (Test-Numeric $entry) {
+                            Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value ($ProviderEnums.DiskOperationalStatus[[int]$entry]) | Out-Null;
+                        } else {
+                            if ($ProviderEnums.DiskOperationalStatus.Values -Contains $entry) {
+                                foreach ($opStatus in $ProviderEnums.DiskOperationalStatus.Keys) {
+                                    $opStatusValue = $ProviderEnums.DiskOperationalStatus[$opStatus];
+                                    if ($opStatusValue.ToLower() -eq ([string]$entry).ToLower()) {
+                                        Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$opStatus) -Value $entry | Out-Null;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
+
                     $DiskInfo.OperationalStatus = $OperationalStatus;
                 } else {
-                    $DiskInfo.OperationalStatus  = @{ 0 = 'Unknown'; };
+                    $DiskInfo.OperationalStatus = @{ 0 = 'Unknown'; };
                 }
                 $DiskInfo.Add(
                     'SpindleSpeed', $msft_disk.SpindleSpeed
