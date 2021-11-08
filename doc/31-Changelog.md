@@ -24,6 +24,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#211](https://github.com/Icinga/icinga-powershell-plugins/issues/211) Adds feature to `Invoke-IcingaCheckService`, allowing to filter for specific service startup types in case the plugin is used to check for specific services with `-Service`
 * [#237](https://github.com/Icinga/icinga-powershell-plugins/issues/237) Adds support for `Invoke-IcingaCheckHTTPStatus` to add the content of the website output by using the flag `-AddOutputContent`
 * [#241](https://github.com/Icinga/icinga-powershell-plugins/pull/241) Adds possibility to switch between free and used monitoring for `Invoke-IcingaCheckUNCPath` and consolidates monitoring like other plugins, with dynamic % monitoring.
+* [#243](https://github.com/Icinga/icinga-powershell-plugins/pull/243) Removes function `Publish-IcingaPluginDocumentation`, as this function will move directly into the Icinga PowerShell Framework
 
 ## 1.6.0 (2021-09-07)
 
