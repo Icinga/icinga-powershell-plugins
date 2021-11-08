@@ -58,6 +58,8 @@
     Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set.
 .PARAMETER SkipUnknown
     Allows to set Unknown partitions to Ok in case no metrics could be loaded.
+.PARAMETER CheckUsedSpace
+    Switches the behaviour of the plugin from checking with threshold for the free space (default) to the remaining (used) space instead
 .PARAMETER NoPerfData
     Disables the performance data output of this plugin
 .PARAMETER Verbosity
@@ -75,7 +77,7 @@
 .NOTES
 #>
 
-function Invoke-IcingaCheckUsedPartitionSpace()
+function Invoke-IcingaCheckPartitionSpace()
 {
     param(
         $Warning                   = $null,
@@ -85,68 +87,71 @@ function Invoke-IcingaCheckUsedPartitionSpace()
         [switch]$IgnoreEmptyChecks = $FALSE,
         [switch]$NoPerfData        = $FALSE,
         [switch]$SkipUnknown       = $FALSE,
+        [switch]$CheckUsedSpace    = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity            = 0
     );
 
-    $Disks       = Get-IcingaPhysicalDiskInfo;
-    $DiskPackage = New-IcingaCheckPackage -Name 'Used Partition Space' -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks -OperatorAnd -AddSummaryHeader;
+    $Disks       = Get-IcingaPartitionSpace;
+    $DiskPackage = $null;
 
-    foreach ($disk in $Disks.Values) {
+    if ($CheckUsedSpace) {
+        $DiskPackage = New-IcingaCheckPackage -Name 'Used Partition Space' -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks -OperatorAnd -AddSummaryHeader;
+    } else {
+        $DiskPackage = New-IcingaCheckPackage -Name 'Free Partition Space' -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks -OperatorAnd -AddSummaryHeader;
+    }
 
-        foreach ($partitions in $disk.PartitionLayout.Keys) {
-            $partition        =  $disk.PartitionLayout[$partitions];
-            $ProcessPartition = $TRUE;
+    foreach ($partition in $Disks.Keys) {
+        $partition        = $Disks[$partition];
+        $ProcessPartition = $TRUE;
 
-            if ([string]::IsNullOrEmpty($partition.DriveLetter)) {
-                continue;
-            }
-
-            if ($disk.DriveReference.ContainsKey($partition.DriveLetter) -eq $FALSE) {
-                continue;
-            }
-
-            $PartitionId = $disk.DriveReference[$partition.DriveLetter];
-
-            if ($partitions -ne $PartitionId) {
-                continue;
-            }
-
-            $FormattedLetter = $partition.DriveLetter.Replace(':', '').ToLower();
-
-            foreach ($entry in $Include) {
-                $ProcessPartition = $FALSE;
-                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
-                    $ProcessPartition = $TRUE;
-                    break;
-                }
-            }
-            foreach ($entry in $Exclude) {
-                if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
-                    $ProcessPartition = $FALSE;
-                    break;
-                }
-            }
-
-            if ($ProcessPartition -eq $FALSE) {
-                continue;
-            }
-
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
-
-            if ([string]::IsNullOrEmpty($partition.FreeSpace) -Or [string]::IsNullOrEmpty($partition.Size)) {
-                if ($SkipUnknown -eq $FALSE) {
-                    $IcingaCheck.SetUnknown('No disk size and/or free space available', $TRUE) | Out-Null;
-                } else {
-                    $IcingaCheck.SetOk('No disk size and/or free space available', $TRUE) | Out-Null;
-                }
-            } else {
-                $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
-            }
-
-            $DiskPackage.AddCheck($IcingaCheck);
+        if ([string]::IsNullOrEmpty($partition.DriveLetter)) {
+            continue;
         }
+
+        $FormattedLetter = $partition.DriveLetter.Replace(':', '').ToLower();
+
+        foreach ($entry in $Include) {
+            $ProcessPartition = $FALSE;
+            if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
+                $ProcessPartition = $TRUE;
+                break;
+            }
+        }
+        foreach ($entry in $Exclude) {
+            if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
+                $ProcessPartition = $FALSE;
+                break;
+            }
+        }
+
+        if ($ProcessPartition -eq $FALSE) {
+            continue;
+        }
+
+        $IcingaCheck = $null;
+
+        if ($CheckUsedSpace) {
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+        } else {
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.FreeSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('free_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+        }
+
+        if ([string]::IsNullOrEmpty($partition.Size)) {
+            if ($SkipUnknown -eq $FALSE) {
+                $IcingaCheck.SetUnknown('No disk size available', $TRUE) | Out-Null;
+            } else {
+                $IcingaCheck.SetOk('No disk size available', $TRUE) | Out-Null;
+            }
+        } else {
+            $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+        }
+
+        $DiskPackage.AddCheck($IcingaCheck);
     }
 
     return (New-IcingaCheckResult -Check $DiskPackage -NoPerfData $NoPerfData -Compile);
 }
+
+# Ensure we do not break current monitoring environments by the renaming change
+Set-Alias -Name 'Invoke-IcingaCheckUsedPartitionSpace' -Value 'Invoke-IcingaCheckPartitionSpace';

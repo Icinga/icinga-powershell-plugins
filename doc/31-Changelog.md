@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#199](https://github.com/Icinga/icinga-powershell-plugins/issues/199) Adds additional metadata to `Invoke-IcingaCheckDiskHealth` for disk serial number, assigned partitions, boot device, device id, system device and device name
+* [#233](https://github.com/Icinga/icinga-powershell-plugins/pull/233) Fixes used partition space plugin performance by fetching only partition space data instead of entire disk information collection and renamed it to represent the new method of being able to toggle between free and used space for partitions
 
 ## 1.6.0 (2021-09-07)
 
