@@ -45,6 +45,12 @@
     on Windows but are not running and weren't exited properly.
 .PARAMETER Status
     Status for the specified service or services to check against.
+.PARAMETER FilterStartupType
+    Allows to include only services with a specific startup type inside the monitoring,
+    in case you check for a list of specific services by using `-Service`
+.PARAMETER MitigateUnknown
+    This will tell the plugin to return OK instead of UNKNOWN, in case no service was added to this
+    check
 .PARAMETER NoPerfData
     Disables the performance data output of this plugin
 .PARAMETER Verbosity
@@ -65,16 +71,19 @@
 function Invoke-IcingaCheckService()
 {
     param (
-        [array]$Service     = @(),
-        [array]$Exclude     = @(),
+        [array]$Service           = @(),
+        [array]$Exclude           = @(),
         [ValidateSet('Stopped', 'StartPending', 'StopPending', 'Running', 'ContinuePending', 'PausePending', 'Paused')]
-        [string]$Status     = 'Running',
+        [string]$Status           = 'Running',
+        [ValidateSet('Boot', 'System', 'Automatic', 'Manual', 'Disabled', 'Unknown')]
+        [array]$FilterStartupType = @(),
+        [switch]$MitigateUnknown  = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity     = 0,
+        [int]$Verbosity           = 0,
         [switch]$NoPerfData
     );
 
-    $ServicesPackage       = New-IcingaCheckPackage -Name 'Services' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
+    $ServicesPackage       = New-IcingaCheckPackage -Name 'Services' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader -IgnoreEmptyPackage:$MitigateUnknown;
     $ServicesCountPackage  = New-IcingaCheckPackage -Name 'Count Services' -OperatorAnd -Verbose $Verbosity -Hidden;
     $FetchedServices       = @{};
     $ServiceSummary        = $null;
@@ -116,6 +125,11 @@ function Invoke-IcingaCheckService()
     } else {
         $FetchedServices = Get-IcingaServices -Service $Service -Exclude $Exclude;
         foreach ($services in $FetchedServices.Values) {
+            if ($FilterStartupType.Count -ne 0) {
+                if ($FilterStartupType -NotContains $ProviderEnums.ServiceStartupTypeName[$services.configuration.StartType.Raw]) {
+                    continue;
+                }
+            }
             $ServicesPackage.AddCheck(
                 (New-IcingaWindowsServiceCheckObject -Status $Status -Service $services)
             );
@@ -136,32 +150,34 @@ function Invoke-IcingaCheckService()
         }
     }
 
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'stopped services' -Value $ServiceSummary.StoppedCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'pending started services' -Value $ServiceSummary.StartPendingCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'pending stopped services' -Value $ServiceSummary.StopPendingCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'running services' -Value $ServiceSummary.RunningCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'pending continued services' -Value $ServiceSummary.ContinuePendingCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'pending paused services' -Value $ServiceSummary.PausePendingCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'paused services' -Value $ServiceSummary.PausedCount)
-    );
-    $ServicesCountPackage.AddCheck(
-        (New-IcingaCheck -Name 'service count' -Value $ServiceSummary.ServicesCounted)
-    );
+    if ($ServicesPackage.HasChecks()) {
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'stopped services' -Value $ServiceSummary.StoppedCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'pending started services' -Value $ServiceSummary.StartPendingCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'pending stopped services' -Value $ServiceSummary.StopPendingCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'running services' -Value $ServiceSummary.RunningCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'pending continued services' -Value $ServiceSummary.ContinuePendingCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'pending paused services' -Value $ServiceSummary.PausePendingCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'paused services' -Value $ServiceSummary.PausedCount)
+        );
+        $ServicesCountPackage.AddCheck(
+            (New-IcingaCheck -Name 'service count' -Value $ServiceSummary.ServicesCounted)
+        );
 
-    $ServicesPackage.AddCheck($ServicesCountPackage)
+        $ServicesPackage.AddCheck($ServicesCountPackage)
+    }
 
     return (New-IcingaCheckResult -Name 'Services' -Check $ServicesPackage -NoPerfData $NoPerfData -Compile);
 }

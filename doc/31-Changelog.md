@@ -20,6 +20,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#199](https://github.com/Icinga/icinga-powershell-plugins/issues/199) Adds additional metadata to `Invoke-IcingaCheckDiskHealth` for disk serial number, assigned partitions, boot device, device id, system device and device name
+* [#211](https://github.com/Icinga/icinga-powershell-plugins/issues/211) Adds feature to `Invoke-IcingaCheckService`, allowing to filter for specific service startup types in case the plugin is used to check for specific services with `-Service`
 * [#237](https://github.com/Icinga/icinga-powershell-plugins/issues/237) Adds support for `Invoke-IcingaCheckHTTPStatus` to add the content of the website output by using the flag `-AddOutputContent`
 * [#241](https://github.com/Icinga/icinga-powershell-plugins/pull/241) Adds possibility to switch between free and used monitoring for `Invoke-IcingaCheckUNCPath` and consolidates monitoring like other plugins, with dynamic % monitoring.
 
