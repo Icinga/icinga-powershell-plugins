@@ -60,9 +60,11 @@
        500-599  Critical
    >=  600      Unknown
 .PARAMETER Negate
-   A switch used to invert check results.
+    A switch used to invert check results.
+.PARAMETER AddOutputContent
+    Adds the returned content of a webseite to the plugin output for debugging purpose
 .PARAMETER NoPerfData
-   Used to disable PerfData.
+    Used to disable PerfData.
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -98,6 +100,7 @@ function Invoke-IcingaCheckHTTPStatus()
         [array]$StatusCode           = @(),
         [int]$Minimum                = -1,
         [switch]$Negate              = $FALSE,
+        [switch]$AddOutputContent    = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity              = 0
@@ -197,6 +200,14 @@ function Invoke-IcingaCheckHTTPStatus()
             $ContentPackage.AddCheck($HTTPContentMatchPackage);
         }
         $HTTPStatusPackage.AddCheck($ContentPackage);
+
+        if ($AddOutputContent) {
+            $HTTPStatusPackage.AddCheck(
+                (
+                    New-IcingaCheck -Name "HTTP Content" -Value $HTTPData.$SingleUrl.Content -NoPerfData
+                )
+            );
+        }
 
         # Response Time
         if ($HTTPData.$SingleUrl['RequestTime'] -eq $null) {
