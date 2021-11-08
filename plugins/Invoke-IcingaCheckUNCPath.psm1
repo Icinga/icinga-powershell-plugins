@@ -42,6 +42,8 @@
     of your input to check for "current value < threshold" like in the previous example
 
     Allowed units: B, KB, MB, GB, TB, PB, KiB, MiB, GiB, TiB, PiB
+.PARAMETER CheckUsedSpace
+    Switches the behaviour of the plugin from checking with threshold for the free space (default) to the remaining (used) space instead
 .PARAMETER NoPerfData
     Disables the performance data output of this plugin. Default to FALSE.
 .PARAMETER Verbosity
@@ -82,15 +84,16 @@
 function Invoke-IcingaCheckUNCPath()
 {
     param (
-        [string]$Path         = '',
-        [string]$DisplayAlias = '',
-        $Warning              = $null,
-        $Critical             = $null,
-        $WarningTotal         = $null,
-        $CriticalTotal        = $null,
-        [switch]$NoPerfData   = $FALSE,
+        [string]$Path           = '',
+        [string]$DisplayAlias   = '',
+        $Warning                = $null,
+        $Critical               = $null,
+        $WarningTotal           = $null,
+        $CriticalTotal          = $null,
+        [switch]$CheckUsedSpace = $FALSE,
+        [switch]$NoPerfData     = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
-        $Verbosity            = 0
+        $Verbosity              = 0
     );
 
     [string]$DisplayName = $Path;
@@ -99,40 +102,23 @@ function Invoke-IcingaCheckUNCPath()
         $DisplayName = $DisplayAlias;
     }
 
-    $PathData      = Get-IcingaUNCPathSize -Path $Path;
-    $CheckPackage  = New-IcingaCheckPackage -Name ([string]::Format('{0} Share', $DisplayName)) -OperatorAnd -Verbose $Verbosity;
+    $PathData     = Get-IcingaUNCPathSize -Path $Path;
+    $CheckPackage = New-IcingaCheckPackage -Name ([string]::Format('{0} Share', $DisplayName)) -OperatorAnd -Verbose $Verbosity;
+    $IcingaCheck  = $null;
 
-    $ShareFree = New-IcingaCheck `
-        -Name ([string]::Format('Free Space', $DisplayName)) `
-        -Value $PathData.ShareFree `
-        -Unit 'B' `
-        -LabelName ([string]::Format('share_free_bytes', $PathData.ShareFree));
+    if ($CheckUsedSpace) {
+        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Used Space', $DisplayName)) -Value $PathData.ShareUsed -Unit 'B' -Minimum 0 -Maximum $PathData.ShareSize -LabelName 'share_used_bytes' -BaseValue $PathData.ShareSize;
+    } else {
+        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Free Space', $DisplayName)) -Value $PathData.ShareFree -Unit 'B' -Minimum 0 -Maximum $PathData.ShareSize -LabelName 'share_free_bytes' -BaseValue $PathData.ShareSize;
+    }
+
+    $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
     $ShareSize = New-IcingaCheck `
         -Name ([string]::Format('Size', $DisplayName)) `
         -Value $PathData.ShareSize `
         -Unit 'B' `
         -LabelName ([string]::Format('share_size', $PathData.ShareSize));
-
-    if ($Warning.Unit -ne '%') {
-        $ShareFree.WarnOutOfRange($Warning.Value) | Out-Null;
-    }
-    if ($Critical.Unit -ne '%') {
-        $ShareFree.CritOutOfRange($Critical.Value) | Out-Null;
-    }
-
-    $ShareFreePercent = New-IcingaCheck `
-        -Name ([string]::Format('Free %', $DisplayName)) `
-        -Value $PathData.ShareFreePercent `
-        -Unit '%' `
-        -LabelName ([string]::Format('share_free_percent', $PathData.ShareFreePercent));
-
-    if ($Warning.Unit -eq '%') {
-        $ShareFreePercent.WarnOutOfRange($Warning.Value) | Out-Null;
-    }
-    if ($Critical.Unit -eq '%') {
-        $ShareFreePercent.CritOutOfRange($Critical.Value) | Out-Null;
-    }
 
     $TotalFree = New-IcingaCheck `
         -Name ([string]::Format('Total Free', $DisplayName)) `
@@ -142,9 +128,8 @@ function Invoke-IcingaCheckUNCPath()
 
     $TotalFree.WarnOutOfRange($WarningTotal.Value).CritOutOfRange($CriticalTotal.Value) | Out-Null;
 
-    $CheckPackage.AddCheck($ShareFree);
+    $CheckPackage.AddCheck($IcingaCheck);
     $CheckPackage.AddCheck($ShareSize);
-    $CheckPackage.AddCheck($ShareFreePercent);
     $CheckPackage.AddCheck($TotalFree);
 
     return (New-IcingaCheckResult -Name ([string]::Format('{0} Share', $DisplayName)) -Check $CheckPackage -NoPerfData $NoPerfData -Compile);

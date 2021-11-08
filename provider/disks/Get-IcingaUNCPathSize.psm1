@@ -50,6 +50,7 @@ function Get-IcingaUNCPathSize()
     return @{
         'ShareFree'        = $ShareFree;
         'ShareSize'        = $ShareSize;
+        'ShareUsed'        = ($ShareSize - $ShareFree);
         'ShareFreePercent' = $ShareFreePercent;
         'TotalFree'        = $TotalFree;
     };
