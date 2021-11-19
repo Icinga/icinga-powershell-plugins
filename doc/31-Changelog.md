@@ -7,6 +7,12 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.8.0 (2022-02-08)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/11?closed=1)
+
+* [#246](https://github.com/Icinga/icinga-powershell-plugins/pull/246) Fixes wrong `UNKNOWN` on `Invoke-IcingaCheckService` while using service display name with the `-Service` argument instead of the service name
+
 ## 1.7.0 (2021-11-09)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/10?closed=1)
