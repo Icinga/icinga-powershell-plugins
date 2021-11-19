@@ -30,17 +30,29 @@
 
     * Performance Monitor Users
 .EXAMPLE
-    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
-    [OK]: Check package "Used Partition Space" is [OK]
-    | 'Partition C'=8,06204986572266%;60;;0;100 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100
+    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning '60%' -Critical '80%' -CheckUsedSpace
+    [CRITICAL] Used Partition Space: 2 Critical 1 Ok [CRITICAL] Partition C: (85.43% (795.22GiB)), Partition G: (87.50% (1.59TiB))
+    \_ [CRITICAL] Partition C: 85.43% (795.22GiB) is greater than threshold 80% (744.71GiB)
+    \_ [CRITICAL] Partition G: 87.50% (1.59TiB) is greater than threshold 80% (1.46TiB)
+    | 'used_space_partition_r'=326052500000B;2400460800000;3200614400000;0;4000768000000 'used_space_partition_g'=1750369000000B;1200228600000;1600304800000;0;2000381000000 'used_space_partition_c'=853859000000B;599716680000;799622240000;0;999527800000
 .EXAMPLE
-    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:"
-    [OK]: Check package "Used Partition Space" is [OK]
-    | 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100
+    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning '740GB' -Critical '800GB' -CheckUsedSpace
+    [CRITICAL] Used Partition Space: 2 Critical 1 Ok [CRITICAL] Partition C: (795.23GiB), Partition G: (1.59TiB)
+    \_ [CRITICAL] Partition C: 795.23GiB is greater than threshold 745.06GiB
+    \_ [CRITICAL] Partition G: 1.59TiB is greater than threshold 745.06GiB
+    | 'used_space_partition_r'=326052500000B;740000000000;800000000000;0;4000768000000 'used_space_partition_g'=1750369000000B;740000000000;800000000000;0;2000381000000 'used_space_partition_c'=853874000000B;740000000000;800000000000;0;999527800000
 .EXAMPLE
-    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:"
-    [OK]: Check package "Used Partition Space" is [OK]
-    | 'Partition C'=8,06204986572266%;60;;0;100
+    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning '300GB:' -Critical '200GB:'
+    [CRITICAL] Free Partition Space: 1 Critical 1 Warning 1 Ok [CRITICAL] Partition C: (135.65GiB) [WARNING] Partition G: (232.84GiB)
+    \_ [CRITICAL] Partition C: 135.65GiB is lower than threshold 186.26GiB
+    \_ [WARNING] Partition G: 232.84GiB is lower than threshold 279.40GiB
+    | 'free_space_partition_g'=250012600000B;300000000000:;200000000000:;0;2000381000000 'free_space_partition_r'=3674716000000B;300000000000:;200000000000:;0;4000768000000 'free_space_partition_c'=145653700000B;300000000000:;200000000000:;0;999527800000
+.EXAMPLE
+    PS>Invoke-IcingaCheckUsedPartitionSpace -Warning '20%:' -Critical '10%:'
+    [WARNING] Free Partition Space: 2 Warning 1 Ok [WARNING] Partition C: (14.57% (135.65GiB)), Partition G: (12.50% (232.84GiB))
+    \_ [WARNING] Partition C: 14.57% (135.65GiB) is lower than threshold 20% (186.18GiB)
+    \_ [WARNING] Partition G: 12.50% (232.84GiB) is lower than threshold 20% (372.60GiB)
+    | 'free_space_partition_g'=250012600000B;400076200000:;200038100000:;0;2000381000000 'free_space_partition_r'=3674716000000B;800153600000:;400076800000:;0;4000768000000 'free_space_partition_c'=145656400000B;199905560000:;99952780000:;0;999527800000
 .PARAMETER Warning
     Used to specify a Warning threshold. This can either be a byte-value type like '10GB'
     or a %-value, like '10%'
