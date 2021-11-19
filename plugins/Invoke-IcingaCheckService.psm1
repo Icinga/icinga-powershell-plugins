@@ -144,6 +144,24 @@ function Invoke-IcingaCheckService()
             if ($ServiceArg.Contains('*')) {
                 continue;
             }
+
+            # As we can use the DisplayName of a service inside the filter, we need to compare the DisplayName with
+            # our provided filter as well
+            [bool]$ServiceKnown = $FALSE;
+
+            foreach ($fetchedService in $FetchedServices.Keys) {
+                $fetchedService = $FetchedServices[$fetchedService];
+
+                if ($fetchedService.metadata.DisplayName -eq $ServiceArg) {
+                    $ServiceKnown = $TRUE;
+                    break;
+                }
+            }
+
+            if ($ServiceKnown) {
+                continue;
+            }
+
             $ServicesPackage.AddCheck(
                 (New-IcingaCheck -Name ([string]::Format('{0}: Service not found', $ServiceArg))).SetUnknown()
             );
