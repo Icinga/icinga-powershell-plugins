@@ -118,7 +118,6 @@
        \_ [OK] F: C: Is Offline: False
        \_ [OK] F: C: Is ReadOnly: False
        \_ [OK] F: C: Operational Status: OK
-       \_ [OK] F: C: Status: OK
     | 'f_c_avg_disk_sectransfer'=0.000315s;5;10 'f_c_disk_write_bytessec'=125814.7B;; 'f_c_avg_disk_secwrite'=0.000315s;; 'f_c_disk_read_bytessec'=0B;3000;5000 'f_c_avg_disk_secread'=0s;; 'f_c_disk_readssec'=0;0;1 'f_c_avg_disk_queue_length'=0.001751%;;;0;100 'f_c_current_disk_queue_length'=0;; 'f_c_disk_writessec'=5.018281;; '_total_disk_readssec'=0;0;1 '_total_disk_write_bytessec'=125800.7B;; '_total_avg_disk_sectransfer'=0.000315s;5;10 '_total_disk_read_bytessec'=0B;3000;5000 '_total_avg_disk_queue_length'=0.001748%;;;0;100 '_total_avg_disk_secread'=0s;; '_total_disk_writessec'=5.025574;; '_total_current_disk_queue_length'=0;; '_total_avg_disk_secwrite'=0.000315s;;
     0
 .LINK
@@ -192,11 +191,6 @@ function Invoke-IcingaCheckDiskHealth()
         [string]$Partition = $DiskPart;
 
         if ($null -ne $DiskObjects.Data) {
-            # Check for Disk Availability
-            if ($DiskObjects.Data.DriveReference.Count -ne 0) {
-                $Partition = $DiskObjects.Data.DriveReference.Keys;
-            }
-
             $OperationalStatusPackage = New-IcingaCheckPackage -Name ([string]::Format('{0} Operational Status', $Partition)) -OperatorAnd -IgnoreEmptyPackage -Verbose $Verbosity;
 
             foreach ($statusData in $DiskObjects.Data.OperationalStatus.Keys) {
@@ -218,18 +212,6 @@ function Invoke-IcingaCheckDiskHealth()
             }
 
             $PartCheckPackage.AddCheck($OperationalStatusPackage);
-
-            # Check for Disk Status
-            $PartCheckPackage.AddCheck(
-                (
-                    New-IcingaCheck `
-                        -Name ([string]::Format('{0} Status', $Partition)) `
-                        -Value $DiskObjects.Data.Status `
-                        -NoPerfData
-                ).WarnIfNotMatch(
-                    $ProviderEnums.DeviceStatus.OK
-                )
-            );
 
             $DiskOfflineCheck  = New-IcingaCheck `
                 -Name ([string]::Format('{0} Is Offline', $Partition)) `
@@ -288,10 +270,18 @@ function Invoke-IcingaCheckDiskHealth()
             $PartCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `
-                        -Name ([string]::Format('{0} Caption', $Partition)) `
-                        -Value ([string]$DiskObjects.Data.Caption) `
+                        -Name ([string]::Format('{0} Friendly Name', $Partition)) `
+                        -Value ([string]$DiskObjects.Data.FriendlyName) `
                         -NoPerfData
-                ).SetOk([string]$DiskObjects.Data.Caption, $TRUE)
+                ).SetOk([string]$DiskObjects.Data.FriendlyName, $TRUE)
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Media Type', $Partition)) `
+                        -Value ([string]$DiskObjects.Data.MediaType.Name) `
+                        -NoPerfData
+                ).SetOk([string]$DiskObjects.Data.MediaType.Name, $TRUE)
             );
             $PartCheckPackage.AddCheck(
                 (

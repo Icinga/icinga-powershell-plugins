@@ -94,9 +94,9 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
         [array]$ExcludePartition = @()
     );
 
-    [hashtable]$PhysicalDiskData = @{};
+    [hashtable]$PhysicalDiskData = @{ };
     $GetDisk                     = Get-IcingaPhysicalDiskInfo;
-    $Counters                    = New-IcingaPerformanceCounterArray $DiskCounter; 
+    $Counters                    = New-IcingaPerformanceCounterArray $DiskCounter;
     $SortedDisks                 = New-IcingaPerformanceCounterStructure -CounterCategory 'PhysicalDisk' -PerformanceCounterHash $Counters;
 
     foreach ($disk in $SortedDisks.Keys) {
@@ -117,8 +117,8 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
             }
         }
 
-        if ($GetDisk.ContainsKey($DiskId)) {
-            $DiskData = $GetDisk[$DiskId];
+        if ((Test-Numeric $DiskId) -And $GetDisk.ContainsKey([int]$DiskId)) {
+            $DiskData = $GetDisk[[int]$DiskId];
         }
 
         $PhysicalDiskData.Add(
@@ -133,15 +133,16 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
     return $PhysicalDiskData;
 }
 
-function Get-IcingaDiskCapabilities 
+function Get-IcingaDiskCapabilities()
 {
     $DiskInformation = Get-IcingaWindowsInformation Win32_DiskDrive;
-    [hashtable]$DiskCapabilities = @{};
+    [hashtable]$DiskCapabilities = @{ };
 
     foreach ($capabilities in $DiskInformation.Capabilities) {
         $DiskCapabilities.Add([int]$capabilities, $ProviderEnums.DiskCapabilities.([int]$capabilities));
     }
-        return @{'value' = $DiskCapabilities; 'name' = 'Capabilities'};
+
+    return @{'value' = $DiskCapabilities; 'name' = 'Capabilities'};
 
 }
 function Get-IcingaDiskSize
