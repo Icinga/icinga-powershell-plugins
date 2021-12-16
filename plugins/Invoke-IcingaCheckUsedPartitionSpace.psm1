@@ -79,7 +79,7 @@
 
 function Invoke-IcingaCheckPartitionSpace()
 {
-    param(
+    param (
         $Warning                   = $null,
         $Critical                  = $null,
         [array]$Include            = @(),
@@ -154,4 +154,31 @@ function Invoke-IcingaCheckPartitionSpace()
 }
 
 # Ensure we do not break current monitoring environments by the renaming change
-Set-Alias -Name 'Invoke-IcingaCheckUsedPartitionSpace' -Value 'Invoke-IcingaCheckPartitionSpace';
+function Invoke-IcingaCheckUsedPartitionSpace()
+{
+    param (
+        $Warning                   = $null,
+        $Critical                  = $null,
+        [array]$Include            = @(),
+        [array]$Exclude            = @(),
+        [switch]$IgnoreEmptyChecks = $FALSE,
+        [switch]$NoPerfData        = $FALSE,
+        [switch]$SkipUnknown       = $FALSE,
+        [switch]$CheckUsedSpace    = $FALSE,
+        [ValidateSet(0, 1, 2, 3)]
+        [int]$Verbosity            = 0
+    );
+
+    return (
+        Invoke-IcingaCheckPartitionSpace `
+            -Warning $Warning `
+            -Critical $Critical `
+            -Include $Include `
+            -Exclude $Exclude `
+            -IgnoreEmptyChecks:$IgnoreEmptyChecks `
+            -NoPerfData:$NoPerfData `
+            -SkipUnknown:$SkipUnknown `
+            -CheckUsedSpace:$CheckUsedSpace `
+            -Verbosity $Verbosity
+    );
+}
