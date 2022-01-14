@@ -253,13 +253,17 @@ function Get-IcingaEventLog()
         [string]$EventHash = Get-StringSha1 $EventIdentifier;
 
         if ($groupedEvents.eventlog.ContainsKey($EventHash) -eq $FALSE) {
+            [string]$EventMessage = $event.Message;
+            if ([string]::IsNullOrEmpty($EventMessage)) {
+                $EventMessage = '';
+            }
             $groupedEvents.eventlog.Add(
                 $EventHash,
                 @{
                     NewestEntry = $event.TimeCreated;
                     OldestEntry = $event.TimeCreated;
                     EventId     = $event.Id;
-                    Message     = $event.Message;
+                    Message     = $EventMessage;
                     Severity    = $ProviderEnums.EventLogSeverityName[$event.Level];
                     Source      = $event.ProviderName;
                     Count       = 1;
