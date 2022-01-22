@@ -24,6 +24,7 @@
         '.\plugins\Invoke-IcingaCheckNetworkInterface.psm1',
         '.\plugins\Invoke-IcingaCheckNLA.psm1',
         '.\plugins\Invoke-IcingaCheckPerfcounter.psm1',
+        '.\plugins\Invoke-IcingaCheckProcess.psm1',
         '.\plugins\Invoke-IcingaCheckProcessCount.psm1',
         '.\plugins\Invoke-IcingaCheckScheduledTask.psm1',
         '.\plugins\Invoke-IcingaCheckService.psm1',

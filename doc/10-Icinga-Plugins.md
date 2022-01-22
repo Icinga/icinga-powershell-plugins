@@ -38,6 +38,7 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 * [Invoke-IcingaCheckNetworkInterface](plugins/21-Invoke-IcingaCheckNetworkInterface.md)
 * [Invoke-IcingaCheckNLA](plugins/10-Invoke-IcingaCheckNLA.md)
 * [Invoke-IcingaCheckPerfcounter](plugins/11-Invoke-IcingaCheckPerfcounter.md)
+* [Invoke-IcingaCheckProcess](plugins/27-Invoke-IcingaCheckProcess.md)
 * [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md)
 * [Invoke-IcingaCheckScheduledTask](plugins/19-Invoke-IcingaCheckScheduledTask.md)
 * [Invoke-IcingaCheckService](plugins/13-Invoke-IcingaCheckService.md)
