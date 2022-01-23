@@ -35,6 +35,18 @@ function Get-IcingaMemoryPerformanceCounter()
         'Committed Bytes %',
         $Initial.'\Memory\% committed bytes in use'.value
     );
+    $MemoryData.Add(
+        'PageFile Total Bytes',
+        0
+    );
+    $MemoryData.Add(
+        'PageFile Used Bytes',
+        0
+    );
+    $MemoryData.Add(
+        'PageFile Used %',
+        0
+    );
 
     if ((Get-IcingaWindowsInformation Win32_ComputerSystem).AutomaticManagedPagefile -eq $FALSE) {
         # Page File is managed by User
@@ -53,7 +65,10 @@ function Get-IcingaMemoryPerformanceCounter()
                     'Name'        = $entry.Name;
                     'TotalSize'   = $entry.MaximumSize;
                 }
-            )
+            );
+
+            $MemoryData['PageFile Total Bytes'] += $entry.MaximumSize;
+            $MemoryData['PageFile Used Bytes']  += $entry.InitialSize;
         }
     }
 
@@ -90,7 +105,10 @@ function Get-IcingaMemoryPerformanceCounter()
                 'Managed'      = $FALSE;
                 'Name'         = $entry.Name;
             }
-        )
+        );
+
+        $MemoryData['PageFile Total Bytes'] += $entry.AllocatedBaseSize;
+        $MemoryData['PageFile Used Bytes']  += $entry.CurrentUsage;
     }
 
     foreach ($entry in $PerfCounters['\Paging File(*)\% usage'].Keys) {
@@ -105,6 +123,10 @@ function Get-IcingaMemoryPerformanceCounter()
                 break;
             }
         }
+    }
+
+    if ($MemoryData['PageFile Total Bytes'] -ne 0) {
+        $MemoryData['PageFile Used %'] = [Math]::Round(($MemoryData['PageFile Used Bytes']) / ($MemoryData['PageFile Total Bytes']) * 100, 2);
     }
 
     return $MemoryData;
