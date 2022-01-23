@@ -2,8 +2,8 @@ function Get-IcingaCertificateData()
 {
     param(
         #CertStore-Related Param
-        [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
-        [string]$CertStore     = '*',
+        [ValidateSet('None', '*', 'LocalMachine', 'CurrentUser')]
+        [string]$CertStore     = 'None',
         [array]$CertThumbprint = $null,
         [array]$CertSubject    = $null,
         [array]$ExcludePattern = $null,
@@ -77,8 +77,8 @@ function Get-IcingaCertStoreCertificates()
 {
     param (
         #CertStore-Related Param
-        [ValidateSet('*', 'LocalMachine', 'CurrentUser')]
-        [string]$CertStore     = '*',
+        [ValidateSet('None', '*', 'LocalMachine', 'CurrentUser')]
+        [string]$CertStore     = 'None',
         [array]$CertThumbprint = @(),
         [array]$CertSubject    = @(),
         [array]$ExcludePattern = @(),
@@ -86,6 +86,11 @@ function Get-IcingaCertStoreCertificates()
     );
 
     $CertStoreArray = @();
+
+    if ($CertStore -eq 'None') {
+        return $CertStoreArray;
+    }
+
     $CertStorePath  = [string]::Format('Cert:\{0}\{1}', $CertStore, $CertStorePath);
     $CertStoreCerts = Get-ChildItem -Path $CertStorePath -Recurse;
 
