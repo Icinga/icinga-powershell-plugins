@@ -1,8 +1,11 @@
-function Get-IcingaUpdatesPending ()
+function Get-IcingaWindowsUpdatesPending()
 {
+    param (
+        [array]$UpdateFilter = @()
+    );
 
-    [hashtable]$PendingUpdates         = @{};
-    [hashtable]$PendingUpdateNameCache = @{};
+    [hashtable]$PendingUpdates         = @{ };
+    [hashtable]$PendingUpdateNameCache = @{ };
 
     # Fetch all informations about installed updates and add them
     try {
@@ -15,12 +18,21 @@ function Get-IcingaUpdatesPending ()
     try {
         # Get a list of current pending updates which are not yet installed on the system
         $Pending = $SearchIndex.Search("IsInstalled=0");
-        $PendingUpdates.Add('count', $Pending.Updates.Count);
-        $PendingUpdates.Add('updates', @{ });
+        $PendingUpdates.Add('count', 0);
+        $PendingUpdates.Add(
+            'updates',
+            @{
+                'security' = @{ };
+                'defender' = @{ };
+                'rollups'  = @{ };
+                'other'    = @{ };
+            }
+        );
 
         foreach ($update in $Pending.Updates) {
-            [hashtable]$PendingUpdateDetails = @{};
+            [hashtable]$PendingUpdateDetails = @{ };
             $PendingUpdateDetails.Add('Title', $update.Title);
+            $PendingUpdateDetails.Add('Category', $null);
             $PendingUpdateDetails.Add('Deadline', $update.Deadline);
             $PendingUpdateDetails.Add('Description', $update.Description);
             $PendingUpdateDetails.Add('IsBeta', $update.IsBeta);
@@ -57,6 +69,17 @@ function Get-IcingaUpdatesPending ()
             $PendingUpdateDetails.Add('AutoSelection', $update.AutoSelection);
             $PendingUpdateDetails.Add('AutoDownload', $update.AutoDownload);
 
+            if ($UpdateFilter.Count -ne 0) {
+                foreach ($filter in $UpdateFilter) {
+                    if ($update.Title -Like $filter) {
+                        $PendingUpdates.count += 1;
+                        break;
+                    }
+                }
+            } else {
+                $PendingUpdates.count += 1;
+            }
+
             [string]$name = [string]::Format('{0} [{1}]', $update.Title, $update.LastDeploymentChangeTime);
 
             if ($PendingUpdateNameCache.ContainsKey($name) -eq $FALSE) {
@@ -66,7 +89,45 @@ function Get-IcingaUpdatesPending ()
                 $name = [string]::Format('{0} ({1})', $name, $PendingUpdateNameCache[$name]);
             }
 
-            $PendingUpdates.updates.Add($name, $PendingUpdateDetails);
+            [bool]$IsSecurity = $FALSE;
+            [bool]$IsDefender = $FALSE;
+            [bool]$IsRollUp   = $FALSE;
+
+            foreach ($category in $update.Categories) {
+                if ($category.Name -eq 'Update Rollups') {
+                    $IsRollUp = $TRUE;
+                    $PendingUpdateDetails.Category = $category;
+                }
+                if ($category.Name -eq 'Definition Updates' -Or $category.Name -eq 'Microsoft Defender Antivirus') {
+                    $IsDefender = $TRUE;
+                    $PendingUpdateDetails.Category = $category;
+                    break;
+                }
+                if ($category.Name -eq 'Security Updates') {
+                    $IsSecurity = $TRUE;
+                    $PendingUpdateDetails.Category = $category;
+                    break;
+                }
+            }
+
+            if ($null -eq $PendingUpdateDetails.Category) {
+                $PendingUpdateDetails.Category = $update.Categories[0];
+            }
+
+            if ($IsSecurity) {
+                $PendingUpdates.updates.security.Add($name, $PendingUpdateDetails);
+                continue;
+            }
+            if ($IsDefender) {
+                $PendingUpdates.updates.defender.Add($name, $PendingUpdateDetails);
+                continue;
+            }
+            if ($IsRollUp) {
+                $PendingUpdates.updates.rollups.Add($name, $PendingUpdateDetails);
+                continue;
+            }
+
+            $PendingUpdates.updates.other.Add($name, $PendingUpdateDetails);
         }
     } catch {
         if ($PendingUpdates.ContainsKey('Count') -eq $FALSE) {
@@ -74,10 +135,7 @@ function Get-IcingaUpdatesPending ()
         } else {
             $PendingUpdates['count'] =  0;
         }
-        $PendingUpdates.Add('error', [string]::Format(
-            'Failed to query Windows Update server: {0}',
-            $_.Exception.Message
-        ));
+        $PendingUpdates.Add('error', $_.Exception.Message);
     }
 
     return $PendingUpdates;

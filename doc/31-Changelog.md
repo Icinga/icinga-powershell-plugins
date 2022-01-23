@@ -16,6 +16,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#246](https://github.com/Icinga/icinga-powershell-plugins/pull/246) Fixes wrong `UNKNOWN` on `Invoke-IcingaCheckService` while using service display name with the `-Service` argument instead of the service name
 * [#262](https://github.com/Icinga/icinga-powershell-plugins/pull/262) Fixes method NULL exception on empty EventLog entries for `Invoke-IcingaCheckEventLog`
 
+## Enhancements
+
+* [#143](https://github.com/Icinga/icinga-powershell-plugins/issues/143), [#220](https://github.com/Icinga/icinga-powershell-plugins/issues/220), [#256](https://github.com/Icinga/icinga-powershell-plugins/issues/256) Improves `Invoke-IcingaCheckUpdates`, splitting updates into different categories, allowing the check for the update count based on these categories `Microsoft Defender`, `Security Updates`, `Rollup Updates` and all `Other Updates`. The `-UpdateFilter` will only apply to the total update count, allowing additional customisation. By running the plugin with `-Verbosity 1`, it will now also print the list of the update names if the the thresholds are printing `Warning`, `Critical` or `Unknown`
+
 ## 1.7.0 (2021-11-09)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/10?closed=1)
