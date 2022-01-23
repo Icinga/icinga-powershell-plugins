@@ -77,7 +77,7 @@
         '.\provider\tcp\Measure-IcingaTCPConnection.psm1',
         '.\provider\updates\Get-IcingaUpdatesHotfix.psm1',
         '.\provider\updates\Get-IcingaUpdatesInstalled.psm1',
-        '.\provider\updates\Get-IcingaUpdatesPending.psm1',
+        '.\provider\updates\Get-IcingaWindowsUpdatesPending.psm1',
         '.\provider\users\Get-IcingaLoggedOnUsers.psm1',
         '.\provider\users\Get-IcingaUsers.psm1',
         '.\provider\windows\Icinga_ProviderWindows.psm1',
