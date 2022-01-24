@@ -13,6 +13,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ## Bugfixes
 
+* [#250](https://github.com/Icinga/icinga-powershell-plugins/pull/250) Fixes alias `Invoke-IcingaCheckUsedPartitionSpace` which is not working on Windows 2012R2 or older and being replaced with a native function
 * [#246](https://github.com/Icinga/icinga-powershell-plugins/pull/246) Fixes wrong `UNKNOWN` on `Invoke-IcingaCheckService` while using service display name with the `-Service` argument instead of the service name
 * [#261](https://github.com/Icinga/icinga-powershell-plugins/issues/261) Fixes `Invoke-IcingaCheckCertificate` which always included the CertStore because no option to not check the certificate store was available
 * [#262](https://github.com/Icinga/icinga-powershell-plugins/pull/262) Fixes method NULL exception on empty EventLog entries for `Invoke-IcingaCheckEventLog`
@@ -32,7 +33,6 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#200](https://github.com/Icinga/icinga-powershell-plugins/issues/200) Fixes `UNKNOWN` for `Invoke-IcingaCheckUsedPartitionSpace`, in case the main partition has no space left which should return `CRITICAL` instead
 * [#233](https://github.com/Icinga/icinga-powershell-plugins/pull/233) Fixes used partition space plugin performance by fetching only partition space data instead of entire disk information collection and renamed it to represent the new method of being able to toggle between free and used space for partitions
 * [#235](https://github.com/Icinga/icinga-powershell-plugins/pull/235) Fixes operational status monitoring output for `Invoke-IcingaCheckDiskHealth`
-* [#250](https://github.com/Icinga/icinga-powershell-plugins/pull/250) Fixes alias `Invoke-IcingaCheckUsedPartitionSpace` which is not working on Windows 2012R2 or older and being replaced with a native function
 
 ### Enhancements
 
