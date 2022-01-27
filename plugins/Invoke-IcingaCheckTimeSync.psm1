@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Gets Network Time Protocol time(SMTP/NTP) from a specified server
 .DESCRIPTION
