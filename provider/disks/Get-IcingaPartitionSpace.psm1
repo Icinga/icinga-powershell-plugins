@@ -4,7 +4,7 @@ function Get-IcingaPartitionSpace()
         [int]$DriveType = 3
     );
 
-    [array]$LogicalDisks = Get-IcingaWindowsInformation Win32_LogicalDisk -Filter ([string]::Format('DriveType = {0}', $DriveType));
+    [array]$LogicalDisks = Get-IcingaWindowsInformation Win32_LogicalDisk -Filter ([string]::Format('DriveType = "{0}"', $DriveType));
     [hashtable]$DiskData = @{ };
 
     foreach ($disk in $LogicalDisks) {

@@ -17,6 +17,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#246](https://github.com/Icinga/icinga-powershell-plugins/pull/246) Fixes wrong `UNKNOWN` on `Invoke-IcingaCheckService` while using service display name with the `-Service` argument instead of the service name
 * [#261](https://github.com/Icinga/icinga-powershell-plugins/issues/261) Fixes `Invoke-IcingaCheckCertificate` which always included the CertStore because no option to not check the certificate store was available
 * [#262](https://github.com/Icinga/icinga-powershell-plugins/pull/262) Fixes method NULL exception on empty EventLog entries for `Invoke-IcingaCheckEventLog`
+* [#271](https://github.com/Icinga/icinga-powershell-plugins/pull/271) Fixes JEA error which detected `ScriptBlocks` in the plugin collection
 
 ## Enhancements
 
