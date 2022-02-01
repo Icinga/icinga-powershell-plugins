@@ -20,14 +20,19 @@
 
     * Performance Monitor Users
 .EXAMPLE
-    PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
-    [WARNING]: % Memory Check 78.74 is greater than 60
+    PS> Invoke-IcingaCheckMemory -Verbosity 3 -Warning '60%' -Critical '80%'
+    [OK] Memory Usage (All must be [OK])
+    \_ [OK] PageFile Usage (All must be [OK])
+        \_ [OK] C:\pagefile.sys: 278MB
+    \_ [OK] Used Memory: 36.13% (23.10GiB)
+    | 'used_memory'=24800540000B;41181786000;54909048000;0;68636310000 'pagefile_cpagefilesys'=278000000B;;;0;17408000000
 .EXAMPLE
-    PS> Invoke-IcingaCheckMemory -WarningPercent 30 -CriticalPercent 50
-    [WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used
-    \_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"
-    | 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;8
-    1
+    PS> Invoke-IcingaCheckMemory -Verbosity 3 -Warning '50GB' -Critical '60GB'
+    [OK] Memory Usage (All must be [OK])
+    \_ [OK] PageFile Usage (All must be [OK])
+        \_ [OK] C:\pagefile.sys: 278MB
+    \_ [OK] Used Memory: 22.92GiB
+    | 'used_memory'=24605630000B;50000000000;60000000000;0;68636310000 'pagefile_cpagefilesys'=278000000B;;;0;17408000000
 .PARAMETER Warning
     Used to specify a Warning threshold. In this case an string value.
     The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"
