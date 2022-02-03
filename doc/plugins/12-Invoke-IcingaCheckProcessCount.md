@@ -53,7 +53,7 @@ Invoke-IcingaCheckProcessCount -Process conhost -Warning 5 -Critical 10
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckProcessCount -Process conhost,wininit -Warning 5 -Critical 10 -Verbosity 4
+Invoke-IcingaCheckProcessCount -Process conhost,wininit -Warning 5 -Critical 10 -Verbosity 3
 ```
 
 ### Example Output 2

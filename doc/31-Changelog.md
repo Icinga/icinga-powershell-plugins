@@ -23,6 +23,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ## Enhancements
 
 * [#143](https://github.com/Icinga/icinga-powershell-plugins/issues/143), [#220](https://github.com/Icinga/icinga-powershell-plugins/issues/220), [#256](https://github.com/Icinga/icinga-powershell-plugins/issues/256) Improves `Invoke-IcingaCheckUpdates`, splitting updates into different categories, allowing the check for the update count based on these categories `Microsoft Defender`, `Security Updates`, `Rollup Updates` and all `Other Updates`. The `-UpdateFilter` will only apply to the total update count, allowing additional customisation. By running the plugin with `-Verbosity 1`, it will now also print the list of the update names if the the thresholds are printing `Warning`, `Critical` or `Unknown`
+* [#204](https://github.com/Icinga/icinga-powershell-plugins/issues/204) Extends functionality of `Invoke-IcingaCheckDirectory` by allowing to monitor file counts, adding folder count to monitoring, different files sizes (total size, average, smallest file and largest file) and allows to print the entire file list fetched by the plugin
 * [#205](https://github.com/Icinga/icinga-powershell-plugins/issues/205) Adds new plugin `Invoke-IcingaCheckProcess` for detailed monitoring of running services for CPU, Memory, PageFile and ThreadCount usage and total running processes
 
 ## 1.7.0 (2021-11-09)

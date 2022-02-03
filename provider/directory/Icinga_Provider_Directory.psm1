@@ -3,9 +3,9 @@ Import-IcingaLib core\tools;
 function Get-IcingaDirectoryAll()
 {
     param(
-        [string]$Path,
-        [array]$FileNames,
-        [bool]$Recurse,
+        [string]$Path                = $null,
+        [array]$FileNames            = @( '*' ),
+        [switch]$Recurse             = $FALSE,
         [string]$ChangeTimeEqual,
         [string]$ChangeYoungerThan,
         [string]$ChangeOlderThan,
@@ -18,9 +18,21 @@ function Get-IcingaDirectoryAll()
 
     if ([string]::IsNullOrEmpty($Path)) {
         Exit-IcingaThrowException -Force -CustomMessage 'Unset argument "-Path"' -ExceptionType 'Configuration' -ExceptionThrown $IcingaExceptions.Configuration.PluginArgumentMissing;
+        return;
     }
 
-    if ($Recurse -eq $TRUE) {
+    [hashtable]$DirectoryCollector = @{
+        'FileList'     = $null;
+        'FileCount'    = 0;
+        'FolderCount'  = 0;
+        'TotalCount'   = 0;
+        'TotalSize'    = 0;
+        'LargestFile'  = 0;
+        'SmallestFile' = 0;
+        'AverageSize'  = 0;
+    }
+
+    if ($Recurse) {
         $DirectoryData = Get-IcingaDirectoryRecurse -Path $Path -FileNames $FileNames;
     } else {
         $DirectoryData = Get-IcingaDirectory -Path $Path -FileNames $FileNames;
@@ -37,16 +49,16 @@ function Get-IcingaDirectoryAll()
     If ([string]::IsNullOrEmpty($ChangeTimeEqual) -eq $TRUE -Or [string]::IsNullOrEmpty($CreationTimeEqual) -eq $TRUE) {
         if ([string]::IsNullOrEmpty($ChangeOlderThan) -eq $FALSE) {
             $DirectoryData = Get-IcingaDirectoryChangeOlderThan -ChangeOlderThan $ChangeOlderThan -DirectoryData $DirectoryData;
-        } 
+        }
         if ([string]::IsNullOrEmpty($ChangeYoungerThan) -eq $FALSE) {
             $DirectoryData = Get-IcingaDirectoryChangeYoungerThan -ChangeYoungerThan $ChangeYoungerThan -DirectoryData $DirectoryData;
         }
         if ([string]::IsNullOrEmpty($CreationOlderThan) -eq $FALSE) {
             $DirectoryData = Get-IcingaDirectoryCreationOlderThan -CreationOlderThan $CreationOlderThan -DirectoryData $DirectoryData;
-        } 
+        }
         if ([string]::IsNullOrEmpty($CreationYoungerThan) -eq $FALSE) {
             $DirectoryData = Get-IcingaDirectoryCreationYoungerThan -CreationYoungerThan $CreationYoungerThan -DirectoryData $DirectoryData;
-        } 
+        }
     }
     if ([string]::IsNullOrEmpty($FileSizeGreaterThan) -eq $FALSE) {
         $DirectoryData = (Get-IcingaDirectorySizeGreaterThan -FileSizeGreaterThan $FileSizeGreaterThan -DirectoryData $DirectoryData);
@@ -55,10 +67,32 @@ function Get-IcingaDirectoryAll()
         $DirectoryData = (Get-IcingaDirectorySizeSmallerThan -FileSizeSmallerThan $FileSizeSmallerThan -DirectoryData $DirectoryData);
     }
 
-    return $DirectoryData;
+    foreach ($entry in $DirectoryData) {
+        if ((Get-Item $entry.FullName) -Is [System.IO.DirectoryInfo]) {
+            $DirectoryCollector.FolderCount += 1;
+        } else {
+            $DirectoryCollector.FileCount += 1;
+
+            if ($DirectoryCollector.LargestFile -lt $entry.Length) {
+                $DirectoryCollector.LargestFile = $entry.Length;
+            }
+            if ($DirectoryCollector.SmallestFile -gt $entry.Length) {
+                $DirectoryCollector.SmallestFile = $entry.Length;
+            }
+        }
+
+        $DirectoryCollector.TotalSize += $entry.Length;
+    }
+
+    if ($DirectoryCollector.FileCount -ne 0) {
+        $DirectoryCollector.AverageSize = [Math]::Round(($DirectoryCollector.TotalSize / $DirectoryCollector.FileCount), 2);
+    }
+
+    $DirectoryCollector.TotalCount = $DirectoryCollector.FolderCount + $DirectoryCollector.FileCount;
+    $DirectoryCollector.FileList   = $DirectoryData;
+
+    return $DirectoryCollector;
 }
-
-
 
 # RECURSE
 

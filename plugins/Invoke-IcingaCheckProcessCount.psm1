@@ -25,7 +25,7 @@
     [OK]: Check package "Process Check" is [OK]
     | 'Process Count "conhost"'=3;;
 .EXAMPLE
-    PS>Invoke-IcingaCheckProcessCount -Process conhost,wininit -Warning 5 -Critical 10 -Verbosity 4
+    PS>Invoke-IcingaCheckProcessCount -Process conhost,wininit -Warning 5 -Critical 10 -Verbosity 3
     [OK]: Check package "Process Check" is [OK] (Match All)
         \_ [OK]: Process Count "conhost" is 3
         \_ [OK]: Process Count "wininit" is 1
