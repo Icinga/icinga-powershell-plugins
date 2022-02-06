@@ -203,7 +203,7 @@ function Invoke-IcingaCheckProcess()
         $ThreadCheck.WarnOutOfRange($TotalThreadCountWarning).CritOutOfRange($TotalThreadCountCritical) | Out-Null;
         $ProcessSummary.AddCheck($ThreadCheck);
 
-        $ProcessCheck = New-IcingaCheck -Name 'Process Count' -Value $ProcessData.PerformanceData.ThreadCount -Unit 'c' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_process_count', $processName.ToLower())));
+        $ProcessCheck = New-IcingaCheck -Name 'Process Count' -Value $ProcessData.ProcessList.Count -Unit 'c' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_process_count', $processName.ToLower())));
         $ProcessCheck.WarnOutOfRange($TotalProcessCountWarning).CritOutOfRange($TotalProcessCountCritical) | Out-Null;
         $ProcessSummary.AddCheck($ProcessCheck);
 
