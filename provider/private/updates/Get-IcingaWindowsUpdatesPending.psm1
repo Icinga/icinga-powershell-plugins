@@ -20,6 +20,10 @@ function Global:Get-IcingaWindowsUpdatesPending()
         $Pending = $SearchIndex.Search("IsInstalled=0");
         $PendingUpdates.Add('count', 0);
         $PendingUpdates.Add(
+            'RebootPending',
+            (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired")
+        );
+        $PendingUpdates.Add(
             'updates',
             @{
                 'security' = @{ };
