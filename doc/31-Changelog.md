@@ -19,6 +19,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#262](https://github.com/Icinga/icinga-powershell-plugins/pull/262) Fixes method NULL exception on empty EventLog entries for `Invoke-IcingaCheckEventLog`
 * [#271](https://github.com/Icinga/icinga-powershell-plugins/pull/271) Fixes JEA error which detected `ScriptBlocks` in the plugin collection
 * [#272](https://github.com/Icinga/icinga-powershell-plugins/pull/272) Fixes file encoding for `Invoke-IcingaCheckTimeSync` which was not UTF8 before, causing the JEA profile writer to ignore the file
+* [#274](https://github.com/Icinga/icinga-powershell-plugins/issues/274) Fixes `Invoke-IcingaCheckScheduledTask` for wildcard task names, which added the unknown package in case wildcards were used for task names
 
 ## Enhancements
 

@@ -37,7 +37,7 @@ function Get-IcingaScheduledTask()
     );
 
     foreach ($task in $TaskName) {
-        if ($task -eq '*') {
+        if ($task -eq '*' -or $task.Contains('*')) {
             continue;
         }
 
