@@ -44,11 +44,9 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 | [Invoke-IcingaCheckProcess](plugins/27-Invoke-IcingaCheckProcess.md) | A plugin to check thread, cpu, memory and pagefile usage for each single process |
 | [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md) | Checks how many processes of a process exist. |
 | [Invoke-IcingaCheckScheduledTask](plugins/19-Invoke-IcingaCheckScheduledTask.md) | Checks the current state for a list of specified tasks based on their name and prints the result |
-| [Invoke-IcingaCheckService](plugins/13-Invoke-IcingaCheckService.md) | Checks if defined services have a specific status or checks for all automatic services and if they are running
-and have not been terminated with exit code 0 |
+| [Invoke-IcingaCheckService](plugins/13-Invoke-IcingaCheckService.md) | Checks if defined services have a specific status or checks for all automatic services and if they are running and have not been terminated with exit code 0 |
 | [Invoke-IcingaCheckStoragePool](plugins/21-Invoke-IcingaCheckStoragePool.md) | Checks availability, utilization and state of a StoragePool. |
-| [Invoke-IcingaCheckTCP](plugins/23-Invoke-IcingaCheckTCP.md) | Checks the connection for an address and a range of ports and fetches the connection status
-including the time require to connect. |
+| [Invoke-IcingaCheckTCP](plugins/23-Invoke-IcingaCheckTCP.md) | Checks the connection for an address and a range of ports and fetches the connection status including the time require to connect. |
 | [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md) | Gets Network Time Protocol time(SMTP/NTP) from a specified server |
 | [Invoke-IcingaCheckUNCPath](plugins/24-Invoke-IcingaCheckUNCPath.md) | Checks a given path / unc path and determines the size of the volume including free space |
 | [Invoke-IcingaCheckUpdates](plugins/14-Invoke-IcingaCheckUpdates.md) | Checks how many updates are to be applied |
