@@ -56,7 +56,8 @@ Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
 ### Example Output 1
 
 ```powershell
-[OK]: Check package "Used Partition Space" is [OK]| 'Partition C'=8,06204986572266%;60;;0;100 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100
+[OK]: Check package "Used Partition Space" is [OK]
+| 'Partition C'=8,06204986572266%;60;;0;100 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100    
 ```
 
 ### Example Command 2
@@ -68,7 +69,8 @@ Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:"
 ### Example Output 2
 
 ```powershell
-[OK]: Check package "Used Partition Space" is [OK]| 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100
+[OK]: Check package "Used Partition Space" is [OK]
+| 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100    
 ```
 
 ### Example Command 3
@@ -80,5 +82,6 @@ Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:"
 ### Example Output 3
 
 ```powershell
-[OK]: Check package "Used Partition Space" is [OK]| 'Partition C'=8,06204986572266%;60;;0;100
+[OK]: Check package "Used Partition Space" is [OK]
+| 'Partition C'=8,06204986572266%;60;;0;100    
 ```

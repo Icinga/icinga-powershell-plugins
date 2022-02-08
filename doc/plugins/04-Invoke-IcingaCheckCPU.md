@@ -43,7 +43,8 @@ Invoke-IcingaCheckCPU -Warning 50 -Critical 75
 ### Example Output 1
 
 ```powershell
-[OK]: Check package "CPU Load" is [OK]| 'Core #0'=4,59%;50;75;0;100 'Core #1'=0,94%;50;75;0;100 'Core #2'=11,53%;50;75;0;100 'Core #3'=4,07%;50;75;0;100
+[OK]: Check package "CPU Load" is [OK]
+| 'Core #0'=4,59%;50;75;0;100 'Core #1'=0,94%;50;75;0;100 'Core #2'=11,53%;50;75;0;100 'Core #3'=4,07%;50;75;0;100    
 ```
 
 ### Example Command 2
@@ -55,5 +56,6 @@ Invoke-IcingaCheckCPU -Warning 50 -Critical 75 -Core 1
 ### Example Output 2
 
 ```powershell
-[OK]: Check package "CPU Load" is [OK]| 'Core #1'=2,61%;50;75;0;100
+[OK]: Check package "CPU Load" is [OK]
+| 'Core #1'=2,61%;50;75;0;100    
 ```

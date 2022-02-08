@@ -42,7 +42,8 @@ Invoke-IcingaCheckICMP -Hostname 'example.com';
 ### Example Output 1
 
 ```powershell
-[OK] Check package "ICMP Check for example.com"| 'packet_loss'=0%;;;0;100 'packet_count'=4c;; 'response_time'=113ms;;
+[OK] Check package "ICMP Check for example.com"
+| 'packet_loss'=0%;;;0;100 'packet_count'=4c;; 'response_time'=113ms;;    
 ```
 
 ### Example Command 2
@@ -54,7 +55,8 @@ Invoke-IcingaCheckICMP -Hostname 'example.com' -IPv4;
 ### Example Output 2
 
 ```powershell
-[OK] Check package "ICMP Check for example.com"| 'packet_loss'=0%;;;0;100 'packet_count'=4c;; 'response_time'=113ms;;
+[OK] Check package "ICMP Check for example.com"
+| 'packet_loss'=0%;;;0;100 'packet_count'=4c;; 'response_time'=113ms;;    
 ```
 
 ### Example Command 3
@@ -66,7 +68,8 @@ Invoke-IcingaCheckICMP -Hostname 'example.com' -IPv6;
 ### Example Output 3
 
 ```powershell
-[OK] Check package "ICMP Check for example.com"| 'packet_loss'=0%;;;0;100 'packet_count'=4c;; 'response_time'=113.5ms;;
+[OK] Check package "ICMP Check for example.com"
+| 'packet_loss'=0%;;;0;100 'packet_count'=4c;; 'response_time'=113.5ms;;    
 ```
 
 ### Example Command 4
@@ -78,5 +81,10 @@ Invoke-IcingaCheckICMP -Hostname 'example.com' -IPv4 -Warning 80 -Critical 100 -
 ### Example Output 4
 
 ```powershell
-[CRITICAL] Check package "ICMP Check for example.com" - [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "114ms" is greater than threshold "100ms"\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"| 'packet_loss'=0%;50;75;0;100 'packet_count'=4c;; 'response_time'=113.25ms;80;100
+[CRITICAL] Check package "ICMP Check for example.com" - [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes
+\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "114ms" is greater than threshold "100ms"
+\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"
+\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"
+\_ [CRITICAL] ICMP request to 93.184.216.34 with 1024 bytes: Value "113ms" is greater than threshold "100ms"
+| 'packet_loss'=0%;50;75;0;100 'packet_count'=4c;; 'response_time'=113.25ms;80;100    
 ```

@@ -49,7 +49,7 @@ Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
 ### Example Output 1
 
 ```powershell
-[WARNING]: % Memory Check 78.74 is greater than 60
+[WARNING]: % Memory Check 78.74 is greater than 60    
 ```
 
 ### Example Command 2
@@ -61,5 +61,8 @@ Invoke-IcingaCheckMemory -WarningPercent 30 -CriticalPercent 50
 ### Example Output 2
 
 ```powershell
-[WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used\_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"| 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;81
+[WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used
+\_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"
+| 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;8
+1    
 ```

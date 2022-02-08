@@ -56,7 +56,8 @@ Invoke-IcingaCheckProcess -Process 'msedge';
 ### Example Output 1
 
 ```powershell
-[OK] Process Overview: 1 Ok| 'msedge_process_count'=809c;; 'msedge_page_file_usage'=4611576B;;;0;9728 'msedge_cpu_usage'=5%;;;0;100 'msedge_thread_count'=809c;; 'msedge_memory_usage'=2335887000B;;;0;68636310000
+[OK] Process Overview: 1 Ok
+| 'msedge_process_count'=809c;; 'msedge_page_file_usage'=4611576B;;;0;9728 'msedge_cpu_usage'=5%;;;0;100 'msedge_thread_count'=809c;; 'msedge_memory_usage'=2335887000B;;;0;68636310000    
 ```
 
 ### Example Command 2
@@ -68,7 +69,15 @@ Invoke-IcingaCheckProcess -Process 'msedge' -CPUWarning '1%' -TotalCPUWarning '5
 ### Example Output 2
 
 ```powershell
-[WARNING] Process Overview: 1 Warning [WARNING] msedge\_ [WARNING] msedge\_ [WARNING] msedge [29508]\_ [WARNING] CPU Usage: 101.00% is greater than threshold 1%\_ [WARNING] msedge [55744]\_ [WARNING] CPU Usage: 96.00% is greater than threshold 1%\_ [WARNING] msedge Summary\_ [WARNING] CPU Usage: 197.00% is greater than threshold 5%| 'msedge_process_count'=946c;; 'msedge_page_file_usage'=4962844B;;;0;9728 'msedge_cpu_usage'=197%;5;;0;197 'msedge_thread_count'=946c;; 'msedge_memory_usage'=2743132000B;;;0;68636310000
+[WARNING] Process Overview: 1 Warning [WARNING] msedge
+\_ [WARNING] msedge
+    \_ [WARNING] msedge [29508]
+        \_ [WARNING] CPU Usage: 101.00% is greater than threshold 1%
+    \_ [WARNING] msedge [55744]
+        \_ [WARNING] CPU Usage: 96.00% is greater than threshold 1%
+    \_ [WARNING] msedge Summary
+        \_ [WARNING] CPU Usage: 197.00% is greater than threshold 5%
+| 'msedge_process_count'=946c;; 'msedge_page_file_usage'=4962844B;;;0;9728 'msedge_cpu_usage'=197%;5;;0;197 'msedge_thread_count'=946c;; 'msedge_memory_usage'=2743132000B;;;0;68636310000    
 ```
 
 ### Example Command 3
@@ -80,5 +89,9 @@ Invoke-IcingaCheckProcess -Process 'SearchIndexer' -MemoryWarning '0.1%';
 ### Example Output 3
 
 ```powershell
-[WARNING] Process Overview: 1 Warning [WARNING] SearchIndexer\_ [WARNING] SearchIndexer\_ [WARNING] SearchIndexer [16176]\_ [WARNING] Memory Usage: 0.58% (382.17MiB) is greater than threshold 0.1% (65.46MiB)| 'searchindexer_cpu_usage'=0%;;;0;100 'searchindexer_memory_usage'=400736300B;;;0;68636310000 'searchindexer_thread_count'=44c;; 'searchindexer_page_file_usage'=605704B;;;0;9728 'searchindexer_process_count'=44c;;
+[WARNING] Process Overview: 1 Warning [WARNING] SearchIndexer
+\_ [WARNING] SearchIndexer
+    \_ [WARNING] SearchIndexer [16176]
+        \_ [WARNING] Memory Usage: 0.58% (382.17MiB) is greater than threshold 0.1% (65.46MiB)
+| 'searchindexer_cpu_usage'=0%;;;0;100 'searchindexer_memory_usage'=400736300B;;;0;68636310000 'searchindexer_thread_count'=44c;; 'searchindexer_page_file_usage'=605704B;;;0;9728 'searchindexer_process_count'=44c;;    
 ```

@@ -79,5 +79,30 @@ Invoke-IcingaCheckDiskHealth  -DiskReadSecWarning 0 -DiskReadSecCritical 1 -Disk
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Physical Disk Package" (Match All)\_ [OK] Check package "Disk #_Total" (Match All) \_ [OK] _Total avg. disk queue length: 0.001748% \_ [OK] _Total avg. disk sec/read: 0s \_ [OK] _Total avg. disk sec/transfer: 0.000315s \_ [OK] _Total avg. disk sec/write: 0.000315s \_ [OK] _Total disk read bytes/sec: 0B \_ [OK] _Total disk reads/sec: 0 \_ [OK] _Total disk write bytes/sec: 125800.7B \_ [OK] _Total disk writes/sec: 5.025574\_ [OK] Check package "Disk #0" (Match All) \_ [OK] F: C: avg. disk queue length: 0.001751% \_ [OK] F: C: avg. disk sec/read: 0s \_ [OK] F: C: avg. disk sec/transfer: 0.000315s \_ [OK] F: C: avg. disk sec/write: 0.000315s \_ [OK] F: C: current disk queue length: 0 \_ [OK] F: C: disk read bytes/sec: 0B \_ [OK] F: C: disk reads/sec: 0 \_ [OK] F: C: disk write bytes/sec: 125814.7B \_ [OK] F: C: disk writes/sec: 5.018281 \_ [OK] F: C: Is Offline: False \_ [OK] F: C: Is ReadOnly: False \_ [OK] F: C: Operational Status: OK \_ [OK] F: C: Status: OK| 'f_c_avg_disk_sectransfer'=0.000315s;5;10 'f_c_disk_write_bytessec'=125814.7B;; 'f_c_avg_disk_secwrite'=0.000315s;; 'f_c_disk_read_bytessec'=0B;3000;5000 'f_c_avg_disk_secread'=0s;; 'f_c_disk_readssec'=0;0;1 'f_c_avg_disk_queue_length'=0.001751%;;;0;100 'f_c_current_disk_queue_length'=0;; 'f_c_disk_writessec'=5.018281;; '_total_disk_readssec'=0;0;1 '_total_disk_write_bytessec'=125800.7B;; '_total_avg_disk_sectransfer'=0.000315s;5;10 '_total_disk_read_bytessec'=0B;3000;5000 '_total_avg_disk_queue_length'=0.001748%;;;0;100 '_total_avg_disk_secread'=0s;; '_total_disk_writessec'=5.025574;; '_total_current_disk_queue_length'=0;; '_total_avg_disk_secwrite'=0.000315s;;0
+[OK] Check package "Physical Disk Package" (Match All)
+\_ [OK] Check package "Disk #_Total" (Match All)
+   \_ [OK] _Total avg. disk queue length: 0.001748%
+   \_ [OK] _Total avg. disk sec/read: 0s
+   \_ [OK] _Total avg. disk sec/transfer: 0.000315s
+   \_ [OK] _Total avg. disk sec/write: 0.000315s
+   \_ [OK] _Total disk read bytes/sec: 0B
+   \_ [OK] _Total disk reads/sec: 0
+   \_ [OK] _Total disk write bytes/sec: 125800.7B
+   \_ [OK] _Total disk writes/sec: 5.025574
+\_ [OK] Check package "Disk #0" (Match All)
+   \_ [OK] F: C: avg. disk queue length: 0.001751%
+   \_ [OK] F: C: avg. disk sec/read: 0s
+   \_ [OK] F: C: avg. disk sec/transfer: 0.000315s
+   \_ [OK] F: C: avg. disk sec/write: 0.000315s
+   \_ [OK] F: C: current disk queue length: 0
+   \_ [OK] F: C: disk read bytes/sec: 0B
+   \_ [OK] F: C: disk reads/sec: 0
+   \_ [OK] F: C: disk write bytes/sec: 125814.7B
+   \_ [OK] F: C: disk writes/sec: 5.018281
+   \_ [OK] F: C: Is Offline: False
+   \_ [OK] F: C: Is ReadOnly: False
+   \_ [OK] F: C: Operational Status: OK
+   \_ [OK] F: C: Status: OK
+| 'f_c_avg_disk_sectransfer'=0.000315s;5;10 'f_c_disk_write_bytessec'=125814.7B;; 'f_c_avg_disk_secwrite'=0.000315s;; 'f_c_disk_read_bytessec'=0B;3000;5000 'f_c_avg_disk_secread'=0s;; 'f_c_disk_readssec'=0;0;1 'f_c_avg_disk_queue_length'=0.001751%;;;0;100 'f_c_current_disk_queue_length'=0;; 'f_c_disk_writessec'=5.018281;; '_total_disk_readssec'=0;0;1 '_total_disk_write_bytessec'=125800.7B;; '_total_avg_disk_sectransfer'=0.000315s;5;10 '_total_disk_read_bytessec'=0B;3000;5000 '_total_avg_disk_queue_length'=0.001748%;;;0;100 '_total_avg_disk_secread'=0s;; '_total_disk_writessec'=5.025574;; '_total_current_disk_queue_length'=0;; '_total_avg_disk_secwrite'=0.000315s;;
+0    
 ```

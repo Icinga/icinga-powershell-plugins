@@ -45,7 +45,8 @@ Invoke-IcingaCheckService
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Services"| 'pending_paused_services'=0;; 'running_services'=80;; 'pending_continued_services'=0;; 'stopped_services'=5;; 'pending_started_services'=0;; 'service_count'=85;; 'pending_stopped_services'=0;; 'paused_services'=0;;
+[OK] Check package "Services"
+| 'pending_paused_services'=0;; 'running_services'=80;; 'pending_continued_services'=0;; 'stopped_services'=5;; 'pending_started_services'=0;; 'service_count'=85;; 'pending_stopped_services'=0;; 'paused_services'=0;;    
 ```
 
 ### Example Command 2
@@ -57,7 +58,10 @@ Invoke-IcingaCheckService -Service WiaRPC, Spooler -Status 'Running' -Verbosity 
 ### Example Output 2
 
 ```powershell
-[CRITICAL] Check package "Services" (Match All) - [CRITICAL] Service "Ereignisse zum Abrufen von Standbildern (WiaRPC)"\_ [OK] Service "Druckwarteschlange (Spooler)": Running\_ [CRITICAL] Service "Ereignisse zum Abrufen von Standbildern (WiaRPC)": Value "Stopped" is not matching threshold "Running"| 'pending_paused_services'=0;; 'running_services'=1;; 'pending_continued_services'=0;; 'stopped_services'=1;; 'pending_started_services'=0;; 'service_count'=2;; 'pending_stopped_services'=0;; 'paused_services'=0;; 'service_druckwarteschlange_spooler'=4;;4 'service_ereignisse_zum_abrufen_von_standbildern_wiarpc'=1;;4
+[CRITICAL] Check package "Services" (Match All) - [CRITICAL] Service "Ereignisse zum Abrufen von Standbildern (WiaRPC)"
+\_ [OK] Service "Druckwarteschlange (Spooler)": Running
+\_ [CRITICAL] Service "Ereignisse zum Abrufen von Standbildern (WiaRPC)": Value "Stopped" is not matching threshold "Running"
+| 'pending_paused_services'=0;; 'running_services'=1;; 'pending_continued_services'=0;; 'stopped_services'=1;; 'pending_started_services'=0;; 'service_count'=2;; 'pending_stopped_services'=0;; 'paused_services'=0;; 'service_druckwarteschlange_spooler'=4;;4 'service_ereignisse_zum_abrufen_von_standbildern_wiarpc'=1;;4    
 ```
 
 ### Example Command 3
@@ -69,7 +73,8 @@ Invoke-IcingaCheckService -Exclude icinga2
 ### Example Output 3
 
 ```powershell
-[OK] Check package "Services"| 'pending_paused_services'=0;; 'running_services'=80;; 'pending_continued_services'=0;; 'stopped_services'=5;; 'pending_started_services'=0;; 'service_count'=85;; 'pending_stopped_services'=0;; 'paused_services'=0;;
+[OK] Check package "Services"
+| 'pending_paused_services'=0;; 'running_services'=80;; 'pending_continued_services'=0;; 'stopped_services'=5;; 'pending_started_services'=0;; 'service_count'=85;; 'pending_stopped_services'=0;; 'paused_services'=0;;    
 ```
 
 ### Example Command 4
@@ -81,5 +86,9 @@ Invoke-IcingaCheckService -Service '*csv*'
 ### Example Output 4
 
 ```powershell
-[CRITICAL] Check package "Services" - [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)", Service "Windows-Ereignissammlung (Wecsvc)", Service "Windows-Sofortverbindung - Konfigurationsregistrierungsstelle (wcncsvc)"\_ [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)": Value "Stopped" is not matching threshold "Running"\_ [CRITICAL] Service "Windows-Ereignissammlung (Wecsvc)": Value "Stopped" is not matching threshold "Running"\_ [CRITICAL] Service "Windows-Sofortverbindung - Konfigurationsregistrierungsstelle (wcncsvc)": Value "Stopped" is not matching threshold "Running"| 'pending_paused_services'=0;; 'running_services'=4;; 'pending_continued_services'=0;; 'stopped_services'=3;; 'pending_started_services'=0;; 'service_count'=7;; 'pending_stopped_services'=0;; 'paused_services'=0;; 'service_sicherheitscenter_wscsvc'=4;;4 'service_volumetric_audio_compositordienst_vacsvc'=1;;4 'service_windowsereignissammlung_wecsvc'=1;;4 'service_synchronisierungshost_2c66e0_onesyncsvc_2c66e0'=4;;4 'service_windowssofortverbindung_konfigurationsregistrierungsstelle_wcncsvc'=1;;4 'service_windows_update_medic_service_waasmedicsvc'=4;;4 'service_microsoft_passport_ngcsvc'=4;;4
+[CRITICAL] Check package "Services" - [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)", Service "Windows-Ereignissammlung (Wecsvc)", Service "Windows-Sofortverbindung - Konfigurationsregistrierungsstelle (wcncsvc)"
+\_ [CRITICAL] Service "Volumetric Audio Compositor-Dienst (VacSvc)": Value "Stopped" is not matching threshold "Running"
+\_ [CRITICAL] Service "Windows-Ereignissammlung (Wecsvc)": Value "Stopped" is not matching threshold "Running"
+\_ [CRITICAL] Service "Windows-Sofortverbindung - Konfigurationsregistrierungsstelle (wcncsvc)": Value "Stopped" is not matching threshold "Running"
+| 'pending_paused_services'=0;; 'running_services'=4;; 'pending_continued_services'=0;; 'stopped_services'=3;; 'pending_started_services'=0;; 'service_count'=7;; 'pending_stopped_services'=0;; 'paused_services'=0;; 'service_sicherheitscenter_wscsvc'=4;;4 'service_volumetric_audio_compositordienst_vacsvc'=1;;4 'service_windowsereignissammlung_wecsvc'=1;;4 'service_synchronisierungshost_2c66e0_onesyncsvc_2c66e0'=4;;4 'service_windowssofortverbindung_konfigurationsregistrierungsstelle_wcncsvc'=1;;4 'service_windows_update_medic_service_waasmedicsvc'=4;;4 'service_microsoft_passport_ngcsvc'=4;;4    
 ```

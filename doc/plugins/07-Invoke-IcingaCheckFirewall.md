@@ -34,7 +34,9 @@ Invoke-IcingaCheckFirewall -Profile "Domain" -Verbosity 3
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Firewall profiles" (Match All)\_ [OK] Firewall Profile Domain is True| 'firewall_profile_domain'=True;;
+[OK] Check package "Firewall profiles" (Match All)
+\_ [OK] Firewall Profile Domain is True
+| 'firewall_profile_domain'=True;;    
 ```
 
 ### Example Command 2
@@ -46,5 +48,6 @@ Invoke-IcingaCheckFirewall -Profile "Domain", "Private" -Verbosity 1}
 ### Example Output 2
 
 ```powershell
-[OK] Check package "Firewall profiles" (Match All)| 'firewall_profile_domain'=True;; 'firewall_profile_private'=True;;
+[OK] Check package "Firewall profiles" (Match All)
+| 'firewall_profile_domain'=True;; 'firewall_profile_private'=True;;    
 ```

@@ -58,7 +58,27 @@ Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warni
 ### Example Output 1
 
 ```powershell
-[CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)." \_ [WARNING] EventId 2002: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occurred 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occurred 391 event(s)." \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occurred 391 event(s)." \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 15:51:00] - [17.08.2020 19:41:00] there occurred 298 event(s)." \_ [WARNING] EventId 642: Value "298" is greater than threshold "100"\_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occurred 3539 event(s)." \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"\_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occurred 3539 event(s)." \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"\_ [CRITICAL] Check package "Between: [17.08.2020 20:03:07] - [27.08.2020 09:56:35] there occurred 2757 event(s)." \_ [CRITICAL] EventId 642: Value "2757" is greater than threshold "1000"
+[CRITICAL] Check package "EventLog" - [CRITICAL] EventId 642 [WARNING] EventId 1008, EventId 2002, EventId 642
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
+   \_ [WARNING] EventId 2002: Value "242" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
+   \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
+   \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occurred 242 event(s)."
+   \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occurred 391 event(s)."
+   \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 14:50:37] - [17.08.2020 19:41:00] there occurred 391 event(s)."
+   \_ [WARNING] EventId 642: Value "391" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 15:51:00] - [17.08.2020 19:41:00] there occurred 298 event(s)."
+   \_ [WARNING] EventId 642: Value "298" is greater than threshold "100"
+\_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occurred 3539 event(s)."
+   \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"
+\_ [CRITICAL] Check package "Between: [17.08.2020 19:56:38] - [27.08.2020 09:56:35] there occurred 3539 event(s)."
+   \_ [CRITICAL] EventId 642: Value "3539" is greater than threshold "1000"
+\_ [CRITICAL] Check package "Between: [17.08.2020 20:03:07] - [27.08.2020 09:56:35] there occurred 2757 event(s)."
+   \_ [CRITICAL] EventId 642: Value "2757" is greater than threshold "1000"    
 ```
 
 ### Example Command 2
@@ -70,5 +90,12 @@ Invoke-IcingaCheckEventlog -LogName Application -IncludeEntryType Warning -Warni
 ### Example Output 2
 
 ```powershell
-[WARNING] Check package "EventLog" - [WARNING] EventId 1008\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"\_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occurred 242 event(s)." \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"| 'eventid_1008'=726c;;
+[WARNING] Check package "EventLog" - [WARNING] EventId 1008
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
+   \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:35] - [27.08.2020 22:57:39] there occurred 242 event(s)."
+   \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
+\_ [WARNING] Check package "Between: [16.08.2020 09:31:36] - [27.08.2020 22:57:40] there occurred 242 event(s)."
+   \_ [WARNING] EventId 1008: Value "242" is greater than threshold "100"
+| 'eventid_1008'=726c;;    
 ```

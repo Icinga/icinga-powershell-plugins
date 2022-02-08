@@ -36,5 +36,16 @@ icinga { Invoke-IcingaCheckMPIO -Verbosity 3 }
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Multipath-IO Package" (Match All)\_ [OK] Check package "HostName Package" (Match All) \_ [OK] HostName Active: True \_ [OK] Check package "HostName Drivers Package" (Match All)\_ [OK] MPIO DISK0 Number Paths: 8c\_ [OK] MPIO DISK1 Number Paths: 8c\_ [OK] MPIO DISK2 Number Paths: 8c\_ [OK] MPIO DISK3 Number Paths: 8c\_ [OK] MPIO DISK4 Number Paths: 8c \_ [OK] HostName NumberDrives: 5c| 'hostname_numberdrives'=5c;; 'mpio_disk0_number_paths'=8c;; 'mpio_disk3_number_paths'=8c;; 'mpio_disk4_number_paths'=8c;; 'mpio_disk2_number_paths'=8c;; 'mpio_disk1_number_paths'=8c;;0
+[OK] Check package "Multipath-IO Package" (Match All)
+\_ [OK] Check package "HostName Package" (Match All)
+   \_ [OK] HostName Active: True
+   \_ [OK] Check package "HostName Drivers Package" (Match All)
+      \_ [OK] MPIO DISK0 Number Paths: 8c
+      \_ [OK] MPIO DISK1 Number Paths: 8c
+      \_ [OK] MPIO DISK2 Number Paths: 8c
+      \_ [OK] MPIO DISK3 Number Paths: 8c
+      \_ [OK] MPIO DISK4 Number Paths: 8c
+   \_ [OK] HostName NumberDrives: 5c
+| 'hostname_numberdrives'=5c;; 'mpio_disk0_number_paths'=8c;; 'mpio_disk3_number_paths'=8c;; 'mpio_disk4_number_paths'=8c;; 'mpio_disk2_number_paths'=8c;; 'mpio_disk1_number_paths'=8c;;
+0    
 ```
