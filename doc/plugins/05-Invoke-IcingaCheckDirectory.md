@@ -58,7 +58,14 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 ### Example Output 1
 
 ```powershell
-[CRITICAL] Directory Check: "C:\Users\Icinga\Downloads": 1 Critical 5 Ok [CRITICAL] File Count (33) (All must be [OK])\_ [OK] Average File Size: 76.94MiB\_ [CRITICAL] File Count: 33 is greater than threshold 30\_ [OK] Folder Count: 1\_ [OK] Largest File Size: 1.07GiB\_ [OK] Smallest File Size: 0B\_ [OK] Total Size: 2.48GiB| 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;
+[CRITICAL] Directory Check: "C:\Users\Icinga\Downloads": 1 Critical 5 Ok [CRITICAL] File Count (33) (All must be [OK])
+\_ [OK] Average File Size: 76.94MiB
+\_ [CRITICAL] File Count: 33 is greater than threshold 30
+\_ [OK] Folder Count: 1
+\_ [OK] Largest File Size: 1.07GiB
+\_ [OK] Smallest File Size: 0B
+\_ [OK] Total Size: 2.48GiB
+| 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;    
 ```
 
 ### Example Command 2
@@ -70,7 +77,14 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 ### Example Output 2
 
 ```powershell
-[WARNING] Directory Check: "C:\Users\Icinga\Downloads": 1 Warning 5 Ok [WARNING] File Count (22) (All must be [OK])\_ [OK] Average File Size: 738.29KiB\_ [WARNING] File Count: 22 is greater than threshold 20\_ [OK] Folder Count: 0\_ [OK] Largest File Size: 4.23MiB\_ [OK] Smallest File Size: 0B\_ [OK] Total Size: 15.86MiB| 'average_file_size'=756008B;; 'folder_count'=0;; 'total_size'=16632180B;; 'largest_file_size'=4439043B;; 'file_count'=22;20;30 'smallest_file_size'=0B;;
+[WARNING] Directory Check: "C:\Users\Icinga\Downloads": 1 Warning 5 Ok [WARNING] File Count (22) (All must be [OK])
+\_ [OK] Average File Size: 738.29KiB
+\_ [WARNING] File Count: 22 is greater than threshold 20
+\_ [OK] Folder Count: 0
+\_ [OK] Largest File Size: 4.23MiB
+\_ [OK] Smallest File Size: 0B
+\_ [OK] Total Size: 15.86MiB
+| 'average_file_size'=756008B;; 'folder_count'=0;; 'total_size'=16632180B;; 'largest_file_size'=4439043B;; 'file_count'=22;20;30 'smallest_file_size'=0B;;    
 ```
 
 ### Example Command 3
@@ -82,7 +96,14 @@ Invoke-IcingaCheckDirectory -Path "C:\Users\Icinga\Downloads" -Warning 20 -Criti
 ### Example Output 3
 
 ```powershell
-[OK] Directory Check: "C:\Users\Icinga\Downloads": 6 Ok (All must be [OK])\_ [OK] Average File Size: 359.40MiB\_ [OK] File Count: 7\_ [OK] Folder Count: 1\_ [OK] Largest File Size: 1.07GiB\_ [OK] Smallest File Size: 0B\_ [OK] Total Size: 2.46GiB| 'average_file_size'=376853700B;; 'folder_count'=1;; 'total_size'=2637976000B;; 'largest_file_size'=1149023000B;; 'file_count'=7;20;30 'smallest_file_size'=0B;;
+[OK] Directory Check: "C:\Users\Icinga\Downloads": 6 Ok (All must be [OK])
+\_ [OK] Average File Size: 359.40MiB
+\_ [OK] File Count: 7
+\_ [OK] Folder Count: 1
+\_ [OK] Largest File Size: 1.07GiB
+\_ [OK] Smallest File Size: 0B
+\_ [OK] Total Size: 2.46GiB
+| 'average_file_size'=376853700B;; 'folder_count'=1;; 'total_size'=2637976000B;; 'largest_file_size'=1149023000B;; 'file_count'=7;20;30 'smallest_file_size'=0B;;    
 ```
 
 ### Example Command 4
@@ -94,7 +115,14 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 ### Example Output 4
 
 ```powershell
-[OK] Directory Check: "C:\Users\Icinga\Downloads": 6 Ok (All must be [OK])\_ [OK] Average File Size: 210.57MiB\_ [OK] File Count: 12\_ [OK] Folder Count: 0\_ [OK] Largest File Size: 1.07GiB\_ [OK] Smallest File Size: 0B\_ [OK] Total Size: 2.47GiB| 'average_file_size'=220801200B;; 'folder_count'=0;; 'total_size'=2649615000B;; 'largest_file_size'=1149023000B;; 'file_count'=12;20;30 'smallest_file_size'=0B;;
+[OK] Directory Check: "C:\Users\Icinga\Downloads": 6 Ok (All must be [OK])
+\_ [OK] Average File Size: 210.57MiB
+\_ [OK] File Count: 12
+\_ [OK] Folder Count: 0
+\_ [OK] Largest File Size: 1.07GiB
+\_ [OK] Smallest File Size: 0B
+\_ [OK] Total Size: 2.47GiB
+| 'average_file_size'=220801200B;; 'folder_count'=0;; 'total_size'=2649615000B;; 'largest_file_size'=1149023000B;; 'file_count'=12;20;30 'smallest_file_size'=0B;;    
 ```
 
 ### Example Command 5
@@ -106,5 +134,8 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 ### Example Output 5
 
 ```powershell
-[CRITICAL] Directory Check: "C:\Users\Icinga\Downloads": 1 Critical 1 Warning 4 Ok [CRITICAL] File Count (33) [WARNING] Total Size (2.48GiB)\_ [CRITICAL] File Count: 33 is greater than threshold 30\_ [WARNING] Total Size: 2.48GiB is greater than threshold 2.00GiB| 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;2147484000; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;
+[CRITICAL] Directory Check: "C:\Users\Icinga\Downloads": 1 Critical 1 Warning 4 Ok [CRITICAL] File Count (33) [WARNING] Total Size (2.48GiB)
+\_ [CRITICAL] File Count: 33 is greater than threshold 30
+\_ [WARNING] Total Size: 2.48GiB is greater than threshold 2.00GiB
+| 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;2147484000; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;    
 ```

@@ -32,7 +32,9 @@ Invoke-IcingaCheckNLA -Profile "DomainAuthenticated" -Verbosity 3;
 ### Example Output 1
 
 ```powershell
-[CRITICAL] Check package "NLA" (Match All) - [CRITICAL] NLA for vEthernet (DockerNAT)\_ [OK] NLA for Ethernet 4: DomainAuthenticated\_ [CRITICAL] NLA for vEthernet (DockerNAT): Value "Public" is not matching threshold "DomainAuthenticated"
+[CRITICAL] Check package "NLA" (Match All) - [CRITICAL] NLA for vEthernet (DockerNAT)
+\_ [OK] NLA for Ethernet 4: DomainAuthenticated
+\_ [CRITICAL] NLA for vEthernet (DockerNAT): Value "Public" is not matching threshold "DomainAuthenticated"    
 ```
 
 ### Example Command 2
@@ -44,5 +46,5 @@ Invoke-IcingaCheckNLA -Profile "DomainAuthenticated" -NICs "Ethernet 1" -Verbosi
 ### Example Output 2
 
 ```powershell
-[OK] Check package "NLA" (Match All)
+[OK] Check package "NLA" (Match All)    
 ```
