@@ -42,7 +42,10 @@ Invoke-IcingaCheckTCP -Address 'example.com' -Ports 443, 80, 5665, 3001;
 ### Example Output 1
 
 ```powershell
-[CRITICAL] Check package "TCP Connections" - [CRITICAL] example.com:3001 Status \_ [CRITICAL] Check package "example.com:3001" \_ [CRITICAL] example.com:3001 Status: Value "Not Connected" is not matching threshold "Connected" | 'port_80_time'=0.029526s;; 'port_80_status'=1;;1 'port_5665_status'=1;;1 'port_5665_time'=0.012666s;; 'port_3001_status'=0;;1 'port_3001_time'=21.041116s;; 'port_443_time'=0.353218s;; 'port_443_status'=1;;1
+[CRITICAL] Check package "TCP Connections" - [CRITICAL] example.com:3001 Status
+ \_ [CRITICAL] Check package "example.com:3001"
+     \_ [CRITICAL] example.com:3001 Status: Value "Not Connected" is not matching threshold "Connected"
+ | 'port_80_time'=0.029526s;; 'port_80_status'=1;;1 'port_5665_status'=1;;1 'port_5665_time'=0.012666s;; 'port_3001_status'=0;;1 'port_3001_time'=21.041116s;; 'port_443_time'=0.353218s;; 'port_443_status'=1;;1    
 ```
 
 ### Example Command 2
@@ -54,7 +57,14 @@ Invoke-IcingaCheckTCP -Address 'example.com' -Ports 443, 80, 5665, 3001 -Negate;
 ### Example Output 2
 
 ```powershell
-[CRITICAL] Check package "TCP Connections" - [CRITICAL] example.com:443 Status, example.com:5665 Status, example.com:80 Status\_ [CRITICAL] Check package "example.com:443"\_ [CRITICAL] example.com:443 Status: Value "Connected" is not matching threshold "Not Connected"\_ [CRITICAL] Check package "example.com:5665"\_ [CRITICAL] example.com:5665 Status: Value "Connected" is not matching threshold "Not Connected"\_ [CRITICAL] Check package "example.com:80"\_ [CRITICAL] example.com:80 Status: Value "Connected" is not matching threshold "Not Connected"| 'port_80_time'=0.017343s;; 'port_80_status'=1;;0 'port_5665_status'=1;;0 'port_5665_time'=0.013514s;; 'port_3001_status'=0;;0 'port_3001_time'=21.039489s;; 'port_443_time'=0.332817s;; 'port_443_status'=1;;0
+[CRITICAL] Check package "TCP Connections" - [CRITICAL] example.com:443 Status, example.com:5665 Status, example.com:80 Status
+\_ [CRITICAL] Check package "example.com:443"
+    \_ [CRITICAL] example.com:443 Status: Value "Connected" is not matching threshold "Not Connected"
+\_ [CRITICAL] Check package "example.com:5665"
+    \_ [CRITICAL] example.com:5665 Status: Value "Connected" is not matching threshold "Not Connected"
+\_ [CRITICAL] Check package "example.com:80"
+    \_ [CRITICAL] example.com:80 Status: Value "Connected" is not matching threshold "Not Connected"
+| 'port_80_time'=0.017343s;; 'port_80_status'=1;;0 'port_5665_status'=1;;0 'port_5665_time'=0.013514s;; 'port_3001_status'=0;;0 'port_3001_time'=21.039489s;; 'port_443_time'=0.332817s;; 'port_443_status'=1;;0    
 ```
 
 ### Example Command 3
@@ -66,5 +76,11 @@ Invoke-IcingaCheckTCP -Address 'example.com' -Ports 443, 80, 5665, 3001 -Warning
 ### Example Output 3
 
 ```powershell
-[CRITICAL] Check package "TCP Connections" - [CRITICAL] example.com:3001 Status, example.com:3001 Time, example.com:443 Time\_ [CRITICAL] Check package "example.com:3001"\_ [CRITICAL] example.com:3001 Status: Value "Not Connected" is not matching threshold "Connected"\_ [CRITICAL] example.com:3001 Time: Value "21.038106s" is greater than threshold "0.2s"\_ [CRITICAL] Check package "example.com:443"\_ [CRITICAL] example.com:443 Time: Value "0.249976s" is greater than threshold "0.2s"| 'port_80_time'=0.017512s;0.1;0.2 'port_80_status'=1;;1 'port_5665_status'=1;;1 'port_5665_time'=0.013497s;0.1;0.2 'port_3001_status'=0;;1 'port_3001_time'=21.038106s;0.1;0.2 'port_443_time'=0.249976s;0.1;0.2 'port_443_status'=1;;1
+[CRITICAL] Check package "TCP Connections" - [CRITICAL] example.com:3001 Status, example.com:3001 Time, example.com:443 Time
+\_ [CRITICAL] Check package "example.com:3001"
+    \_ [CRITICAL] example.com:3001 Status: Value "Not Connected" is not matching threshold "Connected"
+    \_ [CRITICAL] example.com:3001 Time: Value "21.038106s" is greater than threshold "0.2s"
+\_ [CRITICAL] Check package "example.com:443"
+    \_ [CRITICAL] example.com:443 Time: Value "0.249976s" is greater than threshold "0.2s"
+| 'port_80_time'=0.017512s;0.1;0.2 'port_80_status'=1;;1 'port_5665_status'=1;;1 'port_5665_time'=0.013497s;0.1;0.2 'port_3001_status'=0;;1 'port_3001_time'=21.038106s;0.1;0.2 'port_443_time'=0.249976s;0.1;0.2 'port_443_status'=1;;1    
 ```

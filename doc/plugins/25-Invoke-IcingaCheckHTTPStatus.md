@@ -47,7 +47,12 @@ Invoke-IcingaCheckHTTPStatus -URL https://icinga.com -StatusCode 200,105 -Conten
 ### Example Output 1
 
 ```powershell
-[OK] Check package "HTTP Status Check" (Match All)\_ [OK] Check package "HTTP Content Check" () \_ [OK] HTTP Content "Test": True \_ [OK] HTTP Response Time: 0.508972s \_ [OK] HTTP Status Code: 200| 'http_content_test'=1;; 'http_response_time'=0.508972s;1; 'http_status'=200;; 'http_content_size'=47917B;;
+[OK] Check package "HTTP Status Check" (Match All)
+\_ [OK] Check package "HTTP Content Check" ()
+   \_ [OK] HTTP Content "Test": True
+   \_ [OK] HTTP Response Time: 0.508972s
+   \_ [OK] HTTP Status Code: 200
+| 'http_content_test'=1;; 'http_response_time'=0.508972s;1; 'http_status'=200;; 'http_content_size'=47917B;;    
 ```
 
 ### Example Command 2
@@ -59,5 +64,10 @@ Invoke-IcingaCheckHTTPStatus -URL https://icinga.com -StatusCode 200,105 -Conten
 ### Example Output 2
 
 ```powershell
-[OK] Check package "HTTP Status Check" (Match All)\_ [OK] Check package "HTTP Content Check" ()\_ [CRITICAL] HTTP Content "FooBar" \_ [OK] HTTP Response Time: 0.251071s \_ [OK] HTTP Status Code: 200| 'http_content_foobar'=0;; 'http_response_time'=0.251071s;1; 'http_status'=200;; 'http_content_size'=89970B;;
+[OK] Check package "HTTP Status Check" (Match All)
+\_ [OK] Check package "HTTP Content Check" ()
+\_ [CRITICAL] HTTP Content "FooBar"
+   \_ [OK] HTTP Response Time: 0.251071s
+   \_ [OK] HTTP Status Code: 200
+| 'http_content_foobar'=0;; 'http_response_time'=0.251071s;1; 'http_status'=200;; 'http_content_size'=89970B;;    
 ```

@@ -39,7 +39,9 @@ Invoke-IcingaCheckUsers -Warning 8 -Critical 15
 ### Example Output 1
 
 ```powershell
-[WARNING] Check package "Users" - [WARNING] Logged On Users\_ [WARNING] Logged On Users: Value "13" is greater than threshold "8"| 'logged_on_users'=13;8;15 'logged_on_users_test'=5;; 'logged_on_users_umfd0'=1;; 'logged_on_users_dwm1'=2;; 'logged_on_users_system'=1;; 'logged_on_users_dwm2'=2;; 'logged_on_users_umfd1'=1;; 'logged_on_users_umfd2'=1;;
+[WARNING] Check package "Users" - [WARNING] Logged On Users
+\_ [WARNING] Logged On Users: Value "13" is greater than threshold "8"
+| 'logged_on_users'=13;8;15 'logged_on_users_test'=5;; 'logged_on_users_umfd0'=1;; 'logged_on_users_dwm1'=2;; 'logged_on_users_system'=1;; 'logged_on_users_dwm2'=2;; 'logged_on_users_umfd1'=1;; 'logged_on_users_umfd2'=1;;    
 ```
 
 ### Example Command 2
@@ -51,5 +53,7 @@ Invoke-IcingaCheckUsers -Username 'astoll' -Warning 8 -Critical 15
 ### Example Output 2
 
 ```powershell
-[OK] Check package "Users"| 'logged_on_users_test'=5;8;150
+[OK] Check package "Users"
+| 'logged_on_users_test'=5;8;15
+0    
 ```

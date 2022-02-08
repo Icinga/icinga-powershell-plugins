@@ -42,7 +42,8 @@ Invoke-IcingaCheckScheduledTask -TaskName 'AutomaticBackup', 'Windows Backup Mon
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Scheduled Tasks"| 'automaticbackup_microsoftwindowswindowsbackup'=Ready;;Ready 'windows_backup_monitor_microsoftwindowswindowsbackup'=Ready;;Ready
+[OK] Check package "Scheduled Tasks"
+| 'automaticbackup_microsoftwindowswindowsbackup'=Ready;;Ready 'windows_backup_monitor_microsoftwindowswindowsbackup'=Ready;;Ready    
 ```
 
 ### Example Command 2
@@ -54,5 +55,9 @@ Invoke-IcingaCheckScheduledTask -TaskName 'AutomaticBackup', 'Windows Backup Mon
 ### Example Output 2
 
 ```powershell
-[CRITICAL] Check package "Scheduled Tasks" - [CRITICAL] AutomaticBackup (\Microsoft\Windows\WindowsBackup\), Windows Backup Monitor (\Microsoft\Windows\WindowsBackup\)\_ [CRITICAL] Check package "\Microsoft\Windows\WindowsBackup\"\_ [CRITICAL] AutomaticBackup (\Microsoft\Windows\WindowsBackup\): Value "Ready" is not matching threshold "Disabled"\_ [CRITICAL] Windows Backup Monitor (\Microsoft\Windows\WindowsBackup\): Value "Ready" is not matching threshold "Disabled"| 'automaticbackup_microsoftwindowswindowsbackup'=Ready;;Disabled 'windows_backup_monitor_microsoftwindowswindowsbackup'=Ready;;Disabled
+[CRITICAL] Check package "Scheduled Tasks" - [CRITICAL] AutomaticBackup (\Microsoft\Windows\WindowsBackup\), Windows Backup Monitor (\Microsoft\Windows\WindowsBackup\)
+\_ [CRITICAL] Check package "\Microsoft\Windows\WindowsBackup\"
+    \_ [CRITICAL] AutomaticBackup (\Microsoft\Windows\WindowsBackup\): Value "Ready" is not matching threshold "Disabled"
+    \_ [CRITICAL] Windows Backup Monitor (\Microsoft\Windows\WindowsBackup\): Value "Ready" is not matching threshold "Disabled"
+| 'automaticbackup_microsoftwindowswindowsbackup'=Ready;;Disabled 'windows_backup_monitor_microsoftwindowswindowsbackup'=Ready;;Disabled    
 ```

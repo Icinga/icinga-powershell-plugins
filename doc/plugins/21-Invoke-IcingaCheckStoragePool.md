@@ -52,5 +52,19 @@ icinga { Invoke-IcingaCheckStoragePool -Verbosity 2 }
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Storage Pools Package" (Match All)\_ [OK] Check package "StoragePool1" (Match All) \_ [OK] StoragePool1: Capacity: 18.97GB \_ [OK] StoragePool1: Clear OnDeallocate: False \_ [OK] StoragePool1: FreeSpace: 18.47GB \_ [OK] StoragePool1: Health Status: Healthy \_ [OK] StoragePool1: Is PowerProtected: False \_ [OK] StoragePool1: Is ReadOnly: False \_ [OK] StoragePool1: Operational Status: OK \_ [OK] StoragePool1: RetireMissingPhysicalDisks: Auto \_ [OK] StoragePool1: Supports Deduplication: True \_ [OK] StoragePool1: TotalUsed: 0.5GB \_ [OK] StoragePool1: Usage: Other| 'storagepool1_totalused'=0.5GB;; 'storagepool1_capacity'=18.97GB;; 'storagepool1_freespace'=18.47GB;;0
+[OK] Check package "Storage Pools Package" (Match All)
+\_ [OK] Check package "StoragePool1" (Match All)
+   \_ [OK] StoragePool1: Capacity: 18.97GB
+   \_ [OK] StoragePool1: Clear OnDeallocate: False
+   \_ [OK] StoragePool1: FreeSpace: 18.47GB
+   \_ [OK] StoragePool1: Health Status: Healthy
+   \_ [OK] StoragePool1: Is PowerProtected: False
+   \_ [OK] StoragePool1: Is ReadOnly: False
+   \_ [OK] StoragePool1: Operational Status: OK
+   \_ [OK] StoragePool1: RetireMissingPhysicalDisks: Auto
+   \_ [OK] StoragePool1: Supports Deduplication: True
+   \_ [OK] StoragePool1: TotalUsed: 0.5GB
+   \_ [OK] StoragePool1: Usage: Other
+| 'storagepool1_totalused'=0.5GB;; 'storagepool1_capacity'=18.97GB;; 'storagepool1_freespace'=18.47GB;;
+0    
 ```

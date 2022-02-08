@@ -47,7 +47,8 @@ Invoke-IcingaCheckProcessCount -Process conhost -Warning 5 -Critical 10
 ### Example Output 1
 
 ```powershell
-[OK]: Check package "Process Check" is [OK]| 'Process Count "conhost"'=3;;
+[OK]: Check package "Process Check" is [OK]
+| 'Process Count "conhost"'=3;;    
 ```
 
 ### Example Command 2
@@ -59,5 +60,8 @@ Invoke-IcingaCheckProcessCount -Process conhost,wininit -Warning 5 -Critical 10 
 ### Example Output 2
 
 ```powershell
-[OK]: Check package "Process Check" is [OK] (Match All)\_ [OK]: Process Count "conhost" is 3\_ [OK]: Process Count "wininit" is 1| 'Process Count "conhost"'=3;5;10 'Process Count "wininit"'=1;5;10
+[OK]: Check package "Process Check" is [OK] (Match All)
+    \_ [OK]: Process Count "conhost" is 3
+    \_ [OK]: Process Count "wininit" is 1
+| 'Process Count "conhost"'=3;5;10 'Process Count "wininit"'=1;5;10    
 ```

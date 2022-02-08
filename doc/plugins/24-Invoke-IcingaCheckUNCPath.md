@@ -47,7 +47,9 @@ icinga { Invoke-IcingaCheckUNCPath -Path '\\example.com\Shares\Icinga' -Critical
 ### Example Output 1
 
 ```powershell
-[CRITICAL] Check package "\\example.com\Shares\Icinga Share" (Match All) - [CRITICAL] Free Space\_ [CRITICAL] Free Space: Value "5105899364352B" is lower than threshold "20000000000000B"| 'share_free_bytes'=5105899364352B;;20000000000000: 'total_free_bytes'=5105899364352B;; 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;;0;100
+[CRITICAL] Check package "\\example.com\Shares\Icinga Share" (Match All) - [CRITICAL] Free Space
+    \_ [CRITICAL] Free Space: Value "5105899364352B" is lower than threshold "20000000000000B"
+| 'share_free_bytes'=5105899364352B;;20000000000000: 'total_free_bytes'=5105899364352B;; 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;;0;100    
 ```
 
 ### Example Command 2
@@ -59,7 +61,9 @@ icinga { Invoke-IcingaCheckUNCPath -Path '\\example.com\Shares\Icinga' -Critical
 ### Example Output 2
 
 ```powershell
-[CRITICAL] Check package "\\example.com\Shares\Icinga Share" - [CRITICAL] Free %\_ [CRITICAL] Free %: Value "22.18%" is lower than threshold "40%"| 'share_free_bytes'=5105899343872B;; 'total_free_bytes'=5105899343872B;; 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;40:;0;100
+[CRITICAL] Check package "\\example.com\Shares\Icinga Share" - [CRITICAL] Free %
+    \_ [CRITICAL] Free %: Value "22.18%" is lower than threshold "40%"
+| 'share_free_bytes'=5105899343872B;; 'total_free_bytes'=5105899343872B;; 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;40:;0;100    
 ```
 
 ### Example Command 3
@@ -71,7 +75,9 @@ icinga { Invoke-IcingaCheckUNCPath -Path '\\example.com\Shares\Icinga' -Critical
 ### Example Output 3
 
 ```powershell
-[CRITICAL] Check package "\\example.com\Shares\Icinga Share" - [CRITICAL] Total Free\_ [CRITICAL] Total Free: Value "5105899315200B" is lower than threshold "20000000000000B"| 'share_free_bytes'=5105899315200B;; 'total_free_bytes'=5105899315200B;;20000000000000: 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;;0;100
+[CRITICAL] Check package "\\example.com\Shares\Icinga Share" - [CRITICAL] Total Free
+    \_ [CRITICAL] Total Free: Value "5105899315200B" is lower than threshold "20000000000000B"
+| 'share_free_bytes'=5105899315200B;; 'total_free_bytes'=5105899315200B;;20000000000000: 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;;0;100    
 ```
 
 ### Example Command 4
@@ -83,5 +89,7 @@ icinga { Invoke-IcingaCheckUNCPath -Path '\\example.com\Shares\Icinga' -DisplayA
 ### Example Output 4
 
 ```powershell
-[CRITICAL] Check package "IcingaExample Share" - [CRITICAL] Total Free\_ [CRITICAL] Total Free: Value "5105899069440B" is lower than threshold "20000000000000B"| 'share_free_bytes'=5105899069440B;; 'total_free_bytes'=5105899069440B;;20000000000000: 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;;0;100
+[CRITICAL] Check package "IcingaExample Share" - [CRITICAL] Total Free
+    \_ [CRITICAL] Total Free: Value "5105899069440B" is lower than threshold "20000000000000B"
+| 'share_free_bytes'=5105899069440B;; 'total_free_bytes'=5105899069440B;;20000000000000: 'share_size'=23016091746304B;; 'share_free_percent'=22.18%;;;0;100    
 ```

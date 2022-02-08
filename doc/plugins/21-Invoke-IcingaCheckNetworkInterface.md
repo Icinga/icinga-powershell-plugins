@@ -72,5 +72,23 @@ icinga { Invoke-IcingaCheckNetworkInterface  -Verbosity 2  }
 ### Example Output 1
 
 ```powershell
-[OK] Check package "Network Device Package" (Match All)\_ [OK] Check package "Interface Ethernet" (Match All)\_ [OK] #1 AdminLocked: False\_ [OK] #1 bytes received/sec: 3691.900146B\_ [OK] #1 bytes sent/sec: 324.831177B\_ [OK] #1 bytes total/sec: 3994.609619B\_ [OK] #1 Interface AdminStatus: Up\_ [OK] #1 Interface OperationalStatus: Up\_ [OK] #1 LinkSpeed: 1 GBit\_ [OK] #1 NetConnectionStatus: Connected\_ [OK] #1 packets outbound discarded: 0\_ [OK] #1 packets outbound errors: 0\_ [OK] #1 packets received discarded: 0\_ [OK] #1 packets received errors: 0\_ [OK] #1 packets received/sec: 6.467305\_ [OK] #1 packets sent/sec: 1.659066\_ [OK] #1 VlanID:| '1_packets_outbound_discarded'=0;; '1_packets_receivedsec'=6.467305;; '1_bytes_receivedsec'=3691.900146B;; '1_packets_received_errors'=0;; '1_packets_sentsec'=1.659066;; '1_bytes_sentsec'=324.831177B;; '1_packets_received_discarded'=0;; '1_packets_outbound_errors'=0;; '1_bytes_totalsec'=3994.609619B;;0
+[OK] Check package "Network Device Package" (Match All)
+    \_ [OK] Check package "Interface Ethernet" (Match All)
+    \_ [OK] #1 AdminLocked: False
+    \_ [OK] #1 bytes received/sec: 3691.900146B
+    \_ [OK] #1 bytes sent/sec: 324.831177B
+    \_ [OK] #1 bytes total/sec: 3994.609619B
+    \_ [OK] #1 Interface AdminStatus: Up
+    \_ [OK] #1 Interface OperationalStatus: Up
+    \_ [OK] #1 LinkSpeed: 1 GBit
+    \_ [OK] #1 NetConnectionStatus: Connected
+    \_ [OK] #1 packets outbound discarded: 0
+    \_ [OK] #1 packets outbound errors: 0
+    \_ [OK] #1 packets received discarded: 0
+    \_ [OK] #1 packets received errors: 0
+    \_ [OK] #1 packets received/sec: 6.467305
+    \_ [OK] #1 packets sent/sec: 1.659066
+    \_ [OK] #1 VlanID:
+| '1_packets_outbound_discarded'=0;; '1_packets_receivedsec'=6.467305;; '1_bytes_receivedsec'=3691.900146B;; '1_packets_received_errors'=0;; '1_packets_sentsec'=1.659066;; '1_bytes_sentsec'=324.831177B;; '1_packets_received_discarded'=0;; '1_packets_outbound_errors'=0;; '1_bytes_totalsec'=3994.609619B;;
+0    
 ```
