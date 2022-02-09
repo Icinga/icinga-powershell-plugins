@@ -74,17 +74,15 @@ function Get-IcingaDiskAttributes()
             }
 "@
 
-    if ((Test-IcingaAddTypeExist 'IcingaDiskAttributes') -eq $FALSE) {
-        try {
-            Add-Type -TypeDefinition $IcingaDiskAttributesClass;
-        } catch {
-            [string]$ExErrorId = $_.FullyQualifiedErrorId;
+    try {
+        Add-IcingaAddTypeLib -TypeName 'IcingaDiskAttributes' -TypeDefinition $IcingaDiskAttributesClass;
+    } catch {
+        [string]$ExErrorId = $_.FullyQualifiedErrorId;
 
-            Exit-IcingaThrowCritical `
-                -Message 'Failed to process disk related checks. Based on the error your local Windows disk partition has no space left' `
-                -FilterString $ExErrorId `
-                -SearchString 'System.IO.IOException';
-        }
+        Exit-IcingaThrowCritical `
+            -Message 'Failed to process disk related checks. Based on the error your local Windows disk partition has no space left' `
+            -FilterString $ExErrorId `
+            -SearchString 'System.IO.IOException';
     }
 
     [bool]$DiskOffline  = $FALSE;

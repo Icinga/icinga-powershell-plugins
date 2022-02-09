@@ -7,7 +7,7 @@
     Copyright         = '(c) 2021 Icinga GmbH | GPLv2'
     Description       = 'A collection of Icinga Plugins for general Windows checks for Icinga for Windows.'
     PowerShellVersion = '4.0'
-    RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.7.0' })
+    RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.9.0' })
     NestedModules     = @(
         '.\plugins\Invoke-IcingaCheckBiosSerial.psm1',
         '.\plugins\Invoke-IcingaCheckCertificate.psm1',
