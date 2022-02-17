@@ -1,5 +1,3 @@
-Import-IcingaLib provider\enums;
-
 function Get-IcingaWindows()
 {
     $WindowsInformations = Get-IcingaWindowsInformation Win32_OperatingSystem;

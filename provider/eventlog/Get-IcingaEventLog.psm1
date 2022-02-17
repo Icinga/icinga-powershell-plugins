@@ -1,5 +1,3 @@
-Import-IcingaLib icinga\exception;
-
 function Get-IcingaEventLog()
 {
     param(

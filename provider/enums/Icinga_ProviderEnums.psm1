@@ -1085,5 +1085,3 @@
     LoadBalancingAlgorithm          = $LoadBalancingAlgorithm;
     LoadBalancingAlgorithmName      = $LoadBalancingAlgorithmName;
 }
-
-Export-ModuleMember -Variable @('ProviderEnums');

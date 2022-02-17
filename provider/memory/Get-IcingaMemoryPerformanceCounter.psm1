@@ -1,4 +1,4 @@
-function Get-IcingaMemoryPerformanceCounter()
+function Global:Get-IcingaMemoryPerformanceCounter()
 {
 
     if ((Test-IcingaPerformanceCounterCategory -Category 'Memory') -eq $FALSE) {

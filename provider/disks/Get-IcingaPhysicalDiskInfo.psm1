@@ -20,7 +20,7 @@
    https://github.com/Icinga/icinga-powershell-framework
 #>
 
-function Get-IcingaPhysicalDiskInfo()
+function Global:Get-IcingaPhysicalDiskInfo()
 {
     param (
         [array]$DiskIds = @()
