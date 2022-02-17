@@ -17,7 +17,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#308](https://github.com/Icinga/icinga-powershell-plugins/pull/308) Fixes function `Get-IcingaServiceCheckName` which was not public anymore since v1.9.0, causing MSSQL plugins to not work properly
 * [#319](https://github.com/Icinga/icinga-powershell-plugins/pull/319) Removes performance data for `Invoke-IcingaCheckCheckSum`, as there are no real performance metrics to write which are allowed by icinga
 
-## Enhancements
+### Enhancements
 
 * [#276](https://github.com/Icinga/icinga-powershell-plugins/issues/276) Extends `Invoke-IcingaCheckUpdates` for allowing to check if there is a pending reboot on the system remaining to finalize Windows updates
 * [#284](https://github.com/Icinga/icinga-powershell-plugins/issues/284) Adds support to exclude certain exit codes from throwing critical for `Invoke-IcingaCheckScheduledTask` [Paul-Weisser]
@@ -25,6 +25,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#301](https://github.com/Icinga/icinga-powershell-plugins/issues/301) Adds support to use `Include` and `Exclude` filters for `Invoke-IcingaCheckPerfCounter`
 * [#312](https://github.com/Icinga/icinga-powershell-plugins/issues/312) Adds support to exclude certificates by thumbprints for `Invoke-IcingaCheckCertificate` by adding thumbprints to the `-ExcludePattern` argument
 * [#316](https://github.com/Icinga/icinga-powershell-plugins/issues/316) Adds support to include and exclude network devices for `Invoke-IcingaCheckNetworkInterface` by their device and interface name, besides the internal id
+
+### New Plugin
+
+* Adds new plugin [Invoke-IcingaCheckHttpJsonResponse](https://icinga.com/docs/icinga-for-windows/latest/plugins/doc/plugins/28-Invoke-IcingaCheckHttpJsonResponse) to check results returned by a JSON web request [#290](https://github.com/Icinga/icinga-powershell-plugins/pull/290). [DOliana]
 
 ## 1.9.0 (2022-05-03)
 
