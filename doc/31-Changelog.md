@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#283](https://github.com/Icinga/icinga-powershell-plugins/pull/283) Fixes random `Add-Type` exceptions during runtime compilation by replacing it with `Add-IcingaAddTypeLib`
+* [#286](https://github.com/Icinga/icinga-powershell-plugins/issues/286) Fixes `Invoke-IcingaCheckHTTPStatus` which is not returning the request time, in case the target website is not providing content
 
 ## 1.8.0 (2022-02-08)
 
