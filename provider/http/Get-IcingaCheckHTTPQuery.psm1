@@ -89,10 +89,11 @@ function Get-IcingaCheckHTTPQuery()
             $enc = [system.Text.Encoding]::UTF8;
             $HTTPData.Add('ContentSize', $enc.GetBytes($HTTPInformation.Content).Length);
             $HTTPData.Add('Content', $HTTPInformation.Content);
-            $HTTPData.Add('RequestTime', (Get-IcingaTimer -Name 'HTTPRequest').Elapsed.TotalSeconds);
         } else {
             $HTTPData.Add('ContentSize', 0);
         }
+
+        $HTTPData.Add('RequestTime', (Get-IcingaTimer -Name 'HTTPRequest').Elapsed.TotalSeconds);
 
         # Determine status code match
 
