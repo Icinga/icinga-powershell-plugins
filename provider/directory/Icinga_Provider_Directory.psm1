@@ -13,7 +13,8 @@ function Get-IcingaDirectoryAll()
         [string]$CreationOlderThan,
         [string]$CreationYoungerThan,
         [string]$FileSizeGreaterThan,
-        [string]$FileSizeSmallerThan
+        [string]$FileSizeSmallerThan,
+        [string]$FileContainPattern,
     );
 
     if ([string]::IsNullOrEmpty($Path)) {
@@ -65,6 +66,9 @@ function Get-IcingaDirectoryAll()
     }
     if ([string]::IsNullOrEmpty($FileSizeSmallerThan) -eq $FALSE) {
         $DirectoryData = (Get-IcingaDirectorySizeSmallerThan -FileSizeSmallerThan $FileSizeSmallerThan -DirectoryData $DirectoryData);
+    }
+    if ([string]::IsNullOrEmpty($FileContainPattern) -eq $FALSE) {
+        $DirectoryData = (Get-IcingaDirectoryContainPattern -ContainPattern $FileContainPattern -DirectoryData $DirectoryData);
     }
 
     foreach ($entry in $DirectoryData) {
@@ -260,6 +264,18 @@ function Get-IcingaDirectoryCreationTimeEqual()
     $CreationTimeEqual = Set-NumericNegative (ConvertTo-Seconds $CreationTimeEqual);
     $CreationTimeEqual = (Get-Date).AddSeconds($CreationTimeEqual);
     $DirectoryData = ($DirectoryData | Where-Object {$_.CreationTime.Day -eq $CreationTimeEqual.Day -And $_.CreationTime.Month -eq $CreationTimeEqual.Month -And $_.CreationTime.Year -eq $CreationTimeEqual.Year})
+
+    return $DirectoryData;
+}
+
+function Get-IcingaDirectoryContainPattern
+{
+    param (
+        [string]$ContainPattern,
+        $DirectoryData
+    )
+        
+    $DirectoryData = ($DirectoryData | Where-Object {Select-String -Pattern $ContainPattern -Path $_.Fullname})
 
     return $DirectoryData;
 }
