@@ -13,7 +13,7 @@ function Add-IcingaProcessPerfData()
     }
 }
 
-function Get-IcingaProcessData {
+function Global:Get-IcingaProcessData {
 
     param (
         [array]$Process = @()

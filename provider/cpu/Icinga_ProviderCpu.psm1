@@ -1,4 +1,4 @@
-function Get-IcingaCPUs()
+function Global:Get-IcingaCPUs()
 {
     <# Collects the most important CPU informations,
     e.g. name, version, manufacturer#>

@@ -1,4 +1,4 @@
-function Get-IcingaUpdatesInstalled()
+function Global:Get-IcingaUpdatesInstalled()
 {
 
     # Fetch all informations about installed updates and add them

@@ -1,4 +1,4 @@
-function Get-IcingaWindowsUpdatesPending()
+function Global:Get-IcingaWindowsUpdatesPending()
 {
     param (
         [array]$UpdateFilter = @()

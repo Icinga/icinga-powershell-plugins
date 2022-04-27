@@ -1,4 +1,4 @@
-function Get-IcingaBios()
+function Global:Get-IcingaBios()
 {
     <# Collects the most important BIOS informations,
     e.g. name, version, manufacturer#>

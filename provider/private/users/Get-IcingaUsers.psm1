@@ -1,4 +1,4 @@
-function Get-IcingaUsers()
+function Global:Get-IcingaUsers()
 {
     param (
         [array]$Username

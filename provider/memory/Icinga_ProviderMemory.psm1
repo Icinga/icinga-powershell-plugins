@@ -1,4 +1,4 @@
-function Get-IcingaMemory()
+function Global:Get-IcingaMemory()
 {
     <# Collects the most important Memory informations,
     e.g. name, version, manufacturer#>

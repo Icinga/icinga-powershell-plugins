@@ -1,4 +1,4 @@
-function Get-IcingaWindows()
+function Global:Get-IcingaWindows()
 {
     $WindowsInformations = Get-IcingaWindowsInformation Win32_OperatingSystem;
 

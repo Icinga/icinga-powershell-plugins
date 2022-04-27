@@ -1,4 +1,4 @@
-function Get-IcingaUpdatesHotfix()
+function Global:Get-IcingaUpdatesHotfix()
 {
     [hashtable]$HotfixInfo      = @{ };
     [hashtable]$HotfixNameCache = @{ };

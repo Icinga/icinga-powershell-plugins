@@ -1,4 +1,4 @@
-function Get-IcingaDiskInformation()
+function Global:Get-IcingaDiskInformation()
 {
     <# Fetches the information for other more specific Get-IcingaDisk-functions
     e.g. Get-IcingaDiskModel; Get-IcingaDiskManufacturer.
@@ -32,7 +32,7 @@ function Get-IcingaDiskInformation()
 
     return $DiskData;
 }
-function Get-IcingaDiskPartitions()
+function Global:Get-IcingaDiskPartitions()
 {
     param(
         $Disk
