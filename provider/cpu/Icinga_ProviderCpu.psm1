@@ -1,4 +1,3 @@
-Import-IcingaLib provider\enums;
 function Get-IcingaCPUs()
 {
     <# Collects the most important CPU informations,
@@ -258,7 +257,7 @@ function Get-IcingaCPUNumberOfLogicalProcessors()
     return @{'value' = $CPUNumberOfLogicalProcessors; 'name' = 'NumberOfLogicalProcessors'};
 }
 
-function Get-IcingaCPUCount()
+function Global:Get-IcingaCPUCount()
 {
     param (
         $CounterArray = $null

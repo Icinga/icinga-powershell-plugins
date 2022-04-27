@@ -1,5 +1,3 @@
-Import-IcingaLib provider\enums;
-
 function Get-IcingaDiskInformation()
 {
     <# Fetches the information for other more specific Get-IcingaDisk-functions

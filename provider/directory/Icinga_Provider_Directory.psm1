@@ -1,5 +1,3 @@
-Import-IcingaLib core\tools;
-
 function Get-IcingaDirectoryAll()
 {
     param(

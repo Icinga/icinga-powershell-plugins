@@ -14,5 +14,3 @@ if ($null -eq $IcingaPluginExceptions) {
         FileSystem = $FileSystem;
     }
 }
-
-Export-ModuleMember -Variable @( 'IcingaPluginExceptions' );

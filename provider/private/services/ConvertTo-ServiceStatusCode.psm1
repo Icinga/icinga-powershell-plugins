@@ -1,6 +1,3 @@
-Import-IcingaLib core\tools;
-Import-IcingaLib provider\enums;
-
 function ConvertTo-ServiceStatusCode()
 {
     param (
