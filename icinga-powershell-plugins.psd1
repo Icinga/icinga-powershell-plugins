@@ -41,9 +41,20 @@
         'Invoke-IcingaCheckPartitionSpace',
         'Invoke-IcingaCheckUsedPartitionSpace',
         'Invoke-IcingaCheckUsers',
+        'Get-IcingaBios',
+        'Get-IcingaCPUs',
         'Get-IcingaCPUCount',
         'Get-IcingaPhysicalDiskInfo',
-        'Get-IcingaMemoryPerformanceCounter'
+        'Get-IcingaDiskInformation',
+        'Get-IcingaDiskPartitions',
+        'Get-IcingaMemoryPerformanceCounter',
+        'Get-IcingaMemory',
+        'Get-IcingaProcessData',
+        'Get-IcingaUpdatesHotfix',
+        'Get-IcingaUpdatesInstalled',
+        'Get-IcingaWindowsUpdatesPending',
+        'Get-IcingaUsers',
+        'Get-IcingaWindows'
     )
     CmdletsToExport     = @(
     )
