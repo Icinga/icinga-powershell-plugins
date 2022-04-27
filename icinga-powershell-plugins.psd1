@@ -1,7 +1,6 @@
 @{
     ModuleVersion     = '1.9.0'
     GUID              = 'e3e7850e-2f24-4173-8268-c2a29ec35750'
-    RootModule        = 'icinga-powershell-plugins.psm1'
     Author            = 'Lord Hepipud'
     CompanyName       = 'Icinga GmbH'
     Copyright         = '(c) 2021 Icinga GmbH | GPLv2'
