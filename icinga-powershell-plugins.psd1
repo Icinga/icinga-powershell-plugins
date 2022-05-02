@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '1.9.0'
+    ModuleVersion     = '1.10.0'
     GUID              = 'e3e7850e-2f24-4173-8268-c2a29ec35750'
     Author            = 'Lord Hepipud'
     CompanyName       = 'Icinga GmbH'
@@ -70,7 +70,7 @@
             ProjectUri   = 'https://github.com/Icinga/icinga-powershell-plugins'
             ReleaseNotes = 'https://github.com/Icinga/icinga-powershell-plugins/releases'
         };
-        Version  = 'v1.9.0';
+        Version  = 'v1.10.0';
         Name     = 'Windows Plugins';
         Type     = 'plugins';
         Function = '';
