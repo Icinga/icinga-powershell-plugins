@@ -62,7 +62,10 @@
 .PARAMETER Negate
     A switch used to invert check results.
 .PARAMETER AddOutputContent
-    Adds the returned content of a webseite to the plugin output for debugging purpose
+    Adds the returned content of a website to the plugin output for debugging purpose
+.PARAMETER ConnectionErrAsCrit
+    By default the plugin will return UNKNOWN in case a connection to a webserver is not possible. By using this
+    flag, the result will be modified from UNKNOWN to CRITICAL
 .PARAMETER NoPerfData
     Used to disable PerfData.
 .PARAMETER Verbosity
@@ -101,12 +104,13 @@ function Invoke-IcingaCheckHTTPStatus()
         [int]$Minimum                = -1,
         [switch]$Negate              = $FALSE,
         [switch]$AddOutputContent    = $FALSE,
+        [switch]$ConnectionErrAsCrit = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity              = 0
     )
 
-    $HTTPData = (Get-IcingaCheckHTTPQuery -Url $Url -VHost $VHost -Headers $Headers -Timeout $Timeout -Username $Username -Password $Password -ProxyUsername $ProxyUsername -ProxyPassword $ProxyPassword -ProxyServer $ProxyServer -Content $Content -StatusCode $StatusCode);
+    $HTTPData = (Get-IcingaCheckHTTPQuery -Url $Url -VHost $VHost -Headers $Headers -Timeout $Timeout -Username $Username -Password $Password -ProxyUsername $ProxyUsername -ProxyPassword $ProxyPassword -ProxyServer $ProxyServer -Content $Content -StatusCode $StatusCode -ConnectionErrAsCrit:$ConnectionErrAsCrit);
 
     # In case -Minimum isn't set, implied -OperatorAnd
     if ($Minimum -eq -1) {

@@ -11,7 +11,8 @@ function Get-IcingaCheckHTTPQuery()
         [securestring]$ProxyPassword = $null,
         [string]$ProxyServer         = '',
         [array]$Content              = @(),
-        [array]$StatusCode           = @()
+        [array]$StatusCode           = @(),
+        [switch]$ConnectionErrAsCrit = $FALSE
     );
 
     if ($Url.count -eq 0) {
@@ -77,9 +78,15 @@ function Get-IcingaCheckHTTPQuery()
         try {
             $HTTPInformation = (Invoke-WebRequest @InvokeArguments);
         } catch {
-            $HTTPInformation = @{
-                'StatusCode' = $_.Exception.Message;
-            };
+            if ([string]::IsNullOrEmpty($_.Exception.Response.StatusCode)) {
+                $HTTPInformation = @{
+                    'StatusCode' = $_.Exception.Message;
+                };
+            } else {
+                $HTTPInformation = @{
+                    'StatusCode' = [int]$_.Exception.Response.StatusCode;
+                };
+            }
         }
         Stop-IcingaTimer -Name 'HTTPRequest';
 
@@ -118,7 +125,11 @@ function Get-IcingaCheckHTTPQuery()
                     $Status = $IcingaEnums.IcingaExitCode.Unknown; # Proprietary
                 }
             } else {
-                $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                if ($ConnectionErrAsCrit) {
+                    $Status = $IcingaEnums.IcingaExitCode.Critical;
+                } else {
+                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                }
             }
         }
         # Content-Check if status code is within range: 200-299
