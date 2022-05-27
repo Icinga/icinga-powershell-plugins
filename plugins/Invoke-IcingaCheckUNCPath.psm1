@@ -105,26 +105,31 @@ function Invoke-IcingaCheckUNCPath()
     $PathData     = Get-IcingaUNCPathSize -Path $Path;
     $CheckPackage = New-IcingaCheckPackage -Name ([string]::Format('{0} Share', $DisplayName)) -OperatorAnd -Verbose $Verbosity;
     $IcingaCheck  = $null;
+    $MetricIndex  = $DisplayName.Replace('\', '_');
 
     if ($CheckUsedSpace) {
-        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Used Space', $DisplayName)) -Value $PathData.ShareUsed -Unit 'B' -Minimum 0 -Maximum $PathData.ShareSize -LabelName 'share_used_bytes' -BaseValue $PathData.ShareSize;
+        $IcingaCheck = New-IcingaCheck -Name 'Used Space' -Value $PathData.ShareUsed -Unit 'B' -Minimum 0 -Maximum $PathData.ShareSize -MetricIndex $MetricIndex -MetricName 'used' -LabelName 'share_used_bytes' -BaseValue $PathData.ShareSize;
     } else {
-        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Free Space', $DisplayName)) -Value $PathData.ShareFree -Unit 'B' -Minimum 0 -Maximum $PathData.ShareSize -LabelName 'share_free_bytes' -BaseValue $PathData.ShareSize;
+        $IcingaCheck = New-IcingaCheck -Name 'Free Space' -Value $PathData.ShareFree -Unit 'B' -Minimum 0 -Maximum $PathData.ShareSize -MetricIndex $MetricIndex -MetricName 'free' -LabelName 'share_free_bytes' -BaseValue $PathData.ShareSize;
     }
 
     $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
     $ShareSize = New-IcingaCheck `
-        -Name ([string]::Format('Size', $DisplayName)) `
+        -Name 'Size' `
         -Value $PathData.ShareSize `
         -Unit 'B' `
-        -LabelName ([string]::Format('share_size', $PathData.ShareSize));
+        -LabelName ([string]::Format('share_size', $PathData.ShareSize)) `
+        -MetricIndex $MetricIndex `
+        -MetricName 'size';
 
     $TotalFree = New-IcingaCheck `
-        -Name ([string]::Format('Total Free', $DisplayName)) `
+        -Name 'Total Free' `
         -Value $PathData.TotalFree `
         -Unit 'B' `
-        -LabelName ([string]::Format('total_free_bytes', $PathData.TotalFree));
+        -LabelName ([string]::Format('total_free_bytes', $PathData.TotalFree)) `
+        -MetricIndex $MetricIndex `
+        -MetricName 'totalfree';
 
     $TotalFree.WarnOutOfRange($WarningTotal.Value).CritOutOfRange($CriticalTotal.Value) | Out-Null;
 

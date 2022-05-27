@@ -45,7 +45,7 @@
 
 function Invoke-IcingaCheckUptime()
 {
-    param(
+    param (
         [string]$Warning    = $null,
         [string]$Critical   = $null,
         [switch]$NoPerfData,
@@ -53,12 +53,12 @@ function Invoke-IcingaCheckUptime()
         [int]$Verbosity     = 0
     );
 
-    $WindowsData = Get-IcingaWindows;
-    $Name        = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value).Replace(',', '.')));
+    $WindowsData  = Get-IcingaWindows;
+    $Name         = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value).Replace(',', '.')));
 
     $CheckPackage = New-IcingaCheckPackage -Name $Name -OperatorAnd -Verbose $Verbosity;
 
-    $IcingaCheck = New-IcingaCheck -Name 'System Uptime' -Value $WindowsData.windows.metadata.uptime.value -Unit 's';
+    $IcingaCheck  = New-IcingaCheck -Name 'System Uptime' -Value $WindowsData.windows.metadata.uptime.value -Unit 's' -MetricIndex 'windows' -MetricName 'uptime';
     $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
     $BootTime = New-IcingaCheck -Name 'Last Boot' -Value ([string]$WindowsData.windows.metadata.uptime.raw) -NoPerfData;

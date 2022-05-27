@@ -31,6 +31,8 @@ function Get-IcingaNetworkSpeedChecks()
             New-IcingaCheck `
                 -Name ([string]::Format('{0}: LinkSpeed', $Name)) `
                 -Value $LinkSpeed `
+                -MetricIndex $Name `
+                -MetricName 'linkspeed'
         )
     );
 

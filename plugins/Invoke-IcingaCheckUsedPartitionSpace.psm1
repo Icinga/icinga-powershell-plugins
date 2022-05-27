@@ -132,9 +132,9 @@ function Invoke-IcingaCheckPartitionSpace()
         $IcingaCheck = $null;
 
         if ($CheckUsedSpace) {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+            $IcingaCheck = New-IcingaCheck -MetricIndex $partition.DriveLetter -MetricName 'used' -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
         } else {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.FreeSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('free_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+            $IcingaCheck = New-IcingaCheck -MetricIndex $partition.DriveLetter -MetricName 'free' -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.FreeSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('free_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
         }
 
         if ([string]::IsNullOrEmpty($partition.Size)) {

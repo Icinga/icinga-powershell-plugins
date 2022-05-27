@@ -102,12 +102,15 @@ function Invoke-IcingaCheckPerfCounter()
             }
 
             if ($instance -IsNot [hashtable]) {
-                $IcingaCheck  = New-IcingaCheck -Name $counter -Value $Counters[$counter].Value;
+                $CounterInfo = Get-IcingaPerformanceCounterDetails -Counter $counter;
+                $IcingaCheck = New-IcingaCheck -Name $counter -Value $Counters[$counter].Value -MetricIndex $CounterInfo.Category -MetricName $CounterInfo.Counter;
                 $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
                 $CounterPackage.AddCheck($IcingaCheck);
                 break;
             }
-            $IcingaCheck  = New-IcingaCheck -Name $instanceName -Value $instance.Value;
+
+            $CounterInfo = Get-IcingaPerformanceCounterDetails -Counter $instanceName;
+            $IcingaCheck = New-IcingaCheck -Name $instanceName -Value $instance.Value -MetricIndex $CounterInfo.Category -MetricName $CounterInfo.CounterInstance;
             $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
             $CounterPackage.AddCheck($IcingaCheck);
         }

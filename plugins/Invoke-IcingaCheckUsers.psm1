@@ -66,17 +66,17 @@ function Invoke-IcingaCheckUsers()
                 $LoginCount = $LoggedOnUsers.users.$User.count;
             }
 
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoginCount;
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoginCount -MetricIndex $User -MetricName 'count';
             $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
             $UsersPackage.AddCheck($IcingaCheck);
         }
     } else {
-        foreach ($User in $LoggedOnUsers.users.Keys) {
+        foreach ($User in $LoggedOnUsers.users.Keys) { 
             $UsersPackage.AddCheck(
-                (New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoggedOnUsers.users.$User.count)
+                (New-IcingaCheck -Name ([string]::Format('Logged On Users "{0}"', $User)) -Value $LoggedOnUsers.users.$User.count -MetricIndex $User -MetricName 'count')
             );
         }
-        $IcingaCheck = New-IcingaCheck -Name 'Logged On Users' -Value $LoggedOnUsers.count;
+        $IcingaCheck = New-IcingaCheck -Name 'Logged On Users' -Value $LoggedOnUsers.count -MetricIndex 'summary' -MetricName 'count';
         $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
         $UsersPackage.AddCheck($IcingaCheck)
     }

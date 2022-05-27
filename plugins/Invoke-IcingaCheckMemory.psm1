@@ -85,7 +85,9 @@ function Invoke-IcingaCheckMemory()
                 -BaseValue $MemoryData['Memory Total Bytes'] `
                 -Minimum 0 `
                 -Maximum $MemoryData['Memory Total Bytes'] `
-                -Unit 'B'
+                -Unit 'B' `
+                -MetricIndex 'memory' `
+                -MetricName 'used'
         ).WarnOutOfRange(
             $Warning
         ).CritOutOfRange(

@@ -36,7 +36,7 @@ function New-IcingaWindowsServiceCheckObject()
     $ConvertedStatus = ConvertTo-ServiceStatusCode -Status $Status;
     $StatusRaw       = $Service.configuration.Status.raw;
 
-    $IcingaCheck     = New-IcingaCheck -Name $ServiceName -Value $StatusRaw -ObjectExists $Service -Translation $ProviderEnums.ServiceStatusName -NoPerfData:$NoPerfData;
+    $IcingaCheck     = New-IcingaCheck -Name $ServiceName -Value $StatusRaw -ObjectExists $Service -Translation $ProviderEnums.ServiceStatusName -MetricIndex $Service.metadata.ServiceName -MetricName 'state' -NoPerfData:$NoPerfData;
     $IcingaCheck.CritIfNotMatch($ConvertedStatus) | Out-Null;
 
     return $IcingaCheck;

@@ -241,7 +241,9 @@ function Invoke-IcingaCheckNetworkInterface()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0}: packets received/sec', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets received/sec'].value `
-                    -Unit 'c'
+                    -Unit 'c' `
+                    -MetricIndex $InterfaceName `
+                    -MetricName 'packetsreceivedsec'
             ).WarnOutOfRange(
                 $PacketReceivedSecWarn
             ).CritOutOfRange(
@@ -254,7 +256,9 @@ function Invoke-IcingaCheckNetworkInterface()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0}: packets sent/sec', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets sent/sec'].value `
-                    -Unit 'c'
+                    -Unit 'c' `
+                    -MetricIndex $InterfaceName `
+                    -MetricName 'packetssentsec'
             ).WarnOutOfRange(
                 $PacketSentSecWarn
             ).CritOutOfRange(
@@ -268,7 +272,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets received errors', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets received errors'].value `
                     -BaseValue $NetworkDeviceObject.PerfCounter['packets received/sec'].value `
-                    -Unit 'c'
+                    -Unit 'c' `
+                    -MetricIndex $InterfaceName `
+                    -MetricName 'packetsreceivederrors'
             ).WarnOutOfRange(
                 $PackteReceivedErrorWarn
             ).CritOutOfRange(
@@ -282,7 +288,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets outbound errors', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets outbound errors'].value `
                     -BaseValue $NetworkDeviceObject.PerfCounter['packets sent/sec'].value `
-                    -Unit 'c'
+                    -Unit 'c' `
+                    -MetricIndex $InterfaceName `
+                    -MetricName 'packetsoutbounderrors'
             ).WarnOutOfRange(
                 $PackteOutboundErrorWarn
             ).CritOutOfRange(
@@ -296,7 +304,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets received discarded', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets received discarded'].value `
                     -BaseValue $NetworkDeviceObject.PerfCounter['packets received/sec'].value `
-                    -Unit 'c'
+                    -Unit 'c' `
+                    -MetricIndex $InterfaceName `
+                    -MetricName 'packetsreceiveddiscarded'
             ).WarnOutOfRange(
                 $PacketReceivedDiscardedWarn
             ).CritOutOfRange(
@@ -310,7 +320,9 @@ function Invoke-IcingaCheckNetworkInterface()
                     -Name ([string]::Format('{0}: packets outbound discarded', $InterfaceName)) `
                     -Value $NetworkDeviceObject.PerfCounter['packets outbound discarded'].value `
                     -BaseValue $NetworkDeviceObject.PerfCounter['packets sent/sec'].value `
-                    -Unit 'c'
+                    -Unit 'c' `
+                    -MetricIndex $InterfaceName `
+                    -MetricName 'packetsoutbounddiscarded'
             ).WarnOutOfRange(
                 $PacketOutboundDiscardedWarn
             ).CritOutOfRange(
@@ -425,7 +437,9 @@ function Invoke-IcingaCheckNetworkInterface()
                             -Name ([string]::Format('{0}: bytes total/sec', $InterfaceName)) `
                             -Value $NetworkDeviceObject.PerfCounter['bytes total/sec'].value `
                             -BaseValue $TeamMember.TransmitLinkSpeedBytes `
-                            -Unit 'B'
+                            -Unit 'B' `
+                            -MetricIndex $InterfaceName `
+                            -MetricName 'bytestotalsec'
                     ).WarnOutOfRange(
                         $DeviceTotalBytesSecWarn
                     ).CritOutOfRange(
@@ -439,7 +453,9 @@ function Invoke-IcingaCheckNetworkInterface()
                             -Name ([string]::Format('{0}: bytes sent/sec', $InterfaceName)) `
                             -Value $NetworkDeviceObject.PerfCounter['bytes sent/sec'].value `
                             -BaseValue $TeamMember.TransmitLinkSpeedBytes `
-                            -Unit 'B'
+                            -Unit 'B' `
+                            -MetricIndex $InterfaceName `
+                            -MetricName 'bytessentsec'
                     ).WarnOutOfRange(
                         $DeviceSentBytesSecWarn
                     ).CritOutOfRange(
@@ -453,7 +469,9 @@ function Invoke-IcingaCheckNetworkInterface()
                             -Name ([string]::Format('{0}: bytes received/sec', $InterfaceName)) `
                             -Value $NetworkDeviceObject.PerfCounter['bytes received/sec'].value `
                             -BaseValue $TeamMember.TransmitLinkSpeedBytes `
-                            -Unit 'B'
+                            -Unit 'B' `
+                            -MetricIndex $InterfaceName `
+                            -MetricName 'bytesreceivedsec'
                     ).WarnOutOfRange(
                         $DeviceReceivedBytesSecWarn
                     ).CritOutOfRange(
@@ -472,7 +490,9 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Name ([string]::Format('{0}: bytes total/sec', $InterfaceName)) `
                         -Value $NetworkDeviceObject.PerfCounter['bytes total/sec'].value `
                         -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
-                        -Unit 'B'
+                        -Unit 'B' `
+                        -MetricIndex $InterfaceName `
+                        -MetricName 'bytestotalsec'
                 ).WarnOutOfRange(
                     $DeviceTotalBytesSecWarn
                 ).CritOutOfRange(
@@ -486,7 +506,9 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Name ([string]::Format('{0}: bytes sent/sec', $InterfaceName)) `
                         -Value $NetworkDeviceObject.PerfCounter['bytes sent/sec'].value `
                         -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
-                        -Unit 'B'
+                        -Unit 'B' `
+                        -MetricIndex $InterfaceName `
+                        -MetricName 'bytessentsec'
                 ).WarnOutOfRange(
                     $DeviceSentBytesSecWarn
                 ).CritOutOfRange(
@@ -500,7 +522,9 @@ function Invoke-IcingaCheckNetworkInterface()
                         -Name ([string]::Format('{0}: bytes received/sec', $InterfaceName)) `
                         -Value $NetworkDeviceObject.PerfCounter['bytes received/sec'].value `
                         -BaseValue $NetworkDeviceObject.Data.TransmitLinkSpeedBytes `
-                        -Unit 'B'
+                        -Unit 'B' `
+                        -MetricIndex $InterfaceName `
+                        -MetricName 'bytesreceivedsec'
                 ).WarnOutOfRange(
                     $DeviceReceivedBytesSecWarn
                 ).CritOutOfRange(

@@ -96,19 +96,19 @@ function Invoke-IcingaCheckICMP()
         $ICMPPackage.AddCheck($ICMPCheck);
     }
 
-    $PacketLoss = New-IcingaCheck -Name 'Packet Loss' -Value $Result.Summary.PacketLoss -Unit '%';
+    $PacketLoss = New-IcingaCheck -Name 'Packet Loss' -Value $Result.Summary.PacketLoss -Unit '%' -MetricIndex $Result.Summary.IPAddress -MetricName 'packetloss';
     $PacketLoss.WarnOutOfRange($WarningPl).CritOutOfRange($CriticalPl) | Out-Null;
 
     $ICMPPackage.AddCheck($PacketLoss);
 
-    $ResponseTime = New-IcingaCheck -Name 'Average Response Time' -Value $Result.Summary.ResponseTime -Unit 'ms';
+    $ResponseTime = New-IcingaCheck -Name 'Average Response Time' -Value $Result.Summary.ResponseTime -Unit 'ms' -MetricIndex $Result.Summary.IPAddress -MetricName 'avgresponsetime';
     $ResponseTime.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
     $PerfDataPackage = New-IcingaCheckPackage -Name 'PerfData' -OperatorAnd -Verbose $Verbosity -Hidden -Checks @(
         $ResponseTime,
-        (New-IcingaCheck -Name 'Packet Count' -Value $Result.Summary.PacketsSend -Unit 'c')
-        (New-IcingaCheck -Name 'Minimum Response Time' -Value $Result.Summary.MinResponseTime -Unit 'ms'),
-        (New-IcingaCheck -Name 'Maximum Response Time' -Value $Result.Summary.MaxResponseTime -Unit 'ms')
+        (New-IcingaCheck -Name 'Packet Count' -Value $Result.Summary.PacketsSend -Unit 'c' -MetricIndex $Result.Summary.IPAddress -MetricName 'packetcount')
+        (New-IcingaCheck -Name 'Minimum Response Time' -Value $Result.Summary.MinResponseTime -Unit 'ms' -MetricIndex $Result.Summary.IPAddress -MetricName 'minresponsetime'),
+        (New-IcingaCheck -Name 'Maximum Response Time' -Value $Result.Summary.MaxResponseTime -Unit 'ms' -MetricIndex $Result.Summary.IPAddress -MetricName 'maxresponsetime')
     );
     $ICMPPackage.AddCheck($PerfDataPackage);
 

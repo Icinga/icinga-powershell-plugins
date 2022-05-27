@@ -72,7 +72,9 @@ function Invoke-IcingaCheckTimeSync()
         -Value (
             $TimeData.CalculatedOffset
         ) `
-        -Unit 's';
+        -Unit 's' `
+        -MetricIndex $Server `
+        -MetricName 'offset';
 
     $OffsetCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
@@ -80,7 +82,9 @@ function Invoke-IcingaCheckTimeSync()
         -Name 'Time Service' `
         -Value $TimeService.configuration.Status.raw `
         -ObjectExists $TimeService `
-        -Translation $ProviderEnums.ServiceStatusName;
+        -Translation $ProviderEnums.ServiceStatusName `
+        -MetricIndex $Server `
+        -MetricName 'service';
 
     $TimeCheck.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
 

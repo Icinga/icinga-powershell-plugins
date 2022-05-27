@@ -224,21 +224,23 @@ function Invoke-IcingaCheckDirectory()
         $FileCount += $DirectoryData.FolderCount;
     }
 
-    $FolderCountCheck = New-IcingaCheck -Name 'Folder Count' -Value $DirectoryData.FolderCount;
+    $MetricIndex      = $Path.Replace('\', '').Replace(':', '').Replace('/', '');
 
-    $FileCountCheck   = New-IcingaCheck -Name 'File Count' -Value $FileCount;
+    $FolderCountCheck = New-IcingaCheck -Name 'Folder Count' -Value $DirectoryData.FolderCount -MetricIndex $MetricIndex -MetricName 'folders';
+
+    $FileCountCheck   = New-IcingaCheck -Name 'File Count' -Value $FileCount -MetricIndex $MetricIndex -MetricName 'files';
     $FileCountCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
 
-    $TotalSizeCheck = New-IcingaCheck -Name 'Total Size' -Value $DirectoryData.TotalSize -Unit 'B';
+    $TotalSizeCheck   = New-IcingaCheck -Name 'Total Size' -Value $DirectoryData.TotalSize -Unit 'B' -MetricIndex $MetricIndex -MetricName 'totalsize';
     $TotalSizeCheck.WarnOutOfRange($WarningTotalSize).CritOutOfRange($CriticalTotalSize) | Out-Null;
 
-    $SmallestFileSize = New-IcingaCheck -Name 'Smallest File Size' -Value $DirectoryData.SmallestFile -Unit 'B';
+    $SmallestFileSize = New-IcingaCheck -Name 'Smallest File Size' -Value $DirectoryData.SmallestFile -Unit 'B' -MetricIndex $MetricIndex -MetricName 'smallestfile';
     $SmallestFileSize.WarnOutOfRange($WarningSmallestFile).CritOutOfRange($CriticalSmallestFile) | Out-Null;
 
-    $LargestFileSize = New-IcingaCheck -Name 'Largest File Size' -Value $DirectoryData.LargestFile -Unit 'B';
+    $LargestFileSize  = New-IcingaCheck -Name 'Largest File Size' -Value $DirectoryData.LargestFile -Unit 'B' -MetricIndex $MetricIndex -MetricName 'largestfile';
     $LargestFileSize.WarnOutOfRange($WarningLargestFile).CritOutOfRange($CriticalLargestFile) | Out-Null;
 
-    $AverageFileSize = New-IcingaCheck -Name 'Average File Size' -Value $DirectoryData.AverageSize -Unit 'B';
+    $AverageFileSize  = New-IcingaCheck -Name 'Average File Size' -Value $DirectoryData.AverageSize -Unit 'B' -MetricIndex $MetricIndex -MetricName 'averagefile';
     $AverageFileSize.WarnOutOfRange($WarningAverageFile).CritOutOfRange($CriticalAverageFile) | Out-Null;
 
     $DirectoryCheck.AddCheck($FileCountCheck);

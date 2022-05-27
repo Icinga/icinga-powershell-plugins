@@ -69,7 +69,9 @@ function Invoke-IcingaCheckCPU()
             New-IcingaCheck `
                 -Name ([string]::Format('Core {0}', (Format-IcingaDigitCount -Value $counter.Replace('_', '') -Digits $CpuCount -Symbol ' '))) `
                 -Value $CounterStructure[$counter]['% processor time'].value `
-                -Unit '%'
+                -Unit '%' `
+                -MetricIndex ($counter.Replace('_', '')) `
+                -MetricName 'load'
         ).WarnOutOfRange($Warning).CritOutOfRange($Critical);
 
         $CpuPackage.AddCheck($IcingaCheck);
