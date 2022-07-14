@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.10.0 (2022-08-09)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/13?closed=1)
+
+### Bugfixes
+
+* [#308](https://github.com/Icinga/icinga-powershell-plugins/pull/308) Fixes function `Get-IcingaServiceCheckName` which was not public anymore since v1.9.0, causing MSSQL plugins to not work properly
+
 ## 1.9.0 (2022-05-03)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/12?closed=1)

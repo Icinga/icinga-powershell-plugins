@@ -1,4 +1,4 @@
-function Get-IcingaServiceCheckName()
+function Global:Get-IcingaServiceCheckName()
 {
     param (
         [string]$ServiceInput,
