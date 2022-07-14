@@ -49,6 +49,7 @@
         'Get-IcingaMemoryPerformanceCounter',
         'Get-IcingaMemory',
         'Get-IcingaProcessData',
+        'Get-IcingaServiceCheckName',
         'Get-IcingaUpdatesHotfix',
         'Get-IcingaUpdatesInstalled',
         'Get-IcingaWindowsUpdatesPending',
