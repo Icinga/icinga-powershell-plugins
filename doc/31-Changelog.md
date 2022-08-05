@@ -15,6 +15,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#308](https://github.com/Icinga/icinga-powershell-plugins/pull/308) Fixes function `Get-IcingaServiceCheckName` which was not public anymore since v1.9.0, causing MSSQL plugins to not work properly
 
+## Enhancements
+
+* [#301](https://github.com/Icinga/icinga-powershell-plugins/issues/301) Adds support to use `Include` and `Exclude` filters for `Invoke-IcingaCheckPerfCounter`
+
 ## 1.9.0 (2022-05-03)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/12?closed=1)
