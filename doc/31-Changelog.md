@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ## Enhancements
 
 * [#301](https://github.com/Icinga/icinga-powershell-plugins/issues/301) Adds support to use `Include` and `Exclude` filters for `Invoke-IcingaCheckPerfCounter`
+* [#312](https://github.com/Icinga/icinga-powershell-plugins/issues/312) Adds support to exclude certificates by thumbprints for `Invoke-IcingaCheckCertificate` by adding thumbprints to the `-ExcludePattern` argument
 
 ## 1.9.0 (2022-05-03)
 

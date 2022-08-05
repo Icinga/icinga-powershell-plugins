@@ -25,7 +25,7 @@ No special permissions required.
 | CertStore | String | false | None | Used to specify which CertStore to check. Valid choices are 'None', '*', 'LocalMachine', 'CurrentUser'. Use 'None' if you do not want to check the certificate store (Default) |
 | CertThumbprint | Array | false |  | Used to specify an array of Thumbprints, which are used to determine what certificate to check, within the CertStore. |
 | CertSubject | Array | false |  | Used to specify an array of Subjects, which are used to determine what certificate to check, within the CertStore. |
-| ExcludePattern | Array | false |  | Used to specify an array of exclusions, tested against Subject, Subject Alternative Name and Issuer. |
+| ExcludePattern | Array | false |  | Used to specify an array of exclusions, tested against Subject, Subject Alternative Name, Issuer and Thumbprint. |
 | CertStorePath | Object | false | * | Used to specify which path within the CertStore should be checked. |
 | CertPaths | Array | false |  | Used to specify an array of paths on your system, where certificate files are. Use with CertName. |
 | CertName | Array | false |  | Used to specify an array of certificate names of certificate files to check. Use with CertPaths. |
