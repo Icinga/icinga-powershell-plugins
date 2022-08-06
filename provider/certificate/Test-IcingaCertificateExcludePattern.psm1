@@ -41,6 +41,10 @@ function Test-IcingaCertificateExcludePattern
             return $true
         }
 
+        if ($Certificate.Thumbprint.ToLower().Contains($ExcludeString.ToLower())) {
+            return $true
+        }
+
         try {
             if (($Certificate.Extensions | Where-Object { $_.Oid.FriendlyName -eq "subject alternative name" }).Format(1).Contains($ExcludeString)) {
                 return $true

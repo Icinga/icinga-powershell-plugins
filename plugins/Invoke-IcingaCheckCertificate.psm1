@@ -84,7 +84,7 @@
     3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 
 .PARAMETER ExcludePattern
-   Used to specify an array of exclusions, tested against Subject, Subject Alternative Name and Issuer.
+   Used to specify an array of exclusions, tested against Subject, Subject Alternative Name, Issuer and Thumbprint.
 
 .INPUTS
    System.String
