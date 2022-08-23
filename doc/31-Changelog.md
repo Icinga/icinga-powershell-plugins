@@ -22,6 +22,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#300](https://github.com/Icinga/icinga-powershell-plugins/pull/300) Adds a new flag `-ConnectionErrAsCrit` to `Invoke-IcingaCheckHTTPStatus`, allowing to change the `UNKNOWN` result in case a connection to the website is not possible to `CRITICAL`
 * [#301](https://github.com/Icinga/icinga-powershell-plugins/issues/301) Adds support to use `Include` and `Exclude` filters for `Invoke-IcingaCheckPerfCounter`
 * [#312](https://github.com/Icinga/icinga-powershell-plugins/issues/312) Adds support to exclude certificates by thumbprints for `Invoke-IcingaCheckCertificate` by adding thumbprints to the `-ExcludePattern` argument
+* [#316](https://github.com/Icinga/icinga-powershell-plugins/issues/316) Adds support to include and exclude network devices for `Invoke-IcingaCheckNetworkInterface` by their device and interface name, besides the internal id
 
 ## 1.9.0 (2022-05-03)
 

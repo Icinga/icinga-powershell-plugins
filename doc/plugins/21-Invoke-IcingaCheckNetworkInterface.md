@@ -23,8 +23,8 @@ To execute this plugin you will require to grant the following user permissions.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| IncludeNetworkDevice | Array | false | @() | Specify the index of network adapters you want to include for checks. Example 4, 3 |
-| ExcludeNetworkDevice | Array | false | @() | Specify the index of network adapters you want to exclude for checks. Example 4, 3 |
+| IncludeNetworkDevice | Array | false | @() | Specify the index id, interface name or connection name of network adapters you want to include for checks. Example 4, 3, *LAN*, *Ethernet* |
+| ExcludeNetworkDevice | Array | false | @() | Specify the index id, interface name or connection name of network adapters you want to exclude for checks. Example 4, 3, *LAN*, *Ethernet* |
 | ExcludeInterfaceTeam | Array | false | @() | Specify the name of network interface teams you want to exclude for checks. Example OutboundGroup, ClusterInterface |
 | IncludeInterfaceTeam | Array | false | @() | Specify the name of network interface teams you want to include for checks. Example OutboundGroup, ClusterInterface |
 | PacketReceivedSecWarn | Object | false |  | Warning threshold for network Interface Packets Received/sec is the rate at which packets are received on the network interface. |
