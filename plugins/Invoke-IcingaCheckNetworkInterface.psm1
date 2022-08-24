@@ -12,9 +12,9 @@
     * root\Cimv2
     * root\StandardCimv2
 .PARAMETER IncludeNetworkDevice
-    Specify the index of network adapters you want to include for checks. Example 4, 3
+    Specify the index id, interface name or connection name of network adapters you want to include for checks. Example 4, 3, *LAN*, *Ethernet*
 .PARAMETER ExcludeNetworkDevice
-    Specify the index of network adapters you want to exclude for checks. Example 4, 3
+    Specify the index id, interface name or connection name of network adapters you want to exclude for checks. Example 4, 3, *LAN*, *Ethernet*
 .PARAMETER IncludeInterfaceTeam
     Specify the name of network interface teams you want to include for checks. Example OutboundGroup, ClusterInterface
 .PARAMETER ExcludeInterfaceTeam

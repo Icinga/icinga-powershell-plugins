@@ -28,16 +28,16 @@ function Join-IcingaNetworkDeviceDataPerfCounter()
             continue;
         }
 
-        if ($IncludeNetworkDevice.Count -ne 0) {
-            if (($IncludeNetworkDevice -Contains $GetNetworkDevice[$DeviceName].DeviceId) -eq $FALSE) {
-                continue;
-            }
+        if ((Test-IcingaArrayFilter -InputObject $GetNetworkDevice[$DeviceName].DeviceId -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
+            continue;
         }
 
-        if ($ExcludeNetworkDevice.Count -ne 0) {
-            if (($ExcludeNetworkDevice -Contains $GetNetworkDevice[$DeviceName].DeviceId) -eq $TRUE) {
-                continue;
-            }
+        if ((Test-IcingaArrayFilter -InputObject $DeviceName -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
+            continue;
+        }
+
+        if ((Test-IcingaArrayFilter -InputObject $GetNetworkDevice[$DeviceName].Name -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
+            continue;
         }
 
         if (($GetNetworkDevice.Containskey($DeviceName)) -eq $fALSE) {
