@@ -187,23 +187,23 @@ function Invoke-IcingaCheckProcess()
 
         $ProcessSummary = New-IcingaCheckPackage -Name ([string]::Format('{0} Summary', $processName)) -OperatorAnd -Verbose $Verbosity;
 
-        $PageFileCheck = New-IcingaCheck -Name 'Page File Usage' -Value $ProcessData.PerformanceData.PageFileUsage -Unit 'B' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_page_file_usage', $processName.ToLower()))) -BaseValue $MemoryData['PageFile Total Bytes'] -Minimum 0 -Maximum $MemoryData['PageFile Total Bytes'];
+        $PageFileCheck = New-IcingaCheck -Name 'Page File Usage' -Value $ProcessData.PerformanceData.PageFileUsage -Unit 'B' -MetricIndex $processName -MetricName 'pagefile' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_page_file_usage', $processName.ToLower()))) -BaseValue $MemoryData['PageFile Total Bytes'] -Minimum 0 -Maximum $MemoryData['PageFile Total Bytes'];
         $PageFileCheck.WarnOutOfRange($TotalPageFileWarning).CritOutOfRange($TotalPageFileCritical) | Out-Null;
         $ProcessSummary.AddCheck($PageFileCheck);
 
-        $MemoryCheck = New-IcingaCheck -Name 'Memory Usage' -Value $ProcessData.PerformanceData.WorkingSetPrivate -Unit 'B' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_memory_usage', $processName.ToLower()))) -BaseValue $MemoryData['Memory Total Bytes'] -Minimum 0 -Maximum $MemoryData['Memory Total Bytes'];
+        $MemoryCheck = New-IcingaCheck -Name 'Memory Usage' -Value $ProcessData.PerformanceData.WorkingSetPrivate -Unit 'B' -MetricIndex $processName -MetricName 'memory' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_memory_usage', $processName.ToLower()))) -BaseValue $MemoryData['Memory Total Bytes'] -Minimum 0 -Maximum $MemoryData['Memory Total Bytes'];
         $MemoryCheck.WarnOutOfRange($TotalMemoryWarning).CritOutOfRange($TotalMemoryCritical) | Out-Null;
         $ProcessSummary.AddCheck($MemoryCheck);
 
-        $CPUCheck = New-IcingaCheck -Name 'CPU Usage' -Value $ProcessData.PerformanceData.PercentProcessorTime -Unit '%' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_cpu_usage', $processName.ToLower())));
+        $CPUCheck = New-IcingaCheck -Name 'CPU Usage' -Value $ProcessData.PerformanceData.PercentProcessorTime -Unit '%' -MetricIndex $processName -MetricName 'cpu' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_cpu_usage', $processName.ToLower())));
         $CPUCheck.WarnOutOfRange($TotalCPUWarning).CritOutOfRange($TotalCPUCritical) | Out-Null;
         $ProcessSummary.AddCheck($CPUCheck);
 
-        $ThreadCheck = New-IcingaCheck -Name 'Thread Count' -Value $ProcessData.PerformanceData.ThreadCount -Unit 'c' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_thread_count', $processName.ToLower())));
+        $ThreadCheck = New-IcingaCheck -Name 'Thread Count' -Value $ProcessData.PerformanceData.ThreadCount -Unit 'c' -MetricIndex $processName -MetricName 'threads' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_thread_count', $processName.ToLower())));
         $ThreadCheck.WarnOutOfRange($TotalThreadCountWarning).CritOutOfRange($TotalThreadCountCritical) | Out-Null;
         $ProcessSummary.AddCheck($ThreadCheck);
 
-        $ProcessCheck = New-IcingaCheck -Name 'Process Count' -Value $ProcessData.ProcessList.Count -Unit 'c' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_process_count', $processName.ToLower())));
+        $ProcessCheck = New-IcingaCheck -Name 'Process Count' -Value $ProcessData.ProcessList.Count -Unit 'c' -MetricIndex $processName -MetricName 'count' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_process_count', $processName.ToLower())));
         $ProcessCheck.WarnOutOfRange($TotalProcessCountWarning).CritOutOfRange($TotalProcessCountCritical) | Out-Null;
         $ProcessSummary.AddCheck($ProcessCheck);
 

@@ -108,34 +108,49 @@ function Invoke-IcingaCheckScheduledTask()
                 )
             } else {
                 $TaskPackage = New-IcingaCheckPackage -Name $task.TaskName -OperatorAnd -Verbose $Verbosity;
+                $MetricIndex = [string]::Format('{0}{1}', $task.TaskPath, $task.TaskName).Replace('\', '_');
+
+                if ($MetricIndex[0] -eq '_') {
+                    $MetricIndex = $MetricIndex.Substring(1, $MetricIndex.Length - 1);
+                }
 
                 $TaskState = New-IcingaCheck `
                     -Name 'State' `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1})', $task.TaskName, $task.TaskPath))) `
                     -Value ($ProviderEnums.ScheduledTaskStatus[[string]$task.State]) `
-                    -Translation $ProviderEnums.ScheduledTaskName;
+                    -Translation $ProviderEnums.ScheduledTaskName `
+                    -MetricIndex $MetricIndex `
+                    -MetricName 'state';
 
                 $TaskMissedRunes = New-IcingaCheck `
                     -Name 'Missed Runs' `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) MissedRuns', $task.TaskName, $task.TaskPath))) `
-                    -Value $task.NumberOfMissedRuns;
+                    -Value $task.NumberOfMissedRuns `
+                    -MetricIndex $MetricIndex `
+                    -MetricName 'missedruns';
 
                 $TaskLastResult = New-IcingaCheck `
                     -Name 'Last Task Result' `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) LastTaskResult', $task.TaskName, $task.TaskPath))) `
-                    -Value $task.LastTaskResult;
+                    -Value $task.LastTaskResult `
+                    -MetricIndex $MetricIndex `
+                    -MetricName 'lasttaskresult';
 
                 $TaskLastRunTime = New-IcingaCheck `
                     -Name 'Last Run Time' `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) LastRunTime', $task.TaskName, $task.TaskPath))) `
                     -Value $task.LastRunTime `
-                    -Translation @{ 0 = 'Never'; };
+                    -Translation @{ 0 = 'Never'; } `
+                    -MetricIndex $MetricIndex `
+                    -MetricName 'lastruntime';
 
                 $TaskNextRunTime = New-IcingaCheck `
                     -Name 'Next Run Time' `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) NextRunTime', $task.TaskName, $task.TaskPath))) `
                     -Value $task.NextRunTime `
-                    -Translation @{ 0 = 'Never'; };
+                    -Translation @{ 0 = 'Never'; } `
+                    -MetricIndex $MetricIndex `
+                    -MetricName 'nextruntime';
 
                 if ($State.Count -ne 0 -and $State -NotContains ([string]$task.State)) {
                     $TaskState.CritIfNotMatch($ProviderEnums.ScheduledTaskStatus[$State[0]]) | Out-Null;

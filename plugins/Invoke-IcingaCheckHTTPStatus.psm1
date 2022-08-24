@@ -118,13 +118,18 @@ function Invoke-IcingaCheckHTTPStatus()
     foreach ($SingleUrl in $Url) {
 
         $TransformedUrl = $SingleUrl  -Replace "[:\./]", "_" -Replace "(_)+", "_";
+        $MetricIndex    = $TransformedUrl; # $TransformedUrl.Replace('_', '');
         # Full Package
         $HTTPStatusPackage = New-IcingaCheckPackage -Name ([string]::Format('HTTP Status Check {0}', $SingleUrl)) -OperatorAnd -Verbose $Verbosity;
 
         # Status Code
 
-        $HTTPStatusCodeCheck = New-IcingaCheck -Name "HTTP Status Code" -Value $HTTPData[$SingleUrl]['StatusCodes'].Value -LabelName ([string]::Format('{0}.http_status', $TransformedUrl));
-
+        $HTTPStatusCodeCheck = New-IcingaCheck `
+            -Name "HTTP Status Code" `
+            -Value $HTTPData[$SingleUrl]['StatusCodes'].Value `
+            -LabelName ([string]::Format('{0}.http_status', $TransformedUrl)) `
+            -MetricIndex $MetricIndex `
+            -MetricName 'statuscode';
 
         if ($Negate -eq $false) {
             # Normal
@@ -184,14 +189,18 @@ function Invoke-IcingaCheckHTTPStatus()
                     -Name ([string]::Format('HTTP Content "{0}"', $ContentKeys)) `
                     -Value $HTTPData[$SingleUrl]['Matches'][$ContentKeys] `
                     -LabelName ([string]::Format('{0}.http_content_{1}', $TransformedUrl, $ContentKeys)) `
-                    -Translation @{ 'true' = 'Found'; 'false' = 'Not Found' };
+                    -Translation @{ 'true' = 'Found'; 'false' = 'Not Found' } `
+                    -MetricIndex $MetricIndex `
+                    -MetricName ([string]::Format('httpcontent_{0}', $ContentKeys));
             } else {
                 $HTTPContentMatchPackage = New-IcingaCheck `
                     -Name ([string]::Format('HTTP Content "{0}"', $ContentKeys)) `
                     -Value $HTTPData[$SingleUrl]['Matches'][$ContentKeys] `
                     -LabelName ([string]::Format('{0}.http_content_{1}', $TransformedUrl, $ContentKeys)) `
                     -Translation @{ 'true' = 'Found'; 'false' = 'Not Found' } `
-                    -Hidden;
+                    -Hidden `
+                    -MetricIndex $MetricIndex `
+                    -MetricName ([string]::Format('httpcontent_{0}', $ContentKeys));
             }
 
             if ($HTTPData[$SingleUrl]['Matches'][$ContentKeys] -eq $FALSE) {
@@ -211,17 +220,17 @@ function Invoke-IcingaCheckHTTPStatus()
 
         # Response Time
         if ($HTTPData.$SingleUrl['RequestTime'] -eq $null) {
-            $HTTPResponseTimeCheck = New-IcingaCheck -Name "HTTP Response Time" -Value 0 -LabelName ([string]::Format('{0}.http_response_time', $TransformedUrl)) -Unit 's' -Hidden;
+            $HTTPResponseTimeCheck = New-IcingaCheck -Name "HTTP Response Time" -Value 0 -LabelName ([string]::Format('{0}.http_response_time', $TransformedUrl)) -Unit 's' -Hidden -MetricIndex $MetricIndex -MetricName 'responsetime';
             $HTTPResponseTimeCheck.SetUnknown() | Out-Null;
         } else {
-            $HTTPResponseTimeCheck = New-IcingaCheck -Name "HTTP Response Time" -Value $HTTPData.$SingleUrl['RequestTime'] -LabelName ([string]::Format('{0}.http_response_time', $TransformedUrl)) -Unit 's';
+            $HTTPResponseTimeCheck = New-IcingaCheck -Name "HTTP Response Time" -Value $HTTPData.$SingleUrl['RequestTime'] -LabelName ([string]::Format('{0}.http_response_time', $TransformedUrl)) -Unit 's' -MetricIndex $MetricIndex -MetricName 'responsetime';
             $HTTPResponseTimeCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
         }
         $HTTPStatusPackage.AddCheck($HTTPResponseTimeCheck);
 
         # PerfData
         $PerfDataPackage = New-IcingaCheckPackage -Name 'PerfData' -OperatorAnd -Verbose $Verbosity -Hidden -Checks @(
-            (New-IcingaCheck -Name 'Content Size' -Value $HTTPData.$SingleUrl['ContentSize'] -Unit 'B' -LabelName ([string]::Format('{0}.http_content_size', $TransformedUrl)))
+            (New-IcingaCheck -Name 'Content Size' -Value $HTTPData.$SingleUrl['ContentSize'] -Unit 'B' -LabelName ([string]::Format('{0}.http_content_size', $TransformedUrl)) -MetricIndex $MetricIndex -MetricName 'contentsize');
         );
         $HTTPStatusPackage.AddCheck($PerfDataPackage);
 

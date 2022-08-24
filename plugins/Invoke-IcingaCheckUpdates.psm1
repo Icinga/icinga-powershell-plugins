@@ -88,7 +88,7 @@ function Invoke-IcingaCheckUpdates()
 
     $PendingUpdates      = Get-IcingaWindowsUpdatesPending -UpdateFilter $UpdateFilter;
     $WindowsUpdates      = New-IcingaCheckPackage -Name 'Windows Updates' -OperatorAnd -AddSummaryHeader -Verbose $Verbosity;
-    $TotalPendingUpdates = New-IcingaCheck -Name 'Total Pending Updates' -Value $PendingUpdates.count -Unit 'c';
+    $TotalPendingUpdates = New-IcingaCheck -Name 'Total Pending Updates' -Value $PendingUpdates.count -Unit 'c' -MetricIndex 'summary' -MetricName 'count';
 
     $TotalPendingUpdates.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
     $WindowsUpdates.AddCheck($TotalPendingUpdates);
@@ -131,7 +131,7 @@ function Invoke-IcingaCheckUpdates()
             $CategoryPackage.AddCheck($UpdateName);
         }
 
-        $UpdateCount = New-IcingaCheck -Name 'Update Count' -Value $UpdateCategories.Count -Unit 'c' -LabelName $PerfDataLabel;
+        $UpdateCount = New-IcingaCheck -Name 'Update Count' -Value $UpdateCategories.Count -Unit 'c' -LabelName $PerfDataLabel -MetricIndex $category -MetricName 'count';
         $UpdateCount.WarnOutOfRange($CategoryWarning).CritOutOfRange($CategoryCritical) | Out-Null;
         $CategoryPackage.AddCheck($UpdateCount);
     }

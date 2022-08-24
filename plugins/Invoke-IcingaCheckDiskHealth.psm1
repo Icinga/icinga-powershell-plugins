@@ -312,7 +312,9 @@ function Invoke-IcingaCheckDiskHealth()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} avg. disk sec/read', $Partition)) `
                     -Value $DiskObjects.PerfCounter['avg. disk sec/read'].value `
-                    -Unit 's'
+                    -Unit 's' `
+                    -MetricIndex $Partition `
+                    -MetricName 'avgdiskreadsec'
             ).WarnOutOfRange(
                 $DiskAvgReadSecWarning
             ).CritOutOfRange(
@@ -325,7 +327,9 @@ function Invoke-IcingaCheckDiskHealth()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} avg. disk sec/write', $Partition)) `
                     -Value $DiskObjects.PerfCounter['avg. disk sec/write'].value `
-                    -Unit 's'
+                    -Unit 's' `
+                    -MetricIndex $Partition `
+                    -MetricName 'avgdiskwritesec'
             ).WarnOutOfRange(
                 $DiskAvgWriteSecWarning
             ).CritOutOfRange(
@@ -338,7 +342,9 @@ function Invoke-IcingaCheckDiskHealth()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} avg. disk sec/transfer', $Partition)) `
                     -Value $DiskObjects.PerfCounter['avg. disk sec/transfer'].value `
-                    -Unit 's'
+                    -Unit 's' `
+                    -MetricIndex $Partition `
+                    -MetricName 'avgdisktransfersec'
             ).WarnOutOfRange(
                 $DiskAvgTransSecWarning
             ).CritOutOfRange(
@@ -350,7 +356,9 @@ function Invoke-IcingaCheckDiskHealth()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} current disk queue length', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['current disk queue length'].value
+                    -Value $DiskObjects.PerfCounter['current disk queue length'].value `
+                    -MetricIndex $Partition `
+                    -MetricName 'currentdiskqueuelength'
             ).WarnOutOfRange(
                 $DiskQueueLenWarning
             ).CritOutOfRange(
@@ -363,7 +371,9 @@ function Invoke-IcingaCheckDiskHealth()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} avg. disk queue length', $Partition)) `
                     -Value $DiskObjects.PerfCounter['avg. disk queue length'].value `
-                    -Unit '%'
+                    -Unit '%' `
+                    -MetricIndex $Partition `
+                    -MetricName 'avgdiskqueuelength'
             ).WarnOutOfRange(
                 $DiskQueueAvgLenWarning
             ).CritOutOfRange(
@@ -376,7 +386,9 @@ function Invoke-IcingaCheckDiskHealth()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} disk read bytes/sec', $Partition)) `
                     -Value $DiskObjects.PerfCounter['disk read bytes/sec'].value `
-                    -Unit 'B'
+                    -Unit 'B' `
+                    -MetricIndex $Partition `
+                    -MetricName 'diskreadbytessec'
             ).WarnOutOfRange(
                 $DiskReadByteSecWarning
             ).CritOutOfRange(
@@ -389,7 +401,9 @@ function Invoke-IcingaCheckDiskHealth()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} disk write bytes/sec', $Partition)) `
                     -Value $DiskObjects.PerfCounter['disk write bytes/sec'].value `
-                    -Unit 'B'
+                    -Unit 'B' `
+                    -MetricIndex $Partition `
+                    -MetricName 'diskwritebytessec'
             ).WarnOutOfRange(
                 $DiskWriteByteSecWarning
             ).CritOutOfRange(
@@ -401,7 +415,9 @@ function Invoke-IcingaCheckDiskHealth()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} disk reads/sec', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['disk reads/sec'].value
+                    -Value $DiskObjects.PerfCounter['disk reads/sec'].value `
+                    -MetricIndex $Partition `
+                    -MetricName 'diskreadssec'
             ).WarnOutOfRange(
                 $DiskReadSecWarning
             ).CritOutOfRange(
@@ -413,7 +429,9 @@ function Invoke-IcingaCheckDiskHealth()
             (
                 New-IcingaCheck `
                     -Name ([string]::Format('{0} disk writes/sec', $Partition)) `
-                    -Value $DiskObjects.PerfCounter['disk writes/sec'].value
+                    -Value $DiskObjects.PerfCounter['disk writes/sec'].value `
+                    -MetricIndex $Partition `
+                    -MetricName 'diskwritessec'
             ).WarnOutOfRange(
                 $DiskWriteSecWarning
             ).CritOutOfRange(

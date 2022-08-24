@@ -67,13 +67,13 @@ function Invoke-IcingaCheckProcessCount()
 
     if ($Process.Count -eq 0) {
         $ProcessCount = $ProcessInformation['Process Count'];
-        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Process Count')) -Value $ProcessCount;
+        $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Process Count')) -Value $ProcessCount -MetricIndex 'summary' -MetricName 'count';
         $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
         $ProcessPackage.AddCheck($IcingaCheck);
     } else {
         foreach ($proc in $process) {
             $ProcessCount = $ProcessInformation.Processes[$proc].ProcessList.Count;
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Process Count "{0}"', $proc)) -Value $ProcessCount;
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('Process Count "{0}"', $proc)) -Value $ProcessCount -MetricIndex $proc -MetricName 'count';
             $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
             $ProcessPackage.AddCheck($IcingaCheck);
         }

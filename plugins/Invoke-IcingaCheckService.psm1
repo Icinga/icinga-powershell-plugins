@@ -170,28 +170,28 @@ function Invoke-IcingaCheckService()
 
     if ($ServicesPackage.HasChecks()) {
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'stopped services' -Value $ServiceSummary.StoppedCount)
+            (New-IcingaCheck -Name 'stopped services' -Value $ServiceSummary.StoppedCount -MetricIndex 'summary' -MetricName 'stopped')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'pending started services' -Value $ServiceSummary.StartPendingCount)
+            (New-IcingaCheck -Name 'pending started services' -Value $ServiceSummary.StartPendingCount -MetricIndex 'summary' -MetricName 'pendingstarted')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'pending stopped services' -Value $ServiceSummary.StopPendingCount)
+            (New-IcingaCheck -Name 'pending stopped services' -Value $ServiceSummary.StopPendingCount -MetricIndex 'summary' -MetricName 'pendingstopped')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'running services' -Value $ServiceSummary.RunningCount)
+            (New-IcingaCheck -Name 'running services' -Value $ServiceSummary.RunningCount -MetricIndex 'summary' -MetricName 'running')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'pending continued services' -Value $ServiceSummary.ContinuePendingCount)
+            (New-IcingaCheck -Name 'pending continued services' -Value $ServiceSummary.ContinuePendingCount -MetricIndex 'summary' -MetricName 'pendingcontinued')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'pending paused services' -Value $ServiceSummary.PausePendingCount)
+            (New-IcingaCheck -Name 'pending paused services' -Value $ServiceSummary.PausePendingCount -MetricIndex 'summary' -MetricName 'pendingpaused')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'paused services' -Value $ServiceSummary.PausedCount)
+            (New-IcingaCheck -Name 'paused services' -Value $ServiceSummary.PausedCount -MetricIndex 'summary' -MetricName 'paused')
         );
         $ServicesCountPackage.AddCheck(
-            (New-IcingaCheck -Name 'service count' -Value $ServiceSummary.ServicesCounted)
+            (New-IcingaCheck -Name 'service count' -Value $ServiceSummary.ServicesCounted -MetricIndex 'summary' -MetricName 'count')
         );
 
         $ServicesPackage.AddCheck($ServicesCountPackage)

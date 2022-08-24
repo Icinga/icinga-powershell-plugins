@@ -169,7 +169,7 @@ function Invoke-IcingaCheckEventlog()
         $EventLogCountPackage = New-IcingaCheckPackage -Name 'EventLog Count' -OperatorAnd -Verbose $Verbosity -Hidden;
 
         foreach ($event in $EventLogData.events.Keys) {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $event)) -Value $EventLogData.events[$event] -Unit 'c';
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $event)) -Value $EventLogData.events[$event] -Unit 'c' -MetricIndex $event -MetricName 'count';
             $EventLogCountPackage.AddCheck($IcingaCheck);
         }
 

@@ -163,7 +163,9 @@ function Invoke-IcingaCheckStoragePool()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0}: Capacity', $Storage)) `
                     -Value $StoragePool.Capacity `
-                    -Unit 'GB'
+                    -Unit 'GB' `
+                    -MetricIndex $Storage `
+                    -MetricName 'capacity'
             ).WarnOutOfRange(
                 $CapacityWarning
             ).CritOutOfRange(
@@ -176,7 +178,9 @@ function Invoke-IcingaCheckStoragePool()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0}: FreeSpace', $Storage)) `
                     -Value $StoragePool.FreeSpace `
-                    -Unit 'GB'
+                    -Unit 'GB' `
+                    -MetricIndex $Storage `
+                    -MetricName 'free'
             ).WarnOutOfRange(
                 $FreeSpaceWarning
             ).CritOutOfRange(
@@ -189,7 +193,9 @@ function Invoke-IcingaCheckStoragePool()
                 New-IcingaCheck `
                     -Name ([string]::Format('{0}: TotalUsed', $Storage)) `
                     -Value $StoragePool.TotalUsed `
-                    -Unit 'GB'
+                    -Unit 'GB' `
+                    -MetricIndex $Storage `
+                    -MetricName 'used'
             ).WarnOutOfRange(
                 $TotalUsedWarning
             ).CritOutOfRange(

@@ -84,6 +84,7 @@ function Invoke-IcingaCheckTCP()
 
     foreach ($port in $ConnectionData.Keys) {
 
+        $MetricIndex       = [string]::Format('{0}_{1}', $Address, $port).Replace('.', '_').Replace('/', '_');
         $ConnectionValue   = $ConnectionData[$port];
         $ConnectionPackage = New-IcingaCheckPackage -Name ([string]::Format('{0}:{1}', $Address, $port)) -OperatorAnd -Verbose $Verbosity;
 
@@ -91,7 +92,9 @@ function Invoke-IcingaCheckTCP()
             -Name ([string]::Format('{0}:{1} Status', $Address, $port)) `
             -Value $ConnectionValue.Success `
             -Translation @{ 'False' = 'Not Connected'; 'True' = 'Connected' } `
-            -LabelName ([string]::Format('port_{0}_status', $port));
+            -LabelName ([string]::Format('port_{0}_status', $port)) `
+            -MetricIndex $MetricIndex `
+            -MetricName 'status';
 
         if ($Negate -eq $FALSE) {
             $ConnectionCheck.CritIfNotMatch($TRUE) | Out-Null;
@@ -103,7 +106,9 @@ function Invoke-IcingaCheckTCP()
             -Name ([string]::Format('{0}:{1} Time', $Address, $port)) `
             -Value $ConnectionValue.Time `
             -Unit 's' `
-            -LabelName ([string]::Format('port_{0}_time', $port));
+            -LabelName ([string]::Format('port_{0}_time', $port)) `
+            -MetricIndex $MetricIndex `
+            -MetricName 'time';
 
         $ConnectionTimeCheck.WarnOutOfRange($Warning.Value).CritOutOfRange($Critical.Value) | Out-Null;
 

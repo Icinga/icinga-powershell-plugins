@@ -68,9 +68,11 @@ function Invoke-IcingaCheckMPIO()
             $MpioCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `
-                        -Name ([string]::Format('{0} NumberDrives', $name)) `
+                        -Name ([string]::Format('{0} NumberDrivers', $name)) `
                         -Value $instance.NumberDrives `
-                        -Unit 'c'
+                        -Unit 'c' `
+                        -MetricIndex $name `
+                        -MetricName 'numberofdrivers'
                 )
             );
 
@@ -81,7 +83,9 @@ function Invoke-IcingaCheckMPIO()
                         New-IcingaCheck `
                             -Name ([string]::Format('{0} Number Paths', $driverName)) `
                             -Value $driver.NumberPaths `
-                            -Unit 'c'
+                            -Unit 'c' `
+                            -MetricIndex $driverName `
+                            -MetricName 'numberofpaths'
                     ).WarnOutOfRange(
                         $Warning
                     ).CritOutOfRange(
