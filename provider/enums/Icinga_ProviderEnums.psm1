@@ -166,6 +166,14 @@
     'Failed'                     = 0xD014;
 }
 
+# https://docs.microsoft.com/en-us/previous-versions/windows/desktop/stormgmt/msft-physicaldisk
+[hashtable]$DiskMediaType = @{
+    0 = 'Unspecified';
+    3 = 'HDD';
+    4 = 'SSD';
+    5 = 'SCM';
+};
+
 <#################################################################################################
 ################### /lib/provider/Networkdevices #################################################
 #################################################################################################>
@@ -1014,6 +1022,7 @@
     DiskBusType                     = $DiskBusType;
     DiskOperationalStatus           = $DiskOperationalStatus;
     DiskOperationalStatusName       = $DiskOperationalStatusName;
+    DiskMediaType                   = $DiskMediaType;
     DeviceAccess                    = $DeviceAccess;
     DeviceAccessName                = $DeviceAccessName;
     DeviceStatus                    = $DeviceStatus;

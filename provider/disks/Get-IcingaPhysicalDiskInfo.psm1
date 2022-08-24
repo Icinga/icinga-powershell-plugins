@@ -37,237 +37,255 @@ function Global:Get-IcingaPhysicalDiskInfo()
     $PartitionInformation = Get-IcingaDiskPartitionAssignment;
     $PhysicalDiskData     = @{ };
 
-    foreach ($disk in $PhysicalDisks) {
-        [string]$DiskId   = $disk.DeviceId.ToString().Replace('\\.\PHYSICALDRIVE', '');
-
+    foreach ($disk in $MSFT_Disks) {
+        [int]$MSFTDiskId = [int]$disk.DeviceId;
         if ($DiskIds.Count -ne 0) {
-            if (-Not ($DiskIds -Contains $DiskId)) {
+            if (-Not ($DiskIds -Contains $MSFTDiskId)) {
                 continue;
             }
         }
 
-        $DiskData   = Get-IcingaDiskAttributes -DiskId $DiskId;
-        $Partitions = Get-CimAssociatedInstance -InputObject $disk -ResultClass Win32_DiskPartition;
+        $DiskData = Get-IcingaDiskAttributes -DiskId $MSFTDiskId;
 
-        $DiskInfo = @{
-            'ErrorCleared'                = $disk.ErrorCleared;
-            'FirmwareRevision'            = $disk.FirmwareRevision;
-            'Description'                 = $disk.Description;
-            'PartitionStyle'              = ''; # Set later on partition check
-            'PartitionLayout'             = @{ };
-            'DriveReference'              = @{ }; # Set later on partition check
-            'Caption'                     = $disk.Caption;
-            'IsSystem'                    = $disk.IsSystem;
-            'TotalHeads'                  = $disk.TotalHeads;
-            'IsOffline'                   = ($DiskData.Offline);
-            'MaxMediaSize'                = $disk.MaxMediaSize;
-            'ConfigManagerUserConfig'     = $disk.ConfigManagerUserConfig;
-            'Model'                       = $disk.Model;
-            'BusType'                     = $null; # Set later on MSFT
-            'PowerManagementCapabilities' = $disk.PowerManagementCapabilities;
-            'TracksPerCylinder'           = $disk.TracksPerCylinder;
-            'IsHighlyAvailable'           = $disk.IsHighlyAvailable;
-            'DeviceID'                    = $disk.DeviceID;
-            'NeedsCleaning'               = $disk.NeedsCleaning;
-            'Index'                       = $disk.Index;
-            'OperationalStatus'           = @{ 0 = 'Unknown'; };
-            'MediaLoaded'                 = $disk.MediaLoaded;
-            'LastErrorCode'               = $disk.LastErrorCode;
-            'Size'                        = $disk.Size;
-            'MinBlockSize'                = $disk.MinBlockSize;
-            'IsScaleOut'                  = $disk.IsScaleOut;
-            'InterfaceType'               = $disk.InterfaceType;
-            'Capabilities'                = $disk.Capabilities;
-            'PNPDeviceID'                 = $disk.PNPDeviceID;
-            'Partitions'                  = $disk.Partitions;
-            'SerialNumber'                = $disk.SerialNumber;
-            'PowerManagementSupported'    = $disk.PowerManagementSupported;
-            'ErrorMethodology'            = $disk.ErrorMethodology;
-            'StatusInfo'                  = $disk.StatusInfo;
-            'NumberOfMediaSupported'      = $disk.NumberOfMediaSupported;
-            'InstallDate'                 = $disk.InstallDate;
-            'DefaultBlockSize'            = $disk.DefaultBlockSize;
-            'SystemCreationClassName'     = $disk.SystemCreationClassName;
-            'SCSITargetId'                = $disk.SCSITargetId;
-            'MediaType'                   = $disk.MediaType;
-            'Availability'                = $disk.Availability;
-            'BytesPerSector'              = $disk.BytesPerSector;
-            'IsReadOnly'                  = $DiskData.ReadOnly;
-            'Status'                      = $disk.Status;
-            'SCSILogicalUnit'             = $disk.SCSILogicalUnit;
-            'CapabilityDescriptions'      = $disk.CapabilityDescriptions;
-            'SCSIPort'                    = $disk.SCSIPort;
-            'TotalTracks'                 = $disk.TotalTracks;
-            'CreationClassName'           = $disk.CreationClassName;
-            'TotalCylinders'              = $disk.TotalCylinders;
-            'HealthStatus'                = $disk.HealthStatus;
-            'SCSIBus'                     = $disk.SCSIBus;
-            'Signature'                   = $disk.Signature;
-            'CompressionMethod'           = $disk.CompressionMethod;
-            'TotalSectors'                = $disk.TotalSectors;
-            'SystemName'                  = $disk.SystemName;
-            'IsBoot'                      = $FALSE; #Always false here because we set the boot option later based on our partition config
-            'MaxBlockSize'                = 0; # 0 because we later count the block size based on the amount of partitions
-            'ErrorDescription'            = $disk.ErrorDescription;
-            'Manufacturer'                = $disk.Manufacturer;
-            'Name'                        = $disk.Name;
-            'IsClustered'                 = $disk.IsClustered;
-            'ConfigManagerErrorCode'      = $disk.ConfigManagerErrorCode;
-            'SectorsPerTrack'             = $disk.SectorsPerTrack;
+        [hashtable]$DiskInfo = @{ };
+
+        foreach ($physical_disk in $PhysicalDisks) {
+            [string]$DiskId = $physical_disk.DeviceID.ToString().Replace('\\.\PHYSICALDRIVE', '');
+
+            if ($MSFTDiskId -ne [int]$DiskId) {
+                continue;
+            }
+
+            $DiskInfo = @{
+                'PartitionStyle'              = ''; # Set later on partition check
+                'PartitionLayout'             = @{ }; # Set later on partition check
+                'DriveReference'              = @{ };
+                'IsBoot'                      = $FALSE; # Always false here because we set the boot option later based on our partition config
+                'MaxBlockSize'                = 0; # 0 because we later count the block size based on the amount of partitions
+                'ErrorCleared'                = $physical_disk.ErrorCleared;
+                'FirmwareRevision'            = $physical_disk.FirmwareRevision;
+                'Description'                 = $physical_disk.Description;
+                'Caption'                     = $physical_disk.Caption;
+                'IsSystem'                    = $physical_disk.IsSystem;
+                'TotalHeads'                  = $physical_disk.TotalHeads;
+                'MaxMediaSize'                = $physical_disk.MaxMediaSize;
+                'ConfigManagerUserConfig'     = $physical_disk.ConfigManagerUserConfig;
+                'Model'                       = $physical_disk.Model;
+                'PowerManagementCapabilities' = $physical_disk.PowerManagementCapabilities;
+                'TracksPerCylinder'           = $physical_disk.TracksPerCylinder;
+                'IsHighlyAvailable'           = $physical_disk.IsHighlyAvailable;
+                'DeviceID'                    = $physical_disk.DeviceID;
+                'NeedsCleaning'               = $physical_disk.NeedsCleaning;
+                'Index'                       = $physical_disk.Index;
+                'MediaLoaded'                 = $physical_disk.MediaLoaded;
+                'LastErrorCode'               = $physical_disk.LastErrorCode;
+                'Size'                        = $physical_disk.Size;
+                'MinBlockSize'                = $physical_disk.MinBlockSize;
+                'IsScaleOut'                  = $physical_disk.IsScaleOut;
+                'InterfaceType'               = $physical_disk.InterfaceType;
+                'Capabilities'                = $physical_disk.Capabilities;
+                'PNPDeviceID'                 = $physical_disk.PNPDeviceID;
+                'Partitions'                  = $physical_disk.Partitions;
+                'PowerManagementSupported'    = $physical_disk.PowerManagementSupported;
+                'ErrorMethodology'            = $physical_disk.ErrorMethodology;
+                'StatusInfo'                  = $physical_disk.StatusInfo;
+                'NumberOfMediaSupported'      = $physical_disk.NumberOfMediaSupported;
+                'InstallDate'                 = $physical_disk.InstallDate;
+                'DefaultBlockSize'            = $physical_disk.DefaultBlockSize;
+                'SystemCreationClassName'     = $physical_disk.SystemCreationClassName;
+                'SCSITargetId'                = $physical_disk.SCSITargetId;
+                'Availability'                = $physical_disk.Availability;
+                'BytesPerSector'              = $physical_disk.BytesPerSector;
+                'Status'                      = $physical_disk.Status;
+                'SCSILogicalUnit'             = $physical_disk.SCSILogicalUnit;
+                'CapabilityDescriptions'      = $physical_disk.CapabilityDescriptions;
+                'SCSIPort'                    = $physical_disk.SCSIPort;
+                'TotalTracks'                 = $physical_disk.TotalTracks;
+                'CreationClassName'           = $physical_disk.CreationClassName;
+                'TotalCylinders'              = $physical_disk.TotalCylinders;
+                'SCSIBus'                     = $physical_disk.SCSIBus;
+                'Signature'                   = $physical_disk.Signature;
+                'CompressionMethod'           = $physical_disk.CompressionMethod;
+                'TotalSectors'                = $physical_disk.TotalSectors;
+                'SystemName'                  = $physical_disk.SystemName;
+                'ErrorDescription'            = $physical_disk.ErrorDescription;
+                'Manufacturer'                = $physical_disk.Manufacturer;
+                'Name'                        = $physical_disk.Name;
+                'IsClustered'                 = $physical_disk.IsClustered;
+                'ConfigManagerErrorCode'      = $physical_disk.ConfigManagerErrorCode;
+                'SectorsPerTrack'             = $physical_disk.SectorsPerTrack;
+            };
+
+            $Partitions = Get-CimAssociatedInstance -InputObject $physical_disk -ResultClass Win32_DiskPartition;
+
+            $MaxBlocks = 0;
+
+            foreach ($partition in $Partitions) {
+                $DriveLetter            = $null;
+                [string]$PartitionIndex = $partition.Index;
+
+                if ($PartitionInformation.ContainsKey($DiskId) -And $PartitionInformation[$DiskId].Partitions.ContainsKey($PartitionIndex)) {
+                    $DriveLetter = $PartitionInformation[$DiskId].Partitions[$PartitionIndex];
+
+                    $DiskInfo.DriveReference.Add(
+                        $DriveLetter, $partition.Index
+                    );
+                }
+
+                $DiskInfo.PartitionLayout.Add(
+                    $PartitionIndex,
+                    @{
+                        'NumberOfBlocks'   = $Partition.NumberOfBlocks;
+                        'BootPartition'    = $Partition.BootPartition;
+                        'PrimaryPartition' = $Partition.PrimaryPartition;
+                        'Size'             = $Partition.Size;
+                        'Index'            = $Partition.Index;
+                        'DiskIndex'        = $Partition.DiskIndex;
+                        'DriveLetter'      = $DriveLetter;
+                        'Bootable'         = $Partition.Bootable;
+                        'Name'             = [string]::Format('Disk #{0}, Partition #{1}', $MSFTDiskId, $PartitionIndex);
+                        'StartingOffset'   = $Partition.StartingOffset;
+                        'Status'           = $Partition.Status;
+                        'StatusInfo'       = $Partition.StatusInfo;
+                        'Type'             = $Partition.Type;
+                    }
+                )
+
+                foreach ($logical_disk in $LogicalDisk) {
+                    if ($logical_disk.DeviceId -eq $DriveLetter) {
+                        if ($null -ne $LogicalDisk) {
+                            $UsedSpace = 0;
+
+                            if ([string]::IsNullOrEmpty($DiskInfo.PartitionLayout[$PartitionIndex].Size) -eq $FALSE -And [string]::IsNullOrEmpty($logical_disk.FreeSpace) -eq $FALSE) {
+                                $UsedSpace = $DiskInfo.PartitionLayout[$PartitionIndex].Size - $logical_disk.FreeSpace;
+                            }
+
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'FreeSpace', $logical_disk.FreeSpace
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'UsedSpace', $UsedSpace
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'VolumeName', $logical_disk.VolumeName
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'FileSystem', $logical_disk.FileSystem
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'VolumeSerialNumber', $logical_disk.VolumeSerialNumber
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'Description', $logical_disk.Description
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'Access', $logical_disk.Access
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'SupportsFileBasedCompression', $logical_disk.SupportsFileBasedCompression
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'SupportsDiskQuotas', $logical_disk.SupportsDiskQuotas
+                            );
+                            $DiskInfo.PartitionLayout[$PartitionIndex].Add(
+                                'Compressed', $logical_disk.Compressed
+                            );
+                        }
+
+                        break;
+                    }
+                }
+
+                $MaxBlocks += $Partition.NumberOfBlocks;
+
+                if ($Partition.Bootable) {
+                    $DiskInfo.IsBoot = $Partition.Bootable;
+                }
+                $DiskInfo.MaxBlockSize = $MaxBlocks;
+
+                if ($Partition.Type -Like '*GPT*') {
+                    $DiskInfo.PartitionStyle = 'GPT';
+                } else {
+                    $DiskInfo.PartitionStyle = 'MBR';
+                }
+            }
+
+            break;
         }
 
-        # Add MSFT disk data to your return value
-        foreach ($msft_disk in $MSFT_Disks) {
-            if ([int]$msft_disk.DeviceId -eq [int]$DiskId) {
-                $DiskInfo.BusType           = @{
-                    'value' = $msft_disk.BusType;
-                    'name'  = $ProviderEnums.DiskBusType[[int]$msft_disk.BusType];
-                }
-                $DiskInfo.HealthStatus      = $msft_disk.HealthStatus;
-                if ($null -ne $msft_disk.OperationalStatus) {
-                    $OperationalStatus = @{ };
+        $DiskInfo.Add('IsOffline', $DiskData.Offline);
+        $DiskInfo.Add('IsReadOnly', $DiskData.ReadOnly);
+        $DiskInfo.Add('OperationalStatus', @{ }); # Set later on MSFT
+        $DiskInfo.Add(
+            'BusType',
+            @{
+                'value' = $disk.BusType;
+                'name'  = $ProviderEnums.DiskBusType[[int]$disk.BusType];
+            }
+        )
+        $DiskInfo.Add('HealthStatus', $disk.HealthStatus);
+        if ($null -ne $disk.OperationalStatus) {
+            $OperationalStatus = @{ };
 
-                    foreach ($entry in $msft_disk.OperationalStatus) {
-                        if (Test-Numeric $entry) {
-                            Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value ($ProviderEnums.DiskOperationalStatus[[int]$entry]) | Out-Null;
-                        } else {
-                            if ($ProviderEnums.DiskOperationalStatus.Values -Contains $entry) {
-                                foreach ($opStatus in $ProviderEnums.DiskOperationalStatus.Keys) {
-                                    $opStatusValue = $ProviderEnums.DiskOperationalStatus[$opStatus];
-                                    if ($opStatusValue.ToLower() -eq ([string]$entry).ToLower()) {
-                                        Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$opStatus) -Value $entry | Out-Null;
-                                        break;
-                                    }
-                                }
+            foreach ($entry in $disk.OperationalStatus) {
+                if (Test-Numeric $entry) {
+                    Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value ($ProviderEnums.DiskOperationalStatus[[int]$entry]) | Out-Null;
+                } else {
+                    if ($ProviderEnums.DiskOperationalStatus.Values -Contains $entry) {
+                        foreach ($opStatus in $ProviderEnums.DiskOperationalStatus.Keys) {
+                            $opStatusValue = $ProviderEnums.DiskOperationalStatus[$opStatus];
+                            if ($opStatusValue.ToLower() -eq ([string]$entry).ToLower()) {
+                                Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$opStatus) -Value $entry | Out-Null;
+                                break;
                             }
                         }
                     }
-
-                    $DiskInfo.OperationalStatus = $OperationalStatus;
-                } else {
-                    $DiskInfo.OperationalStatus = @{ 0 = 'Unknown'; };
                 }
-                $DiskInfo.Add(
-                    'SpindleSpeed', $msft_disk.SpindleSpeed
-                );
-                $DiskInfo.Add(
-                    'PhysicalLocation', $msft_disk.PhysicalLocation
-                );
-                $DiskInfo.Add(
-                    'AdapterSerialNumber', $msft_disk.AdapterSerialNumber
-                );
-                $DiskInfo.Add(
-                    'PhysicalSectorSize', $msft_disk.PhysicalSectorSize
-                );
-                $DiskInfo.Add(
-                    'CanPool', $msft_disk.CanPool
-                );
-                $DiskInfo.Add(
-                    'CannotPoolReason', $msft_disk.CannotPoolReason
-                );
-                $DiskInfo.Add(
-                    'IsPartial', $msft_disk.IsPartial
-                );
-                $DiskInfo.Add(
-                    'UniqueId', $msft_disk.UniqueId
-                );
-                break;
             }
+
+            $DiskInfo.OperationalStatus = $OperationalStatus;
+        } else {
+            $DiskInfo.OperationalStatus = @{ 0 = 'Unknown'; };
         }
-
-        $MaxBlocks = 0;
-
-        foreach ($partition in $Partitions) {
-            $DriveLetter            = $null;
-            [string]$PartitionIndex = $partition.Index;
-
-            if ($PartitionInformation.ContainsKey($DiskId) -And $PartitionInformation[$DiskId].Partitions.ContainsKey($PartitionIndex)) {
-                $DriveLetter = $PartitionInformation[$DiskId].Partitions[$PartitionIndex];
-
-                $DiskInfo.DriveReference.Add(
-                    $DriveLetter, $partition.Index
-                );
+        $DiskInfo.Add(
+            'SpindleSpeed', $disk.SpindleSpeed
+        );
+        $DiskInfo.Add(
+            'PhysicalLocation', $disk.PhysicalLocation
+        );
+        $DiskInfo.Add(
+            'AdapterSerialNumber', $disk.AdapterSerialNumber
+        );
+        $DiskInfo.Add(
+            'PhysicalSectorSize', $disk.PhysicalSectorSize
+        );
+        $DiskInfo.Add(
+            'CanPool', $disk.CanPool
+        );
+        $DiskInfo.Add(
+            'CannotPoolReason', $disk.CannotPoolReason
+        );
+        $DiskInfo.Add(
+            'IsPartial', $disk.IsPartial
+        );
+        $DiskInfo.Add(
+            'UniqueId', $disk.UniqueId
+        );
+        $DiskInfo.Add(
+            'FriendlyName', $disk.FriendlyName
+        );
+        $DiskInfo.Add(
+            'SerialNumber', [string]$disk.SerialNumber
+        );
+        $DiskInfo.Add(
+            'MediaType',
+            @{
+                'Value' = $disk.MediaType
+                'Name'  = ($ProviderEnums.DiskMediaType[[int]$disk.MediaType])
             }
+        );
 
-            $DiskInfo.PartitionLayout.Add(
-                $PartitionIndex,
-                @{
-                    'NumberOfBlocks'   = $Partition.NumberOfBlocks;
-                    'BootPartition'    = $Partition.BootPartition;
-                    'PrimaryPartition' = $Partition.PrimaryPartition;
-                    'Size'             = $Partition.Size;
-                    'Index'            = $Partition.Index;
-                    'DiskIndex'        = $Partition.DiskIndex;
-                    'DriveLetter'      = $DriveLetter;
-                    'Bootable'         = $Partition.Bootable;
-                    'Name'             = [string]::Format('Disk #{0}, Partition #{1}', $DiskId, $PartitionIndex);
-                    'StartingOffset'   = $Partition.StartingOffset;
-                    'Status'           = $Partition.Status;
-                    'StatusInfo'       = $Partition.StatusInfo;
-                    'Type'             = $Partition.Type;
-                }
-            )
-
-            foreach ($logical_disk in $LogicalDisk) {
-                if ($logical_disk.DeviceId -eq $DriveLetter) {
-                    if ($null -ne $LogicalDisk) {
-                        $UsedSpace = 0;
-
-                        if ([string]::IsNullOrEmpty($DiskInfo.PartitionLayout[$PartitionIndex].Size) -eq $FALSE -And [string]::IsNullOrEmpty($logical_disk.FreeSpace) -eq $FALSE) {
-                            $UsedSpace = $DiskInfo.PartitionLayout[$PartitionIndex].Size - $logical_disk.FreeSpace;
-                        }
-
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'FreeSpace', $logical_disk.FreeSpace
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'UsedSpace', $UsedSpace
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'VolumeName', $logical_disk.VolumeName
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'FileSystem', $logical_disk.FileSystem
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'VolumeSerialNumber', $logical_disk.VolumeSerialNumber
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'Description', $logical_disk.Description
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'Access', $logical_disk.Access
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'SupportsFileBasedCompression', $logical_disk.SupportsFileBasedCompression
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'SupportsDiskQuotas', $logical_disk.SupportsDiskQuotas
-                        );
-                        $DiskInfo.PartitionLayout[$PartitionIndex].Add(
-                            'Compressed', $logical_disk.Compressed
-                        );
-                    }
-
-                    break;
-                }
-            }
-
-            $MaxBlocks += $Partition.NumberOfBlocks;
-
-            if ($Partition.Bootable) {
-                $DiskInfo.IsBoot = $Partition.Bootable;
-            }
-            $DiskInfo.MaxBlockSize = $MaxBlocks;
-
-            if ($Partition.Type -Like '*GPT*') {
-                $DiskInfo.PartitionStyle = 'GPT';
-            } else {
-                $DiskInfo.PartitionStyle = 'MBR';
-            }
-        }
-
-        $PhysicalDiskData.Add($DiskId, $diskinfo);
+        $PhysicalDiskData.Add($MSFTDiskId, $DiskInfo);
     }
 
     return $PhysicalDiskData;
