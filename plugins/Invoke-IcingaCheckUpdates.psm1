@@ -50,6 +50,12 @@
     The warning threshold for all other updates on the Windows machine
 .PARAMETER CriticalOther
     The critical threshold for all other updates on the Windows machine
+.PARAMETER WarnOnReboot
+    Checks if there is a pending reboot on the system to finalize Windows Updates and returns
+    warning if one is pending
+.PARAMETER CritOnReboot
+    Checks if there is a pending reboot on the system to finalize Windows Updates and returns
+    critical if one is pending
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -70,28 +76,39 @@
 function Invoke-IcingaCheckUpdates()
 {
     param (
-        [array]$UpdateFilter = @(),
-        $Warning             = $null,
-        $Critical            = $null,
-        $WarningSecurity     = $null,
-        $CriticalSecurity    = $null,
-        $WarningRollups      = $null,
-        $CriticalRollups     = $null,
-        $WarningDefender     = $null,
-        $CriticalDefender    = $null,
-        $WarningOther        = $null,
-        $CriticalOther       = $null,
-        [switch]$NoPerfData  = $FALSE,
+        [array]$UpdateFilter  = @(),
+        $Warning              = $null,
+        $Critical             = $null,
+        $WarningSecurity      = $null,
+        $CriticalSecurity     = $null,
+        $WarningRollups       = $null,
+        $CriticalRollups      = $null,
+        $WarningDefender      = $null,
+        $CriticalDefender     = $null,
+        $WarningOther         = $null,
+        $CriticalOther        = $null,
+        [switch]$WarnOnReboot = $FALSE,
+        [switch]$CritOnReboot = $FALSE,
+        [switch]$NoPerfData   = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity      = 0
+        [int]$Verbosity       = 0
     );
 
     $PendingUpdates      = Get-IcingaWindowsUpdatesPending -UpdateFilter $UpdateFilter;
     $WindowsUpdates      = New-IcingaCheckPackage -Name 'Windows Updates' -OperatorAnd -AddSummaryHeader -Verbose $Verbosity;
     $TotalPendingUpdates = New-IcingaCheck -Name 'Total Pending Updates' -Value $PendingUpdates.count -Unit 'c' -MetricIndex 'summary' -MetricName 'count';
+    $RebootPending       = New-IcingaCheck -Name 'Reboot Pending' -Value ([int]$PendingUpdates.RebootPending) -Translation @{ 0 = 'No'; 1 = 'Yes' } -MetricIndex 'reboot' -MetricName 'required';
+
+    if ($WarnOnReboot) {
+        $RebootPending.WarnIfMatch([int][bool]$WarnOnReboot) | Out-Null;
+    }
+    if ($CritOnReboot) {
+        $RebootPending.CritIfMatch([int][bool]$WarnOnReboot) | Out-Null;
+    }
 
     $TotalPendingUpdates.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
     $WindowsUpdates.AddCheck($TotalPendingUpdates);
+    $WindowsUpdates.AddCheck($RebootPending);
 
     $SecurityUpdates = New-IcingaCheckPackage -Name 'Security Updates' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
     $RollupUpdates   = New-IcingaCheckPackage -Name 'Update Rollups' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
