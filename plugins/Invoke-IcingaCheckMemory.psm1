@@ -130,7 +130,10 @@ function Invoke-IcingaCheckMemory()
                     -Minimum 0 `
                     -Maximum $PageFile.TotalSize `
                     -Unit 'MB' `
-                    -LabelName ([string]::Format('pagefile_{0}', (Format-IcingaPerfDataLabel $PageFile.Name)))
+                    -LabelName ([string]::Format('pagefile_{0}', (Format-IcingaPerfDataLabel $PageFile.Name))) `
+                    -MetricIndex (Format-IcingaPerfDataLabel $PageFile.Name) `
+                    -MetricName 'used' `
+                    -MetricTemplate 'pagefile'
             ).WarnOutOfRange(
                 $PageFileWarning
             ).CritOutOfRange(
