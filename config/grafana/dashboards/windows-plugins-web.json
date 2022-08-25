@@ -1,0 +1,1618 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Default Icinga for Windows dashboard, providing generic information for own plugins or for plugins with no dashboards yet available",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 21,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 5,
+        "title": "Generic",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "custom.drawStyle",
+                  "value": "points"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "custom.drawStyle",
+                  "value": "points"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 1
+        },
+        "id": 1,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
+            "refId": "Generic Metrics"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    (r._field == \"warn\") and\r\n    r.hostname == \"${hostname}\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
+            "refId": "Warning"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    (r._field == \"crit\") and\r\n    r.hostname == \"${hostname}\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
+            "refId": "Critical"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"unit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \"Unit\") }))",
+            "refId": "Unit"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Maximum\") }))",
+            "refId": "Maximum"
+          }
+        ],
+        "title": "${hostname} - ${service}",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 10
+        },
+        "id": 7,
+        "panels": [],
+        "title": "Single Plugins",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Size"
+              },
+              "properties": [
+                {
+                  "id": "custom.drawStyle",
+                  "value": "points"
+                },
+                {
+                  "id": "custom.pointSize",
+                  "value": 2
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 24,
+          "x": 0,
+          "y": 11
+        },
+        "id": 2,
+        "maxPerRow": 4,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        },
+        "repeat": "disks",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_partitionspace::free\\b/ or r.metric =~ /.*::ifw_partitionspace::used\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
+            "refId": "Value"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_partitionspace::free\\b/ or r.metric =~ /.*::ifw_partitionspace::used\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
+            "refId": "Warning"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_partitionspace::free\\b/ or r.metric =~ /.*::ifw_partitionspace::used\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
+            "refId": "Critical"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_partitionspace::free\\b/ or r.metric =~ /.*::ifw_partitionspace::used\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (\"Size \" + r.metric) }))",
+            "refId": "Size"
+          }
+        ],
+        "title": "${hostname} Disks",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_partitionspace::free/",
+              "renamePattern": " free"
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_partitionspace::used/",
+              "renamePattern": " used"
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/(?=Size)&?(::?(.*))/",
+              "renamePattern": ""
+            }
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Size"
+              },
+              "properties": [
+                {
+                  "id": "custom.drawStyle",
+                  "value": "points"
+                },
+                {
+                  "id": "custom.pointSize",
+                  "value": 2
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "id": 3,
+        "maxPerRow": 4,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        },
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_networkinterface::packetssentsec\\b/ or r.metric =~ /.*::ifw_networkinterface::packetsreceivedsec\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
+            "refId": "Value"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_networkinterface::packetssentsec\\b/ or r.metric =~ /.*::ifw_networkinterface::packetsreceivedsec\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
+            "refId": "Warning"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /.*::ifw_networkinterface::packetssentsec\\b/ or r.metric =~ /.*::ifw_networkinterface::packetsreceivedsec\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
+            "refId": "Critical"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric =~ /.*::ifw_networkinterface::linkspeed\\b/ and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (\"LinkSpeed \" + r.metric) }))",
+            "refId": "Maximum"
+          }
+        ],
+        "title": "${hostname} Interfaces",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_networkinterface::packetssentsec/",
+              "renamePattern": " sent"
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_networkinterface::packetsreceivedsec/",
+              "renamePattern": " received"
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_networkinterface::linkspeed/",
+              "renamePattern": ""
+            }
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Size"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Reboot"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "No"
+                        },
+                        "1": {
+                          "color": "red",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 28
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.0.6",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_updates::count\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Total Updates\" }))",
+            "refId": "Total Updates"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"rollups::ifw_updates::count\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Rollup\" }))",
+            "refId": "Rollups"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"defender::ifw_updates::count\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Defender\" }))",
+            "refId": "Defender"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"security::ifw_updates::count\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Security\" }))",
+            "refId": "Security"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"other::ifw_updates::count\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Other\" }))",
+            "refId": "Other"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"reboot::ifw_updates::required\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Reboot Pending\" }))",
+            "refId": "Reboot"
+          }
+        ],
+        "title": "${hostname} Updates",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_networkinterface::packetssentsec/",
+              "renamePattern": " sent"
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_networkinterface::packetsreceivedsec/",
+              "renamePattern": " received"
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_networkinterface::linkspeed/",
+              "renamePattern": ""
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "dtdhms"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Size"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Reboot"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "index": 0,
+                          "text": "No"
+                        },
+                        "1": {
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 38
+        },
+        "id": 6,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.0.6",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"windows::ifw_uptime::uptime\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Uptime\" }))",
+            "refId": "Uptime"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"windows::ifw_uptime::uptime\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Uptime Threshold\" }))",
+            "refId": "Threshold"
+          }
+        ],
+        "title": "${hostname} Uptime",
+        "transformations": [
+          {
+            "id": "configFromData",
+            "options": {
+              "applyTo": {
+                "id": "byFrameRefID",
+                "options": "Uptime"
+              },
+              "configRefId": "Threshold",
+              "mappings": [
+                {
+                  "fieldName": "Uptime Threshold",
+                  "handlerKey": "threshold1"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 48
+        },
+        "id": 8,
+        "maxPerRow": 4,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        },
+        "repeat": "cpucores",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(total::ifw_cpu::load)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
+            "refId": "Value"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(total::ifw_cpu::load)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (\"Warning \" + r.metric) }))",
+            "refId": "Warning"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(total::ifw_cpu::load)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (\"Critical \" + r.metric) }))",
+            "refId": "Critical"
+          }
+        ],
+        "title": "${hostname} CPU",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/total::ifw_cpu::load/",
+              "renamePattern": "Load "
+            }
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Services"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "1": {
+                          "index": 0,
+                          "text": "Stopped"
+                        },
+                        "2": {
+                          "index": 1,
+                          "text": "Start Pending"
+                        },
+                        "3": {
+                          "index": 2,
+                          "text": "Stop Pending"
+                        },
+                        "4": {
+                          "index": 3,
+                          "text": "Running"
+                        },
+                        "5": {
+                          "index": 4,
+                          "text": "Continue Pending"
+                        },
+                        "6": {
+                          "index": 5,
+                          "text": "Pause Pending"
+                        },
+                        "7": {
+                          "index": 6,
+                          "text": "Paused"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 56
+        },
+        "id": 9,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.0.6",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::count\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Service Count\" }))",
+            "refId": "Total Services"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::running\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Running\" }))",
+            "refId": "Running"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::stopped\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Stopped\" }))",
+            "refId": "Stopped"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::paused\" and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Paused\" }))",
+            "refId": "Paused"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric =~ /^(.*?)::ifw_service::state\\b/ and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
+            "refId": "Services"
+          }
+        ],
+        "title": "${hostname} Services",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_service::state/",
+              "renamePattern": ""
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "YnAJdFX7z"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Critical"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Warning"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Maximum"
+              },
+              "properties": [
+                {
+                  "id": "custom.drawStyle",
+                  "value": "points"
+                },
+                {
+                  "id": "custom.pointSize",
+                  "value": 2
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 66
+        },
+        "id": 10,
+        "maxPerRow": 4,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        },
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Used \" +  r.metric }))",
+            "refId": "Value"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (\"Warning \" + r.metric) }))",
+            "refId": "Warning"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (\"Critical \" + r.metric ) }))",
+            "refId": "Critical"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Memory Limit\" }))",
+            "refId": "Maximum"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^((.*?)::ifw_pagefile::used)\\b/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Used \" + r.metric }))",
+            "refId": "Pagefile Value"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^((.*?)::ifw_pagefile::used\\b)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Pagefile Limit \" + r.metric }))",
+            "refId": "Pagefile Maximum"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^((.*?)::ifw_pagefile::used\\b)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Pagefile Warning \" + r.metric }))",
+            "refId": "Pagefile Warning"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "YnAJdFX7z"
+            },
+            "hide": false,
+            "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^((.*?)::ifw_pagefile::used\\b)/) and\r\n    r.service == \"${service}\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Pagefile Critical \" + r.metric }))",
+            "refId": "Pagefile Critical"
+          }
+        ],
+        "title": "${hostname} Memory",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_memory::used/",
+              "renamePattern": " "
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "/::ifw_pagefile::used/",
+              "renamePattern": " "
+            }
+          }
+        ],
+        "type": "timeseries"
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 36,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "description": "The Icinga hostname to display data for",
+          "hide": 2,
+          "label": "Hostname",
+          "name": "hostname",
+          "query": "",
+          "skipUrlSync": false,
+          "type": "constant"
+        },
+        {
+          "description": "The Icinga service to display data for",
+          "hide": 2,
+          "label": "Service",
+          "name": "service",
+          "query": "",
+          "skipUrlSync": false,
+          "type": "constant"
+        },
+        {
+          "description": "Data Bucket for InfluxDB2 for Icinga monitoring data",
+          "hide": 2,
+          "label": "Icinga Data",
+          "name": "influxbucket",
+          "query": "icinga_demo",
+          "skipUrlSync": false,
+          "type": "constant"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Windows-Plugins-Web",
+    "uid": "QsPVl5W4z",
+    "version": 50,
+    "weekStart": ""
+  }
