@@ -1599,7 +1599,7 @@
           "hide": 2,
           "label": "Icinga Data",
           "name": "influxbucket",
-          "query": "icinga_demo",
+          "query": "icinga2",
           "skipUrlSync": false,
           "type": "constant"
         }
