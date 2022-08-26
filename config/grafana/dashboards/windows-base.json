@@ -31,7 +31,83 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "UP"
+                },
+                "2": {
+                  "index": 1,
+                  "text": "DOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 219,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${influxdbdatasource}"
+          },
+          "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._measurement == \"ping4\" and\r\n    r._field == \"state\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
+          "refId": "A"
+        }
+      ],
+      "title": "${hostname} Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -126,9 +202,9 @@
         ]
       },
       "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
+        "h": 4,
+        "w": 6,
+        "x": 3,
         "y": 0
       },
       "id": 153,
@@ -152,7 +228,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"windows::ifw_uptime::uptime\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Uptime\" }))",
           "refId": "Uptime"
@@ -160,7 +236,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"windows::ifw_uptime::uptime\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Uptime Threshold\" }))",
@@ -191,7 +267,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -216,9 +292,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 3,
-        "x": 4,
+        "x": 9,
         "y": 0
       },
       "id": 196,
@@ -241,9 +317,9 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
-          "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r.service != \"\"\r\n  )\r\n  |> keyValues(keyColumns: [\"service\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")\r\n  |> count()\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Checks\" }))",
+          "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r.service != \"\"\r\n  )\r\n  |> keyValues(keyColumns: [\"service\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")\r\n  |> count()\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Checks\" }))",
           "refId": "A"
         }
       ],
@@ -253,7 +329,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -275,9 +351,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 3,
-        "x": 7,
+        "x": 12,
         "y": 0
       },
       "id": 200,
@@ -300,7 +376,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.service != \"\"\r\n  )\r\n  |> keyValues(keyColumns: [\"_measurement\"])\r\n  |> keep(columns: [\"metric\"])\r\n  |> map(fn: (r) => ({ _value:r.metric }))\r\n  |> count()",
           "refId": "A"
@@ -310,12 +386,32 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "YnAJdFX7z"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 15,
+        "y": 0
+      },
+      "id": 210,
+      "options": {
+        "content": "Welcome to the Icinga for Windows Grafana Dashboard. Below you will find a detailed overview of certain Windows metrics for the selected host.\n\nIn case you are missing features or encounter problems, please open an issue on [GitHub](https://github.com/Icinga/icinga-powershell-framework).",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.0.6",
+      "title": "Icinga for Windows",
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 4
       },
       "id": 55,
       "panels": [],
@@ -325,7 +421,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -351,7 +447,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 4
+        "y": 5
       },
       "id": 121,
       "options": {
@@ -373,7 +469,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_updates::count\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -382,7 +478,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.metric == \"summary::ifw_updates::count\"\r\n  )\r\n  |> sort()\r\n  |> unique(column: \"_field\")\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r._field }))",
@@ -413,7 +509,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -439,7 +535,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 4
+        "y": 5
       },
       "id": 131,
       "options": {
@@ -461,7 +557,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"defender::ifw_updates::count\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Total Updates"
@@ -469,7 +565,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.metric == \"defender::ifw_updates::count\"\r\n  )\r\n  |> sort()\r\n  |> unique(column: \"_field\")\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r._field }))",
@@ -500,7 +596,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -526,7 +622,7 @@
         "h": 5,
         "w": 3,
         "x": 6,
-        "y": 4
+        "y": 5
       },
       "id": 133,
       "options": {
@@ -548,7 +644,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"security::ifw_updates::count\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Total Updates"
@@ -556,7 +652,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.metric == \"security::ifw_updates::count\"\r\n  )\r\n  |> sort()\r\n  |> unique(column: \"_field\")\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r._field }))",
@@ -582,7 +678,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -608,7 +704,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 4
+        "y": 5
       },
       "id": 135,
       "options": {
@@ -630,7 +726,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"rollups::ifw_updates::count\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Total Updates"
@@ -638,7 +734,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.metric == \"rollups::ifw_updates::count\"\r\n  )\r\n  |> sort()\r\n  |> unique(column: \"_field\")\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r._field }))",
@@ -664,7 +760,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -690,7 +786,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 4
+        "y": 5
       },
       "id": 137,
       "options": {
@@ -712,7 +808,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"other::ifw_updates::count\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Total Updates"
@@ -720,7 +816,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    (r._field == \"warn\" or r._field == \"crit\") and\r\n    r.metric == \"other::ifw_updates::count\"\r\n  )\r\n  |> sort()\r\n  |> unique(column: \"_field\")\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r._field }))",
@@ -746,7 +842,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -788,7 +884,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 4
+        "y": 5
       },
       "id": 186,
       "options": {
@@ -810,7 +906,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"reboot::ifw_updates::required\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Reboot Required"
@@ -826,7 +922,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 10
       },
       "id": 2,
       "panels": [],
@@ -836,7 +932,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -943,7 +1039,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 4,
       "maxPerRow": 4,
@@ -966,7 +1062,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${cpucores}::ifw_cpu::load)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Value"
@@ -974,7 +1070,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${cpucores}::ifw_cpu::load)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
@@ -983,7 +1079,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${cpucores}::ifw_cpu::load)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
@@ -1008,7 +1104,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 19
       },
       "id": 13,
       "panels": [],
@@ -1018,7 +1114,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1145,7 +1241,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 20
       },
       "id": 19,
       "maxPerRow": 4,
@@ -1167,7 +1263,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Value"
@@ -1175,7 +1271,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
@@ -1184,7 +1280,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
@@ -1193,7 +1289,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(memory::ifw_memory::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"memory Limit\" }))",
@@ -1215,7 +1311,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1342,7 +1438,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 28
       },
       "id": 16,
       "maxPerRow": 4,
@@ -1365,7 +1461,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${pagefiles}::ifw_pagefile::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Value"
@@ -1373,7 +1469,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${pagefiles}::ifw_pagefile::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
@@ -1382,7 +1478,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${pagefiles}::ifw_pagefile::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
@@ -1391,7 +1487,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${pagefiles}::ifw_pagefile::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Pagefile Limit\" }))",
@@ -1416,7 +1512,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 35
       },
       "id": 6,
       "panels": [],
@@ -1426,7 +1522,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1467,8 +1563,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1558,7 +1653,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 35
+        "y": 36
       },
       "id": 9,
       "maxPerRow": 4,
@@ -1581,7 +1676,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${disks}::ifw_partitionspace::free)/ or r.metric =~ /^(${disks}::ifw_partitionspace::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Value"
@@ -1589,7 +1684,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"warn\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${disks}::ifw_partitionspace::free)/ or r.metric =~ /^(${disks}::ifw_partitionspace::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Warning\") }))",
@@ -1598,7 +1693,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"crit\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${disks}::ifw_partitionspace::free)/ or r.metric =~ /^(${disks}::ifw_partitionspace::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Critical\") }))",
@@ -1607,7 +1702,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"max\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${disks}::ifw_partitionspace::free)/ or r.metric =~ /^(${disks}::ifw_partitionspace::used)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: (r.metric + \" Size\") }))",
@@ -1639,7 +1734,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 44
       },
       "id": 24,
       "panels": [],
@@ -1650,7 +1745,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1690,8 +1785,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1771,7 +1865,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 44
+        "y": 45
       },
       "id": 31,
       "options": {
@@ -1789,7 +1883,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::linkspeed\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Linkspeed"
@@ -1797,7 +1891,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::bytessentsec\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -1806,7 +1900,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::bytesreceivedsec\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -1815,7 +1909,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::bytestotalsec\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -1828,7 +1922,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1868,8 +1962,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1917,7 +2010,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 44
+        "y": 45
       },
       "id": 38,
       "options": {
@@ -1935,7 +2028,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::packetssentsec\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Packets sent/sec"
@@ -1943,7 +2036,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::packetsreceivedsec\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -1956,7 +2049,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1996,8 +2089,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2037,7 +2129,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 53
       },
       "id": 46,
       "options": {
@@ -2055,7 +2147,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::packetsreceivederrors\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "Packet received errors"
@@ -2063,7 +2155,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric == \"${networkinterface}::ifw_networkinterface::packetsoutbounderrors\")\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2079,7 +2171,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 78
       },
       "id": 77,
       "panels": [],
@@ -2089,7 +2181,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2101,8 +2193,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2113,7 +2204,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 78
+        "y": 79
       },
       "id": 110,
       "options": {
@@ -2135,7 +2226,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::count\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2148,7 +2239,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2160,8 +2251,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2172,7 +2262,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 78
+        "y": 79
       },
       "id": 106,
       "options": {
@@ -2194,7 +2284,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::running\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2207,7 +2297,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2219,8 +2309,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2231,7 +2320,7 @@
         "h": 5,
         "w": 3,
         "x": 6,
-        "y": 78
+        "y": 79
       },
       "id": 111,
       "options": {
@@ -2253,7 +2342,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::stopped\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2266,7 +2355,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2278,8 +2367,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2290,7 +2378,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 78
+        "y": 79
       },
       "id": 108,
       "options": {
@@ -2312,7 +2400,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::paused\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2325,7 +2413,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2337,8 +2425,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2349,7 +2436,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 78
+        "y": 79
       },
       "id": 107,
       "options": {
@@ -2371,7 +2458,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::pendingstarted\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2384,7 +2471,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2396,8 +2483,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2408,7 +2494,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 78
+        "y": 79
       },
       "id": 109,
       "options": {
@@ -2430,7 +2516,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::pendingcontinued\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2443,7 +2529,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2455,8 +2541,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2467,7 +2552,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 78
+        "y": 79
       },
       "id": 104,
       "options": {
@@ -2489,7 +2574,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::pendingstopped\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
           "refId": "PendingStopped"
@@ -2501,7 +2586,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2513,8 +2598,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2525,7 +2609,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 78
+        "y": 79
       },
       "id": 105,
       "options": {
@@ -2547,7 +2631,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "hide": false,
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    r.metric == \"summary::ifw_service::pendingpaused\"\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))",
@@ -2560,7 +2644,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "YnAJdFX7z"
+        "uid": "${influxdbdatasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -2608,8 +2692,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -2620,7 +2703,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 83
+        "y": 84
       },
       "id": 147,
       "options": {
@@ -2644,7 +2727,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "YnAJdFX7z"
+            "uid": "${influxdbdatasource}"
           },
           "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r._field == \"value\" and\r\n    r.hostname == \"${hostname}\" and\r\n    (r.metric =~ /^(${services}::ifw_service::)/)\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.metric }))\r\n  |> unique(column: \"_value\")",
           "refId": "A"
@@ -2664,27 +2747,22 @@
       {
         "current": {
           "selected": false,
-          "text": "sales-net-hyperv",
-          "value": "sales-net-hyperv"
+          "text": "InfluxDB",
+          "value": "InfluxDB"
         },
-        "datasource": {
-          "type": "influxdb",
-          "uid": "YnAJdFX7z"
-        },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.metric =~ /::ifw_/\r\n  )\r\n  |> keyValues(keyColumns: [\"hostname\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
-        "description": "The Icinga hostname to display data for",
+        "description": "InfluxDB 2 DataSource for Icinga metrics",
         "hide": 0,
         "includeAll": false,
-        "label": "Hostname",
+        "label": "InfluxDB DataSource",
         "multi": false,
-        "name": "hostname",
+        "name": "influxdbdatasource",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.metric =~ /::ifw_/\r\n  )\r\n  |> keyValues(keyColumns: [\"hostname\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
-        "refresh": 2,
+        "query": "influxdb",
+        "queryValue": "",
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
+        "type": "datasource"
       },
       {
         "description": "Data Bucket for InfluxDB2 for Icinga monitoring data",
@@ -2696,6 +2774,31 @@
         "type": "constant"
       },
       {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${influxdbdatasource}"
+        },
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.metric =~ /::ifw_/\r\n  )\r\n  |> keyValues(keyColumns: [\"hostname\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "description": "The Icinga hostname to display data for",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Hostname",
+        "multi": false,
+        "name": "hostname",
+        "options": [],
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.metric =~ /::ifw_/\r\n  )\r\n  |> keyValues(keyColumns: [\"hostname\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
         "allValue": "",
         "current": {
           "selected": false,
@@ -2704,17 +2807,17 @@
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "YnAJdFX7z"
+          "uid": "${influxdbdatasource}"
         },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\"\r\n  )\r\n  |> keyValues(keyColumns: [\"_measurement\"])\r\n  |> keep(columns: [\"service\"])\r\n  |> map(fn: (r) => ({ _value:r.service }))\r\n  |> unique(column: \"_value\")",
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\"\r\n  )\r\n  |> keyValues(keyColumns: [\"_measurement\"])\r\n  |> keep(columns: [\"service\"])\r\n  |> map(fn: (r) => ({ _value:r.service }))\r\n  |> unique(column: \"_value\")",
         "description": "The Icinga service to display data for",
-        "hide": 0,
+        "hide": 2,
         "includeAll": true,
         "label": "Service",
         "multi": false,
         "name": "service",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\"\r\n  )\r\n  |> keyValues(keyColumns: [\"_measurement\"])\r\n  |> keep(columns: [\"service\"])\r\n  |> map(fn: (r) => ({ _value:r.service }))\r\n  |> unique(column: \"_value\")",
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\"\r\n  )\r\n  |> keyValues(keyColumns: [\"_measurement\"])\r\n  |> keep(columns: [\"service\"])\r\n  |> map(fn: (r) => ({ _value:r.service }))\r\n  |> unique(column: \"_value\")",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2734,15 +2837,15 @@
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "YnAJdFX7z"
+          "uid": "${influxdbdatasource}"
         },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /^(.*?)::ifw_cpu::load/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /^(.*?)::ifw_cpu::load/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "cpucores",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /^(.*?)::ifw_cpu::load/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /^(.*?)::ifw_cpu::load/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "refresh": 2,
         "regex": "^(.*?)::ifw_cpu::load",
         "skipUrlSync": false,
@@ -2762,9 +2865,9 @@
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "YnAJdFX7z"
+          "uid": "${influxdbdatasource}"
         },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_partitionspace/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_partitionspace/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "description": "Available disks for the specified host",
         "hide": 0,
         "includeAll": true,
@@ -2772,7 +2875,7 @@
         "multi": true,
         "name": "disks",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_partitionspace/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_partitionspace/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "refresh": 2,
         "regex": "/^(.*?)::/",
         "skipUrlSync": false,
@@ -2792,9 +2895,9 @@
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "YnAJdFX7z"
+          "uid": "${influxdbdatasource}"
         },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_pagefile/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_pagefile/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "description": "All available page files for a certain host",
         "hide": 0,
         "includeAll": true,
@@ -2802,7 +2905,7 @@
         "multi": true,
         "name": "pagefiles",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_pagefile/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_pagefile/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "refresh": 2,
         "regex": "/^(.*?)::/",
         "skipUrlSync": false,
@@ -2821,9 +2924,9 @@
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "YnAJdFX7z"
+          "uid": "${influxdbdatasource}"
         },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_networkinterface/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_networkinterface/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "description": "All available Network Interfaces on the specified host",
         "hide": 0,
         "includeAll": true,
@@ -2831,7 +2934,7 @@
         "multi": true,
         "name": "networkinterface",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_networkinterface/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_networkinterface/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "refresh": 2,
         "regex": "/^(.*?)::/",
         "skipUrlSync": false,
@@ -2850,9 +2953,9 @@
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "YnAJdFX7z"
+          "uid": "${influxdbdatasource}"
         },
-        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_service::state/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "definition": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_service::state/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "description": "Status of specified Windows Service",
         "hide": 0,
         "includeAll": true,
@@ -2860,7 +2963,7 @@
         "multi": true,
         "name": "services",
         "options": [],
-        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: -5m)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_service::state/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
+        "query": "from(bucket: \"${influxbucket}\")\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.hostname == \"${hostname}\" and\r\n    r._field == \"value\" and\r\n    r.metric =~ /::ifw_service::state/\r\n  )\r\n  |> keyValues(keyColumns: [\"metric\"])\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")",
         "refresh": 1,
         "regex": "/^(.*?)::/",
         "skipUrlSync": false,
@@ -2870,13 +2973,13 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Windows-Base",
   "uid": "KlRvJ79nz",
-  "version": 345,
+  "version": 389,
   "weekStart": ""
 }
