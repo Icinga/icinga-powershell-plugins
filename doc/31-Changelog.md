@@ -15,6 +15,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#199](https://github.com/Icinga/icinga-powershell-plugins/issues/199) Fixes `Invoke-IcingaCheckDiskHealth` to add disk metadata like serial number and friendly name for any disk type processed
 * [#308](https://github.com/Icinga/icinga-powershell-plugins/pull/308) Fixes function `Get-IcingaServiceCheckName` which was not public anymore since v1.9.0, causing MSSQL plugins to not work properly
+* [#319](https://github.com/Icinga/icinga-powershell-plugins/pull/319) Removes performance data for `Invoke-IcingaCheckCheckSum`, as there are no real performance metrics to write which are allowed by icinga
 
 ## Enhancements
 
