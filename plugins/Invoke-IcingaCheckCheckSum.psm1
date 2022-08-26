@@ -64,7 +64,7 @@ function Invoke-IcingaCheckCheckSum()
     }
 
     [string]$FileHash = (Get-IcingaFileHash $Path -Algorithm $Algorithm).Hash
-    $CheckSumCheck    = New-IcingaCheck -Name "CheckSum $Path" -Value $FileHash;
+    $CheckSumCheck    = New-IcingaCheck -Name "CheckSum $Path" -Value $FileHash -NoPerfData;
 
     If (([string]::IsNullOrEmpty($Hash)) -eq $FALSE) {
         $CheckSumCheck.CritIfNotMatch($Hash) | Out-Null;
