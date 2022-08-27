@@ -1563,7 +1563,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -2741,7 +2742,11 @@
   "refresh": "",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "monitoring",
+    "windows",
+    "flux"
+  ],
   "templating": {
     "list": [
       {
@@ -2980,6 +2985,6 @@
   "timezone": "",
   "title": "Windows-Base",
   "uid": "KlRvJ79nz",
-  "version": 389,
+  "version": 391,
   "weekStart": ""
 }

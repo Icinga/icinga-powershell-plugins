@@ -220,6 +220,7 @@
         "type": "influxdb",
         "uid": "${influxdbdatasource}"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1649,7 +1650,11 @@
   "refresh": false,
   "schemaVersion": 36,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "monitoring",
+    "windows",
+    "flux"
+  ],
   "templating": {
     "list": [
       {
@@ -1708,6 +1713,6 @@
   "timezone": "",
   "title": "Windows-Plugins-Web",
   "uid": "QsPVl5W4z",
-  "version": 16,
+  "version": 18,
   "weekStart": ""
 }
