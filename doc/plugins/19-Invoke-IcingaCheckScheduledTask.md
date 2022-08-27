@@ -20,6 +20,7 @@ No special permissions required.
 | ---      | ---  | ---      | ---     | ---         |
 | TaskName | Array | false | @() | A list of tasks to check for. If your tasks contain spaces, wrap them around a ' to ensure they are properly handled as string |
 | State | Array | false | @() | The state a task should currently have for the plugin to return [OK] |
+| IgnoreExitCodes | Array | false | @() | A list of exit codes which will be considered as [OK]. By default every task which did not exit with 0 will be handled as critical. |
 | WarningMissedRuns | Object | false |  | Defines a warning threshold for missed runs for filtered tasks.  Supports Icinga default threshold syntax. |
 | CriticalMissedRuns | Object | false |  | Defines a critical threshold for missed runs for filtered tasks.  Supports Icinga default threshold syntax. |
 | WarningLastRunTime | String | false |  | Allows to specify a time interval, on which the check will return warning based on the last run time of a task and the current time. The value will be subtracted from the current time  Values have to be specified as time units like, -10m, -1d, -1w, -2M, -1y |

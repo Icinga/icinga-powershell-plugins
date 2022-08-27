@@ -56,6 +56,8 @@
 .PARAMETER IgnoreLastRunTime
     By default every task which did not exit with 0 will be handled as critical. If you set this flag,
     the exit code of the task is ignored during check execution
+.PARAMETER IgnoreExitCodes
+    A list of exit codes which will be considered as [OK]. By default every task which did not exit with 0 will be handled as critical.
 .PARAMETER NoPerfData
    Set this argument to not write any performance data
 .PARAMETER Verbosity
@@ -79,6 +81,7 @@ function Invoke-IcingaCheckScheduledTask()
         [array]$TaskName             = @(),
         [ValidateSet('Unknown', 'Disabled', 'Queued', 'Ready', 'Running')]
         [array]$State                = @(),
+        [array]$IgnoreExitCodes      = @(),
         $WarningMissedRuns           = $null,
         $CriticalMissedRuns          = $null,
         [string]$WarningLastRunTime  = '',
@@ -157,7 +160,7 @@ function Invoke-IcingaCheckScheduledTask()
                 }
 
                 $TaskMissedRunes.WarnOutOfRange($WarningMissedRuns).CritOutOfRange($CriticalMissedRuns) | Out-Null;
-                if ($task.LastTaskResult -ne 0 -And $IgnoreLastRunTime -eq $FALSE) {
+                if ($task.LastTaskResult -ne 0 -And $IgnoreLastRunTime -eq $FALSE -and $IgnoreExitCodes -NotContains $task.LastTaskResult) {
                     $TaskLastResult.SetCritical() | Out-Null;
                 }
                 $TaskLastRunTime.WarnDateTime($WarningLastRunTime).CritDateTime($CriticalLastRunTime) | Out-Null;
