@@ -26,6 +26,24 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#312](https://github.com/Icinga/icinga-powershell-plugins/issues/312) Adds support to exclude certificates by thumbprints for `Invoke-IcingaCheckCertificate` by adding thumbprints to the `-ExcludePattern` argument
 * [#316](https://github.com/Icinga/icinga-powershell-plugins/issues/316) Adds support to include and exclude network devices for `Invoke-IcingaCheckNetworkInterface` by their device and interface name, besides the internal id
 
+### Grafana Dashboards
+
+#### New Dashboards
+
+* Windows Base
+* Windows-Plugins-Web
+
+#### New Plugin Integrations
+
+* Invoke-IcingaCheckPartitionSpace
+* Invoke-IcingaCheckNetworkInterface
+* Invoke-IcingaCheckUpdates
+* Invoke-IcingaCheckUptime
+* Invoke-IcingaCheckCPU
+* Invoke-IcingaCheckService
+* Invoke-IcingaCheckMemory
+* hostalive
+
 ### New Plugin
 
 * Adds new plugin [Invoke-IcingaCheckHttpJsonResponse](https://icinga.com/docs/icinga-for-windows/latest/plugins/doc/plugins/28-Invoke-IcingaCheckHttpJsonResponse) to check results returned by a JSON web request [#290](https://github.com/Icinga/icinga-powershell-plugins/pull/290). [DOliana]
