@@ -5,10 +5,10 @@ Below you will find a documentation for every single available plugin provided b
 | Argument | Throws error on | Ok range                     |
 | ---      | ---             | ---                          |
 | 20       | < 0 or > 20     | 0 .. 20                      |
-| 20:      | < 20            | between 20 .. 8              |
-| ~:20     | > 20            | between -8 .. 20             |
+| 20:      | < 20            | between 20 .. ∞              |
+| ~:20     | > 20            | between -∞ .. 20             |
 | 30:40    | < 30 or > 40    | between {30 .. 40}           |
-| `@30:40  | = 30 and = 40   | outside -8 .. 29 and 41 .. 8 |
+| `@30:40  | ≥ 30 and ≤ 40   | outside -∞ .. 29 and 41 .. ∞ |
 
 Please ensure that you will escape the `@` if you are configuring it on the Icinga side. To do so, you will simply have to write an *\`* before the `@` symbol: \``@`
 
@@ -34,6 +34,7 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 | [Invoke-IcingaCheckDiskHealth](plugins/20-Invoke-IcingaCheckDiskHealth.md) | Checks availability, state and utilization of the physical hard disk |
 | [Invoke-IcingaCheckEventlog](plugins/06-Invoke-IcingaCheckEventlog.md) | Checks how many eventlog occurrences of a given type there are. |
 | [Invoke-IcingaCheckFirewall](plugins/07-Invoke-IcingaCheckFirewall.md) | Checks whether a firewall module is enabled or not |
+| [Invoke-IcingaCheckHttpJsonResponse](plugins/28-Invoke-IcingaCheckHttpJsonResponse.md) | Retrieves a JSON-Object via Request and performs desired checks |
 | [Invoke-IcingaCheckHTTPStatus](plugins/25-Invoke-IcingaCheckHTTPStatus.md) | Checks the response time, the return code and content of HTTP requests. |
 | [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md) | Checks via ICMP requests to a target destination for response time and availability |
 | [Invoke-IcingaCheckMemory](plugins/09-Invoke-IcingaCheckMemory.md) | Checks on memory usage |
