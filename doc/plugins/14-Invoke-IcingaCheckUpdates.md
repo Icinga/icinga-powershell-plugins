@@ -51,7 +51,7 @@ Invoke-IcingaCheckUpdates -Verbosity 1 -WarningDefender 0;
 ```powershell
 [WARNING] Windows Updates: 1 Warning 4 Ok [WARNING] Microsoft Defender
 \_ [WARNING] Microsoft Defender
-    \_ [OK] Security Intelligence-Update für Microsoft Defender Antivirus - KB2267602 (Version 1.355.2366.0) [23.01.2022 00:00:00]: 0
+    \_ [OK] Security Intelligence-Update fÃ¼r Microsoft Defender Antivirus - KB2267602 (Version 1.355.2366.0) [23.01.2022 00:00:00]: 0
     \_ [WARNING] Update Count: 1c is greater than threshold 0c
 \_ [OK] Total Pending Updates: 1c
 | 'total_pending_updates'=1c;; 'security_update_count'=0c;; 'rollups_update_count'=0c;; 'other_update_count'=0c;; 'defender_update_count'=1c;0;    
