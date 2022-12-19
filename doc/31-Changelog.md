@@ -7,6 +7,12 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.10.1 (2022-12-20)
+
+### Enhancements
+
+* [#322](https://github.com/Icinga/icinga-powershell-plugins/issues/322) Adds flag `-IgnoreService` for plugin `Invoke-IcingaCheckTimeSync` to ignore the time service being evaluated during check runtime
+
 ## 1.10.0 (2022-08-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/13?closed=1)
