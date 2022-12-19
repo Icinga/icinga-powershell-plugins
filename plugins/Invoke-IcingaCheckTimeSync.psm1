@@ -21,6 +21,8 @@
     Seconds before connection times out (default: 10)
 .PARAMETER IPV4
     Use IPV4 connection. Default $FALSE
+.PARAMETER IgnoreService
+    Ignores the W32Time service during check execution and will not throw warning or critical in case the service is not running
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -53,15 +55,16 @@ function Invoke-IcingaCheckTimeSync()
 {
     param(
         [string]$Server,
-        $TimeOffset         = 0,
-        $Warning            = $null,
-        $Critical           = $null,
-        [int]$Timeout       = 10,
-        [switch]$IPV4       = $FALSE,
-        [int]$Port          = 123,
-        [switch]$NoPerfData = $FALSE,
+        $TimeOffset            = 0,
+        $Warning               = $null,
+        $Critical              = $null,
+        [int]$Timeout          = 10,
+        [switch]$IPV4          = $FALSE,
+        [int]$Port             = 123,
+        [switch]$IgnoreService = $FALSE,
+        [switch]$NoPerfData    = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity     = 0
+        [int]$Verbosity        = 0
     );
 
     $TimeData    = Get-IcingaNtpData -Server $Server -Port $Port -TimeOffset $TimeOffset -Timeout $Timeout -IPV4:$IPV4;
@@ -86,7 +89,9 @@ function Invoke-IcingaCheckTimeSync()
         -MetricIndex $Server `
         -MetricName 'service';
 
-    $TimeCheck.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
+    if ($IgnoreService -eq $FALSE) {
+        $TimeCheck.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
+    }
 
     $SyncStatus = New-IcingaCheck `
         -Name 'Sync Status' `
