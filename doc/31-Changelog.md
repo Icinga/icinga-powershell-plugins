@@ -9,6 +9,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ## 1.10.1 (2022-12-20)
 
+### Bugfixes
+
+* [#323](https://github.com/Icinga/icinga-powershell-plugins/issues/323) Fixes `Invoke-IcingaCheckService` to write invalid performance data in case one service is actively checked and returning `UNKNOWN` because it does not exist
+
 ### Enhancements
 
 * [#322](https://github.com/Icinga/icinga-powershell-plugins/issues/322) Adds flag `-IgnoreService` for plugin `Invoke-IcingaCheckTimeSync` to ignore the time service being evaluated during check runtime

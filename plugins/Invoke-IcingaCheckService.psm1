@@ -138,6 +138,11 @@ function Invoke-IcingaCheckService()
         }
     }
 
+    # Fix invalid performance data in case only one service was checked and the service does not exist
+    if ($null -eq $ServiceSummary) {
+        $ServiceSummary = Add-IcingaServiceSummary;
+    }
+
     # Check our included services and add an unknown state for each service which was not found on the system
     foreach ($ServiceArg in $Service) {
         if ($null -eq $FetchedServices -Or $FetchedServices.ContainsKey($ServiceArg) -eq $FALSE) {
@@ -163,7 +168,7 @@ function Invoke-IcingaCheckService()
             }
 
             $ServicesPackage.AddCheck(
-                (New-IcingaCheck -Name ([string]::Format('{0}: Service not found', $ServiceArg))).SetUnknown()
+                (New-IcingaCheck -Name ([string]::Format('{0}: Service not found', $ServiceArg)) -NoPerfData).SetUnknown()
             );
         }
     }

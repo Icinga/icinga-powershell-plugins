@@ -52,7 +52,7 @@ function Add-IcingaServiceSummary()
         }
     }
 
-    switch($ServiceStatus) {
+    switch ($ServiceStatus) {
         $ProviderEnums.ServiceStatus.Stopped {
             $ServiceData.StoppedCount += 1;
         };
