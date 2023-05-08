@@ -220,7 +220,7 @@ function Global:Get-IcingaPhysicalDiskInfo()
             'BusType',
             @{
                 'value' = $disk.BusType;
-                'name'  = $ProviderEnums.DiskBusType[[int]$disk.BusType];
+                'name'  = (Get-IcingaProviderEnumData -Enum $ProviderEnums -Key 'DiskBusType' -Index $disk.BusType);
             }
         )
         $DiskInfo.Add('HealthStatus', $disk.HealthStatus);
@@ -229,11 +229,11 @@ function Global:Get-IcingaPhysicalDiskInfo()
 
             foreach ($entry in $disk.OperationalStatus) {
                 if (Test-Numeric $entry) {
-                    Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value ($ProviderEnums.DiskOperationalStatus[[int]$entry]) | Out-Null;
+                    Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$entry) -Value (Get-IcingaProviderEnumData -Enum $ProviderEnums -Key 'DiskOperationalStatus' -Index $entry) | Out-Null;
                 } else {
                     if ($ProviderEnums.DiskOperationalStatus.Values -Contains $entry) {
                         foreach ($opStatus in $ProviderEnums.DiskOperationalStatus.Keys) {
-                            $opStatusValue = $ProviderEnums.DiskOperationalStatus[$opStatus];
+                            $opStatusValue = (Get-IcingaProviderEnumData -Enum $ProviderEnums -Key 'DiskOperationalStatus' -Index $opStatus);
                             if ($opStatusValue.ToLower() -eq ([string]$entry).ToLower()) {
                                 Add-IcingaHashtableItem -Hashtable $OperationalStatus -Key ([int]$opStatus) -Value $entry | Out-Null;
                                 break;
@@ -280,8 +280,8 @@ function Global:Get-IcingaPhysicalDiskInfo()
         $DiskInfo.Add(
             'MediaType',
             @{
-                'Value' = $disk.MediaType
-                'Name'  = ($ProviderEnums.DiskMediaType[[int]$disk.MediaType])
+                'Value' = $disk.MediaType;
+                'Name'  = (Get-IcingaProviderEnumData -Enum $ProviderEnums -Key 'DiskMediaType' -Index $disk.MediaType);
             }
         );
 
