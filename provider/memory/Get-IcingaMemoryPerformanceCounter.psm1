@@ -60,15 +60,15 @@ function Global:Get-IcingaMemoryPerformanceCounter()
             $MemoryData.PageFile.Add(
                 $entry.Name,
                 @{
-                    'InitialSize' = $entry.InitialSize;
+                    'InitialSize' = $entry.InitialSize * 1024 * 1024;
                     'Managed'     = $TRUE;
                     'Name'        = $entry.Name;
-                    'TotalSize'   = $entry.MaximumSize;
+                    'TotalSize'   = $entry.MaximumSize * 1024 * 1024;
                 }
             );
 
-            $MemoryData['PageFile Total Bytes'] += $entry.MaximumSize;
-            $MemoryData['PageFile Used Bytes']  += $entry.InitialSize;
+            $MemoryData['PageFile Total Bytes'] += $entry.MaximumSize * 1024 * 1024;
+            $MemoryData['PageFile Used Bytes']  += $entry.InitialSize * 1024 * 1024;
         }
     }
 
@@ -78,13 +78,13 @@ function Global:Get-IcingaMemoryPerformanceCounter()
     foreach ($entry in $PageFileUsage) {
         if ($MemoryData.PageFile.ContainsKey($entry.Name)) {
             $MemoryData.PageFile[$entry.Name].Add(
-                'Allocated', $entry.AllocatedBaseSize
+                'Allocated', $entry.AllocatedBaseSize * 1024 * 1024
             );
             $MemoryData.PageFile[$entry.Name].Add(
-                'Usage', $entry.CurrentUsage
+                'Usage', $entry.CurrentUsage * 1024 * 1024
             );
             $MemoryData.PageFile[$entry.Name].Add(
-                'PeakUsage', $entry.PeakUsage
+                'PeakUsage', $entry.PeakUsage * 1024 * 1024
             );
             $MemoryData.PageFile[$entry.Name].Add(
                 'TempPageFile', $entry.TempPageFile
@@ -97,18 +97,18 @@ function Global:Get-IcingaMemoryPerformanceCounter()
             @{
                 'InitialSize'  = 0;
                 'MaximumSize'  = 0;
-                'TotalSize'    = $entry.AllocatedBaseSize;
-                'Allocated'    = $entry.AllocatedBaseSize;
-                'Usage'        = $entry.CurrentUsage;
-                'PeakUsage'    = $entry.PeakUsage;
+                'TotalSize'    = $entry.AllocatedBaseSize * 1024 * 1024;
+                'Allocated'    = $entry.AllocatedBaseSize * 1024 * 1024;
+                'Usage'        = $entry.CurrentUsage * 1024 * 1024;
+                'PeakUsage'    = $entry.PeakUsage * 1024 * 1024;
                 'TempPageFile' = $entry.TempPageFile;
                 'Managed'      = $FALSE;
                 'Name'         = $entry.Name;
             }
         );
 
-        $MemoryData['PageFile Total Bytes'] += $entry.AllocatedBaseSize;
-        $MemoryData['PageFile Used Bytes']  += $entry.CurrentUsage;
+        $MemoryData['PageFile Total Bytes'] += $entry.AllocatedBaseSize * 1024 * 1024;
+        $MemoryData['PageFile Used Bytes']  += $entry.CurrentUsage * 1024 * 1024;
     }
 
     foreach ($entry in $PerfCounters['\Paging File(*)\% usage'].Keys) {
