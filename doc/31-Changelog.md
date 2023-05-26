@@ -7,11 +7,15 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
-# 1.11.0 (2023-05-31)
+# 1.11.0 (2023-06-16)
 
 ### Bugfixes
 
 * [#342](https://github.com/Icinga/icinga-powershell-plugins/issues/342) Fixes an issue for disk health plugin, which can fail in some cases due to an invalid conversion from the MSFT output from int to string
+
+### Enhancements
+
+* [#332](https://github.com/Icinga/icinga-powershell-plugins/issues/332) Adds support to provide different credentials for the `Invoke-IcingaCheckUNCPath` plugin, to run the check for a different user account
 
 ## 1.10.1 (2022-12-20)
 
