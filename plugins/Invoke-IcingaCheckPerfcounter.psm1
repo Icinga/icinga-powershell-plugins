@@ -80,10 +80,14 @@ function Invoke-IcingaCheckPerfCounter()
             $CheckPackage.AddCheck(
                 (
                     New-IcingaCheck -Name $counter -NoPerfData
-                ).SetUnknown($Counters[$counter].error, $TRUE)
-            )
+                ).SetUnknown([string]::Format('Internal Counter Error: Failed to fetch performance counter. Error message: {1}', $counter, $Counters[$counter].error), $TRUE)
+            );
             continue;
         }
+
+        # Set this to true, which means that by default we always fail
+        [bool]$CounterFailed = $TRUE;
+        [string]$FirstError  = '';
 
         foreach ($instanceName in $Counters[$counter].Keys) {
             if ((Test-IcingaArrayFilter -InputObject $instanceName -Include $IncludeCounter -Exclude $ExcludeCounter) -eq $FALSE) {
@@ -93,13 +97,14 @@ function Invoke-IcingaCheckPerfCounter()
             $instance = $Counters[$counter][$instanceName];
 
             if ([string]::IsNullOrEmpty($instance.error) -eq $FALSE) {
-                $CounterPackage.AddCheck(
-                    (
-                        New-IcingaCheck -Name $instanceName -NoPerfData
-                    ).SetUnknown($instance.error, $TRUE)
-                )
+                if ([string]::IsNullOrEmpty($FirstError)) {
+                    $FirstError = [string]($instance.error);
+                }
                 continue;
             }
+
+            # If we found atleast one working counter in this category, proceed
+            $CounterFailed = $FALSE;
 
             if ($instance -IsNot [hashtable]) {
                 $CounterInfo = Get-IcingaPerformanceCounterDetails -Counter $counter;
@@ -114,6 +119,19 @@ function Invoke-IcingaCheckPerfCounter()
             $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
             $CounterPackage.AddCheck($IcingaCheck);
         }
+
+        # If all of over counters failed for some reason, only print one combined error message.
+        if ($CounterFailed) {
+            if ([string]::IsNullOrEmpty($FirstError)) {
+                $FirstError = 'No counter instances could be found';
+            }
+            $CounterPackage.AddCheck(
+                (
+                    New-IcingaCheck -Name 'Internal Counter Error' -NoPerfData
+                ).SetUnknown([string]::Format('Failed to fetch all instances and objects for this performance counter. First error message: {0}', $FirstError), $TRUE)
+            );
+        }
+
         $CheckPackage.AddCheck($CounterPackage);
     }
 

@@ -13,6 +13,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#342](https://github.com/Icinga/icinga-powershell-plugins/issues/342) Fixes an issue for disk health plugin, which can fail in some cases due to an invalid conversion from the MSFT output from int to string
 
+### Enhancements
+
+* [#348](https://github.com/Icinga/icinga-powershell-plugins/issues/348) Adds feature to `Invoke-IcingaCheckPerfCounter` to summarize an entire performance counter category, in case all instances of the check fail to prevent large outputs being written into the database
+
 ## 1.10.1 (2022-12-20)
 
 ### Bugfixes
