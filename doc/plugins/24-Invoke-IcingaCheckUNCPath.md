@@ -26,6 +26,8 @@ who can authenticate without a prompt
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
 | Path | String | false |  | The path to a volume or network share you want to monitor, like "\\example.com\Home" or "C:\ClusterSharedVolume\Volume1" |
+| User | String | false |  | Provide a username and/or domain to run this check for. The format can either be 'domain\user' or 'domain@user' |
+| Password | SecureString | false |  | The password to authenticate the given user for. Has to be a secure string |
 | DisplayAlias | String | false |  | Modifies the plugin output to not display the value provided within the `-Path` argument but to use this string value instead of shorten the output and make it more visual appealing. |
 | Warning | Object | false |  | A warning threshold for the shares free space in either % or byte units, like "20%:" or "50GB:" Please note that this value is decreasing over time, therefor you will have to use the plugin handler and add ":" at the end of your input to check for "current value < threshold" like in the previous example  Allowed units: %, B, KB, MB, GB, TB, PB, KiB, MiB, GiB, TiB, PiB |
 | Critical | Object | false |  | A critical threshold for the shares free space in either % or byte units, like "20%:" or "50GB:" Please note that this value is decreasing over time, therefor you will have to use the plugin handler and add ":" at the end of your input to check for "current value < threshold" like in the previous example  Allowed units: %, B, KB, MB, GB, TB, PB, KiB, MiB, GiB, TiB, PiB |

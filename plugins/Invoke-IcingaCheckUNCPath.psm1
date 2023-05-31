@@ -15,6 +15,10 @@
     who can authenticate without a prompt
 .PARAMETER Path
     The path to a volume or network share you want to monitor, like "\\example.com\Home" or "C:\ClusterSharedVolume\Volume1"
+.PARAMETER User
+    Provide a username and/or domain to run this check for. The format can either be 'domain\user' or 'domain@user'
+.PARAMETER Password
+    The password to authenticate the given user for. Has to be a secure string
 .PARAMETER DisplayAlias
     Modifies the plugin output to not display the value provided within the `-Path` argument but to use this string value
     instead of shorten the output and make it more visual appealing.
@@ -85,6 +89,8 @@ function Invoke-IcingaCheckUNCPath()
 {
     param (
         [string]$Path           = '',
+        [string]$User           = '',
+        [SecureString]$Password = $null,
         [string]$DisplayAlias   = '',
         $Warning                = $null,
         $Critical               = $null,
@@ -102,7 +108,7 @@ function Invoke-IcingaCheckUNCPath()
         $DisplayName = $DisplayAlias;
     }
 
-    $PathData     = Get-IcingaUNCPathSize -Path $Path;
+    $PathData     = Get-IcingaUNCPathSize -Path $Path -User $User -Password $Password;
     $CheckPackage = New-IcingaCheckPackage -Name ([string]::Format('{0} Share', $DisplayName)) -OperatorAnd -Verbose $Verbosity;
     $IcingaCheck  = $null;
     $MetricIndex  = $DisplayName.Replace('\', '_');
