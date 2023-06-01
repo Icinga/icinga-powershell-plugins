@@ -18,6 +18,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#332](https://github.com/Icinga/icinga-powershell-plugins/issues/332) Adds support to provide different credentials for the `Invoke-IcingaCheckUNCPath` plugin, to run the check for a different user account
 
+### Enhancements
+
+* [#348](https://github.com/Icinga/icinga-powershell-plugins/issues/348) Adds feature to `Invoke-IcingaCheckPerfCounter` to summarize an entire performance counter category, in case all instances of the check fail to prevent large outputs being written into the database
+
 ## 1.10.1 (2022-12-20)
 
 ### Bugfixes
