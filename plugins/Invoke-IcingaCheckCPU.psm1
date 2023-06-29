@@ -11,25 +11,31 @@
 .ROLE
     ### Performance Counter
 
-    * Processor(*)\% processor time
+    * \Processor Information(*)\% Processor Utility
 
     ### Required User Groups
 
     * Performance Monitor Users
 .EXAMPLE
-    PS>Invoke-IcingaCheckCPU -Warning 50 -Critical 75
-    [OK]: Check package "CPU Load" is [OK]
-    | 'Core #0'=4,59%;50;75;0;100 'Core #1'=0,94%;50;75;0;100 'Core #2'=11,53%;50;75;0;100 'Core #3'=4,07%;50;75;0;100
+    PS>Invoke-IcingaCheckCPU -Warning '60%' -Critical '80%';
+    [OK] CPU Load
+    | '0_4::ifw_cpu::load'=9.149948%;60;80;0;100 '0_2::ifw_cpu::load'=9.431381%;60;80;0;100 '0_6::ifw_cpu::load'=24.89185%;60;80;0;100 'totalload::ifw_cpu::load'=10.823693%;60;80;0;100 '0_7::ifw_cpu::load'=9.531499%;60;80;0;100 '0_3::ifw_cpu::load'=8.603164%;60;80;0;100 '0_1::ifw_cpu::load'=6.57868%;60;80;0;100 '0_total::ifw_cpu::load'=10.823693%;60;80;0;100 '0_5::ifw_cpu::load'=8.502121%;60;80;0;100 '0_0::ifw_cpu::load'=9.900898%;60;80;0;100
 .EXAMPLE
-    PS>Invoke-IcingaCheckCPU -Warning 50 -Critical 75 -Core 1
-    [OK]: Check package "CPU Load" is [OK]
-    | 'Core #1'=2,61%;50;75;0;100
+    PS>Invoke-IcingaCheckCPU -Warning '60%' -Critical '80%' -Core 'Total';
+    [OK] CPU Load
+    | 'totalload::ifw_cpu::load'=11.029226%;60;80;0;100 '0_total::ifw_cpu::load'=11.029226%;60;80;0;100
 .PARAMETER Warning
     Used to specify a Warning threshold. In this case an integer value.
 .PARAMETER Critical
     Used to specify a Critical threshold. In this case an integer value.
 .PARAMETER Core
     Used to specify a single core to check for. For the average load across all cores use `_Total`
+.PARAMETER SocketFilter
+    Allows to specify one or mutlitple sockets by using their socket id. Not matching socket id's will not be evaluated
+    by the plugin.
+.PARAMETER OverallOnly
+    If this flag is set, the Warning and Critical thresholds will only apply to the `Overall Load` metric instead of all
+    returned cores. Requires that the plugin either fetches all cores with `*` or `Total` for the -Core argument
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -48,29 +54,63 @@
 function Invoke-IcingaCheckCPU()
 {
     param (
-        $Warning            = $null,
-        $Critical           = $null,
-        [string]$Core       = '*',
+        $Warning             = $null,
+        $Critical            = $null,
+        [string]$Core        = '*',
+        [array]$SocketFilter = @(),
+        [switch]$OverallOnly = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity     = 0
+        [int]$Verbosity      = 0
     );
 
-    $CpuCounter       = New-IcingaPerformanceCounterArray '\Processor(*)\% processor time';
-    $CounterStructure = New-IcingaPerformanceCounterStructure -CounterCategory 'Processor' -PerformanceCounterHash $CpuCounter;
-    $CpuPackage       = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
-    [int]$CpuCount    = ([string](Get-IcingaCPUCount -CounterArray $CounterStructure)).Length;
+    $CpuData    = Get-IcingaProviderDataValuesCpu;
+    $CpuPackage = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
 
-    foreach ($counter in $CounterStructure.Keys) {
-        if ($Core -ne '*' -And $counter -ne $Core) {
+    foreach ($socket in (Get-IcingaProviderElement $CpuData.Metrics)) {
+        [string]$SocketId = $socket.Name.Replace('Socket #', '');
+
+        if ((Test-IcingaArrayFilter -InputObject $SocketId -Include $SocketFilter) -eq $FALSE) {
             continue;
         }
+
+        $SocketPackage = New-IcingaCheckPackage -Name $socket.Name -OperatorAnd -Verbose $Verbosity;
+
+        foreach ($thread in (Get-IcingaProviderElement $socket.Value)) {
+            # Transform "_Total" to "Total"
+            $Core = $Core.Replace('_', '');
+
+            if ($Core -ne '*' -And $thread.Name -ne $Core) {
+                continue;
+            }
+
+            $IcingaCheck = (
+                New-IcingaCheck `
+                    -Name ([string]::Format('Core {0}', (Format-IcingaDigitCount -Value $thread.Name -Digits $CpuData.Metadata.CoreDigits -Symbol ' '))) `
+                    -Value $thread.Value `
+                    -Unit '%' `
+                    -MetricIndex ([string]::Format('{0}_{1}', $SocketId, $thread.Name)) `
+                    -MetricName 'load'
+            );
+
+            # Only alert for warning/critical if 'OverallOnly' is not set
+            if ($OverallOnly -eq $FALSE) {
+                $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
+            }
+
+            $SocketPackage.AddCheck($IcingaCheck);
+        }
+
+        $CpuPackage.AddCheck($SocketPackage);
+    }
+
+    if ($Core -eq '*' -Or $Core -Like '*Total*') {
         $IcingaCheck = (
             New-IcingaCheck `
-                -Name ([string]::Format('Core {0}', (Format-IcingaDigitCount -Value $counter.Replace('_', '') -Digits $CpuCount -Symbol ' '))) `
-                -Value $CounterStructure[$counter]['% processor time'].value `
+                -Name 'Overall Load' `
+                -Value $CpuData.Metadata.TotalLoad `
                 -Unit '%' `
-                -MetricIndex ($counter.Replace('_', '')) `
+                -MetricIndex 'totalload' `
                 -MetricName 'load'
         ).WarnOutOfRange($Warning).CritOutOfRange($Critical);
 
