@@ -17,6 +17,14 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#332](https://github.com/Icinga/icinga-powershell-plugins/issues/332) Adds support to provide different credentials for the `Invoke-IcingaCheckUNCPath` plugin, to run the check for a different user account
+* [#355](https://github.com/Icinga/icinga-powershell-plugins/pull/355) Updates `Invoke-IcingaCheckCPU` to use new data providers directly from the Icinga PowerShell Framework.
+
+### Breaking changes
+
+#### Invoke-IcingaCheckCPU
+
+* The new CPU metrics will now be separated between the actual sockets of the system, allowing an overview on multi socket systems, which CPU is assigned more loads
+* Metrics will now be separated by `0_1` for the index, which in this example is socket 0 and core 1.
 
 ### Enhancements
 
