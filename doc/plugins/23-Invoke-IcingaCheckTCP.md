@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckTCP
 
 ## Description
@@ -84,3 +83,5 @@ Invoke-IcingaCheckTCP -Address 'example.com' -Ports 443, 80, 5665, 3001 -Warning
     \_ [CRITICAL] example.com:443 Time: Value "0.249976s" is greater than threshold "0.2s"
 | 'port_80_time'=0.017512s;0.1;0.2 'port_80_status'=1;;1 'port_5665_status'=1;;1 'port_5665_time'=0.013497s;0.1;0.2 'port_3001_status'=0;;1 'port_3001_time'=21.038106s;0.1;0.2 'port_443_time'=0.249976s;0.1;0.2 'port_443_status'=1;;1    
 ```
+
+

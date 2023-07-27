@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckUptime
 
 ## Description
@@ -56,3 +55,5 @@ Invoke-IcingaCheckUptime -Warning 25d:
 | 'system_uptime'=1960955.28s;2160000:;
 1    
 ```
+
+

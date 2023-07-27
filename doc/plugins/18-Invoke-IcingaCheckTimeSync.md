@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckTimeSync
 
 ## Description
@@ -62,3 +61,5 @@ Invoke-IcingaCheckTimeSync -Server 'time.versatel.de' -TimeOffset 50ms -Warning 
 | 'time_offset'=0s;0.01;0.02 'time_service'=4;;4
 1    
 ```
+
+

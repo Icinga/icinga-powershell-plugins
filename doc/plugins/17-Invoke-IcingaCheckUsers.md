@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckUsers
 
 ## Description
@@ -57,3 +56,5 @@ Invoke-IcingaCheckUsers -Username 'astoll' -Warning 8 -Critical 15
 | 'logged_on_users_test'=5;8;15
 0    
 ```
+
+
