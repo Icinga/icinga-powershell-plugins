@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckNLA
 
 ## Description
@@ -48,3 +47,5 @@ Invoke-IcingaCheckNLA -Profile "DomainAuthenticated" -NICs "Ethernet 1" -Verbosi
 ```powershell
 [OK] Check package "NLA" (Match All)    
 ```
+
+

@@ -54,3 +54,4 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 | [Invoke-IcingaCheckUptime](plugins/15-Invoke-IcingaCheckUptime.md) | Checks how long a Windows system has been up for. |
 | [Invoke-IcingaCheckUsedPartitionSpace](plugins/16-Invoke-IcingaCheckUsedPartitionSpace.md) | Checks how much space on a partition is used. |
 | [Invoke-IcingaCheckUsers](plugins/17-Invoke-IcingaCheckUsers.md) | Checks how many users are logged on to the host |
+

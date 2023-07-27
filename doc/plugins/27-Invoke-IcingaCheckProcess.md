@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckProcess
 
 ## Description
@@ -95,3 +94,5 @@ Invoke-IcingaCheckProcess -Process 'SearchIndexer' -MemoryWarning '0.1%';
         \_ [WARNING] Memory Usage: 0.58% (382.17MiB) is greater than threshold 0.1% (65.46MiB)
 | 'searchindexer_cpu_usage'=0%;;;0;100 'searchindexer_memory_usage'=400736300B;;;0;68636310000 'searchindexer_thread_count'=44c;; 'searchindexer_page_file_usage'=605704B;;;0;9728 'searchindexer_process_count'=44c;;    
 ```
+
+

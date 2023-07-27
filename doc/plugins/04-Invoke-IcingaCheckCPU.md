@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckCPU
 
 ## Description
@@ -61,3 +60,5 @@ Invoke-IcingaCheckCPU -Warning '60%' -Critical '80%' -Core 'Total';
 [OK] CPU Load
 | 'totalload::ifw_cpu::load'=11.029226%;60;80;0;100 '0_total::ifw_cpu::load'=11.029226%;60;80;0;100    
 ```
+
+

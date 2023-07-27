@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckCertificate
 
 ## Description
@@ -83,3 +82,5 @@ PS> Invoke-IcingaCheckCertificate -CertStore 'LocalMachine' -CertStorePath 'My' 
    \_ [OK] Certificate 'Icinga CA' (valid until 2032-09-18 : 4566d) valid for: 394583000.86
    \_ [CRITICAL] Certificate 'Icinga CA' trusted: Value "False" is not matching threshold "True"    
 ```
+
+

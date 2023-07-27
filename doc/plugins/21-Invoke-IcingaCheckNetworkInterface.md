@@ -1,4 +1,3 @@
-
 # Invoke-IcingaCheckNetworkInterface
 
 ## Description
@@ -92,3 +91,5 @@ icinga { Invoke-IcingaCheckNetworkInterface  -Verbosity 2  }
 | '1_packets_outbound_discarded'=0;; '1_packets_receivedsec'=6.467305;; '1_bytes_receivedsec'=3691.900146B;; '1_packets_received_errors'=0;; '1_packets_sentsec'=1.659066;; '1_bytes_sentsec'=324.831177B;; '1_packets_received_discarded'=0;; '1_packets_outbound_errors'=0;; '1_bytes_totalsec'=3994.609619B;;
 0    
 ```
+
+
