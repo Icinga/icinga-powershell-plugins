@@ -1,12 +1,12 @@
 @{
-    ModuleVersion     = '1.11.0'
+    ModuleVersion     = '1.12.0'
     GUID              = 'e3e7850e-2f24-4173-8268-c2a29ec35750'
     Author            = 'Lord Hepipud'
     CompanyName       = 'Icinga GmbH'
     Copyright         = '(c) 2021 Icinga GmbH | GPLv2'
     Description       = 'A collection of Icinga Plugins for general Windows checks for Icinga for Windows.'
     PowerShellVersion = '4.0'
-    RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.11.0' })
+    RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.12.0' })
     NestedModules     = @(
         '.\compiled\icinga-powershell-plugins.ifw_compilation.psm1'
     )
@@ -73,7 +73,7 @@
             ProjectUri   = 'https://github.com/Icinga/icinga-powershell-plugins'
             ReleaseNotes = 'https://github.com/Icinga/icinga-powershell-plugins/releases'
         };
-        Version  = 'v1.11.0';
+        Version  = 'v1.12.0';
         Name     = 'Windows Plugins';
         Type     = 'plugins';
         Function = '';
