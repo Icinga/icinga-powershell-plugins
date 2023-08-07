@@ -7,6 +7,12 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+# 1.11.1 (tbd)
+
+### Bugfixes
+
+* [#358](https://github.com/Icinga/icinga-powershell-plugins/issues/358) Fixes broken Icinga plain configuration
+
 # 1.11.0 (2023-08-01)
 
 ### Bugfixes
