@@ -16,6 +16,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#358](https://github.com/Icinga/icinga-powershell-plugins/issues/358) Fixes broken Icinga plain configuration
+* [#360](https://github.com/Icinga/icinga-powershell-plugins/issues/360) Fixes `Invoke-IcingaCheckMemory` which uses the wrong unit for the pagefile plugin, wrong values, exceptions and %-Values not working
 
 # 1.11.0 (2023-08-01)
 
