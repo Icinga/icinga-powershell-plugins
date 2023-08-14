@@ -129,7 +129,7 @@ function Invoke-IcingaCheckMemory()
                     -BaseValue $PageFile.TotalSize `
                     -Minimum 0 `
                     -Maximum $PageFile.TotalSize `
-                    -Unit 'MB' `
+                    -Unit 'B' `
                     -LabelName ([string]::Format('pagefile_{0}', (Format-IcingaPerfDataLabel $PageFile.Name))) `
                     -MetricIndex (Format-IcingaPerfDataLabel $PageFile.Name) `
                     -MetricName 'used' `
