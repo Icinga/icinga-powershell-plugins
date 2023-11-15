@@ -61,6 +61,8 @@ function Get-IcingaEventLog()
 
     [hashtable]$UserFilter     = @{ };
     [hashtable]$SeverityFilter = @{ };
+    [array]$FilteredEvents     = @();
+    [bool]$MemoryCleared       = $FALSE;
 
     if ($null -ne $IncludeUsername -And $IncludeUsername.Count -ne 0) {
         foreach ($entry in $IncludeUsername) {
@@ -137,7 +139,6 @@ function Get-IcingaEventLog()
     }
 
     if ($UserFilter.Count -ne 0 -Or $SeverityFilter.Count -ne 0 -Or $null -ne $IncludeEventId -Or $null -ne $ExcludeEventId -Or $null -ne $ExcludeUsername -Or $null -ne $ExcludeEntryType -Or $null -ne $ExcludeMessage -Or $null -ne $IncludeMessage -Or $null -ne $IncludeSource -Or $null -ne $ExcludeSource) {
-        $filteredEvents = @();
         foreach ($event in $events) {
 
             if ($event.TimeCreated -lt $EventsAfter) {
@@ -231,10 +232,19 @@ function Get-IcingaEventLog()
                 continue;
             }
 
-            $filteredEvents += $event;
+            $FilteredEvents += $event;
         }
 
-        $events = $filteredEvents;
+        if ($null -ne $events) {
+            if ($null -ne ($events | Get-Member -Name 'Dispose')) {
+                $events.Dispose();
+            }
+
+            $events        = $null;
+            $MemoryCleared = $TRUE;
+        }
+
+        $events = $FilteredEvents;
     }
 
     $groupedEvents = @{
@@ -278,6 +288,15 @@ function Get-IcingaEventLog()
             $groupedEvents.events[$event.Id] += 1;
         }
     }
+
+    if ($MemoryCleared -eq $FALSE) {
+        if ($null -ne ($events | Get-Member -Name 'Dispose')) {
+            $events.Dispose();
+        }
+    }
+
+    $events         = $null;
+    $FilteredEvents = $null;
 
     return $groupedEvents;
 }

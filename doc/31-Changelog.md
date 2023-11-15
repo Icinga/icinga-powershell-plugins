@@ -9,9 +9,13 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 # 1.12.0 (tbd)
 
-### Enhancements
+# 1.11.2 (tbd)
 
-# 1.11.1 (tbd)
+### Bugfixes
+
+* [#375](https://github.com/Icinga/icinga-powershell-plugins/pull/375) Fixes a memory leak on the Icinga EventLog provider for fetching Windows EventLog information
+
+# 1.11.1 (2023-11-07)
 
 ### Bugfixes
 
