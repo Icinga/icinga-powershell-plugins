@@ -21,6 +21,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 # 1.11.1 (2023-11-07)
 
+* [#378](https://github.com/Icinga/icinga-powershell-plugins/pull/378) Adds support for `Invoke-IcingaCheckService` to change the output for not found services from UNKNOWN to OK, WARNING or CRITICAL instead
+
+# 1.11.1 (tbd)
+
 ### Bugfixes
 
 * [#358](https://github.com/Icinga/icinga-powershell-plugins/issues/358) Fixes broken Icinga plain configuration
