@@ -92,6 +92,8 @@
     Follows the Icinga Plugin threshold guidelines.
 .PARAMETER Process
     Allows to filter for a list of processes with a given name. Use the process name without file ending, like '.exe'.
+.PARAMETER ExcludeProcess
+    Define a list of process names which are excluded from the final result. Only the process name is required without '.exe' at the end.
 .PARAMETER NoPerfData
     Set this argument to not write any performance data
 .PARAMETER Verbosity
@@ -101,30 +103,30 @@
     2: Everything will be printed regardless of the check state
     3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK])
 .EXAMPLE
-    PS> Invoke-IcingaCheckProcess -Process 'msedge';
+    PS> Invoke-IcingaCheckProcess -Process 'powershell';
 
     [OK] Process Overview: 1 Ok
-    | 'msedge_process_count'=809c;; 'msedge_page_file_usage'=4611576B;;;0;9728 'msedge_cpu_usage'=5%;;;0;100 'msedge_thread_count'=809c;; 'msedge_memory_usage'=2335887000B;;;0;68636310000
+    | 'powershell::ifw_process::cpu'=76%;;;0;100 'powershell::ifw_process::memory'=1501471000B;;;0;6436880000 'powershell::ifw_process::pagefile'=1885120B;;;0;6979322000 'powershell::ifw_process::count'=7c;; 'powershell::ifw_process::threads'=106c;;
 .EXAMPLE
-    PS> Invoke-IcingaCheckProcess -Process 'msedge' -CPUWarning '1%' -TotalCPUWarning '5%';
+    PS> Invoke-IcingaCheckProcess -Process 'powershell' -CPUWarning '1%' -TotalCPUWarning '5%';
 
-    [WARNING] Process Overview: 1 Warning [WARNING] msedge
-    \_ [WARNING] msedge
-        \_ [WARNING] msedge [29508]
-            \_ [WARNING] CPU Usage: 101.00% is greater than threshold 1%
-        \_ [WARNING] msedge [55744]
-            \_ [WARNING] CPU Usage: 96.00% is greater than threshold 1%
-        \_ [WARNING] msedge Summary
-            \_ [WARNING] CPU Usage: 197.00% is greater than threshold 5%
-    | 'msedge_process_count'=946c;; 'msedge_page_file_usage'=4962844B;;;0;9728 'msedge_cpu_usage'=197%;5;;0;197 'msedge_thread_count'=946c;; 'msedge_memory_usage'=2743132000B;;;0;68636310000
+    [WARNING] Process Overview: 1 Warning [WARNING] powershell
+    \_ [WARNING] powershell
+        \_ [WARNING] powershell [13436]
+            \_ [WARNING] CPU Usage: 75.00% is greater than threshold 1%
+        \_ [WARNING] powershell [9332]
+            \_ [WARNING] CPU Usage: 98.00% is greater than threshold 1%
+        \_ [WARNING] powershell Summary
+            \_ [WARNING] CPU Usage: 173.00% is greater than threshold 5%
+    | 'powershell::ifw_process::cpu'=173%;5;;0;173 'powershell::ifw_process::memory'=1510900000B;;;0;6436880000 'powershell::ifw_process::pagefile'=1892332B;;;0;6979322000 'powershell::ifw_process::count'=7c;; 'powershell::ifw_process::threads'=112c;;
 .EXAMPLE
     PS> Invoke-IcingaCheckProcess -Process 'SearchIndexer' -MemoryWarning '0.1%';
 
     [WARNING] Process Overview: 1 Warning [WARNING] SearchIndexer
     \_ [WARNING] SearchIndexer
-        \_ [WARNING] SearchIndexer [16176]
-            \_ [WARNING] Memory Usage: 0.58% (382.17MiB) is greater than threshold 0.1% (65.46MiB)
-    | 'searchindexer_cpu_usage'=0%;;;0;100 'searchindexer_memory_usage'=400736300B;;;0;68636310000 'searchindexer_thread_count'=44c;; 'searchindexer_page_file_usage'=605704B;;;0;9728 'searchindexer_process_count'=44c;;
+        \_ [WARNING] SearchIndexer [5112]
+            \_ [WARNING] Memory Usage: 0.30% (18.56MiB) is greater than threshold 0.1% (6.14MiB)
+    | 'searchindexer::ifw_process::count'=1c;; 'searchindexer::ifw_process::pagefile'=24156B;;;0;6979322000 'searchindexer::ifw_process::threads'=8c;; 'searchindexer::ifw_process::cpu'=0%;;;0;100 'searchindexer::ifw_process::memory'=19460100B;;;0;6436880000
 #>
 function Invoke-IcingaCheckProcess()
 {
@@ -148,62 +150,63 @@ function Invoke-IcingaCheckProcess()
         $TotalProcessCountWarning  = $null,
         $TotalProcessCountCritical = $null,
         [array]$Process            = @(),
+        [array]$ExcludeProcess     = @(),
         [switch]$NoPerfData        = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity            = 0
     );
 
-    $ProcessInformation     = (Get-IcingaProcessData -Process $Process);
+    $ProviderInformation    = Get-IcingaProviderData -Name 'Process' -IncludeFilter $Process -ExcludeFilter $ExcludeProcess;
+    $ProcessData            = $ProviderInformation.Process;
     $MemoryData             = Get-IcingaMemoryPerformanceCounter;
     $ProcessOverviewPackage = New-IcingaCheckPackage -Name 'Process Overview' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
 
-    foreach ($processName in $ProcessInformation.Processes.Keys) {
-        $ProcessData    = $ProcessInformation.Processes[$processName];
+    foreach ($entry in (Get-IcingaProviderElement $ProcessData.Metrics)) {
+        $ProcessName    = $entry.Name;
         $ProcessPackage = New-IcingaCheckPackage -Name $processName -OperatorAnd -Verbose $Verbosity;
 
-        foreach ($processId in $ProcessData.ProcessList.Keys) {
-            $ProcessDetails          = $ProcessData.ProcessList[$processId];
-            $ProcessCheckPackageName = [string]::Format('{0} [{1}]', $processName, $processId);
+        foreach ($processDetail in (Get-IcingaProviderElement $entry.Value.List)) {
+            $ProcessCheckPackageName = [string]::Format('{0} [{1}]', $processName, $processDetail.Value.ProcessId);
             $ProcessIdPackage        = New-IcingaCheckPackage -Name $ProcessCheckPackageName -OperatorAnd -Verbose $Verbosity;
 
-            $PageFileCheck = New-IcingaCheck -Name 'Page File Usage' -Value $ProcessDetails.PageFileUsage -Unit 'B' -NoPerfData -BaseValue $MemoryData['PageFile Total Bytes'] -Minimum 0 -Maximum $MemoryData['PageFile Total Bytes'];
+            $PageFileCheck = New-IcingaCheck -Name 'Page File Usage' -Value $processDetail.Value.PageFileUsage -Unit 'B' -NoPerfData -BaseValue $MemoryData['PageFile Total Bytes'] -Minimum 0 -Maximum $MemoryData['PageFile Total Bytes'];
             $PageFileCheck.WarnOutOfRange($PageFileWarning).CritOutOfRange($PageFileCritical) | Out-Null;
             $ProcessIdPackage.AddCheck($PageFileCheck);
 
-            $MemoryCheck = New-IcingaCheck -Name 'Memory Usage' -Value $ProcessDetails.WorkingSetPrivate -Unit 'B' -NoPerfData -BaseValue $MemoryData['Memory Total Bytes'] -Minimum 0 -Maximum $MemoryData['Memory Total Bytes'];
+            $MemoryCheck = New-IcingaCheck -Name 'Memory Usage' -Value $processDetail.Value.MemoryUsage -Unit 'B' -NoPerfData -BaseValue $MemoryData['Memory Total Bytes'] -Minimum 0 -Maximum $MemoryData['Memory Total Bytes'];
             $MemoryCheck.WarnOutOfRange($MemoryWarning).CritOutOfRange($MemoryCritical) | Out-Null;
             $ProcessIdPackage.AddCheck($MemoryCheck);
 
-            $CPUCheck = New-IcingaCheck -Name 'CPU Usage' -Value $ProcessDetails.PercentProcessorTime -Unit '%' -NoPerfData;
+            $CPUCheck = New-IcingaCheck -Name 'CPU Usage' -Value $processDetail.Value.CpuUsage -Unit '%' -NoPerfData;
             $CPUCheck.WarnOutOfRange($CPUWarning).CritOutOfRange($CPUCritical) | Out-Null;
             $ProcessIdPackage.AddCheck($CPUCheck);
 
-            $ThreadCheck = New-IcingaCheck -Name 'Thread Count' -Value $ProcessDetails.ThreadCount -Unit 'c' -NoPerfData;
+            $ThreadCheck = New-IcingaCheck -Name 'Thread Count' -Value $processDetail.Value.ThreadCount -Unit 'c' -NoPerfData;
             $ThreadCheck.WarnOutOfRange($ThreadCountWarning).CritOutOfRange($ThreadCountCritical) | Out-Null;
             $ProcessIdPackage.AddCheck($ThreadCheck);
 
             $ProcessPackage.AddCheck($ProcessIdPackage);
         }
 
-        $ProcessSummary = New-IcingaCheckPackage -Name ([string]::Format('{0} Summary', $processName)) -OperatorAnd -Verbose $Verbosity;
+        $ProcessSummary = New-IcingaCheckPackage -Name ([string]::Format('{0} Summary', $ProcessName)) -OperatorAnd -Verbose $Verbosity;
 
-        $PageFileCheck = New-IcingaCheck -Name 'Page File Usage' -Value $ProcessData.PerformanceData.PageFileUsage -Unit 'B' -MetricIndex $processName -MetricName 'pagefile' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_page_file_usage', $processName.ToLower()))) -BaseValue $MemoryData['PageFile Total Bytes'] -Minimum 0 -Maximum $MemoryData['PageFile Total Bytes'];
+        $PageFileCheck = New-IcingaCheck -Name 'Page File Usage' -Value $entry.Value.Total.PageFileUsage -Unit 'B' -MetricIndex $ProcessName -MetricName 'pagefile' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_page_file_usage', $ProcessName.ToLower()))) -BaseValue $MemoryData['PageFile Total Bytes'] -Minimum 0 -Maximum $MemoryData['PageFile Total Bytes'];
         $PageFileCheck.WarnOutOfRange($TotalPageFileWarning).CritOutOfRange($TotalPageFileCritical) | Out-Null;
         $ProcessSummary.AddCheck($PageFileCheck);
 
-        $MemoryCheck = New-IcingaCheck -Name 'Memory Usage' -Value $ProcessData.PerformanceData.WorkingSetPrivate -Unit 'B' -MetricIndex $processName -MetricName 'memory' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_memory_usage', $processName.ToLower()))) -BaseValue $MemoryData['Memory Total Bytes'] -Minimum 0 -Maximum $MemoryData['Memory Total Bytes'];
+        $MemoryCheck = New-IcingaCheck -Name 'Memory Usage' -Value $entry.Value.Total.MemoryUsage -Unit 'B' -MetricIndex $ProcessName -MetricName 'memory' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_memory_usage', $ProcessName.ToLower()))) -BaseValue $MemoryData['Memory Total Bytes'] -Minimum 0 -Maximum $MemoryData['Memory Total Bytes'];
         $MemoryCheck.WarnOutOfRange($TotalMemoryWarning).CritOutOfRange($TotalMemoryCritical) | Out-Null;
         $ProcessSummary.AddCheck($MemoryCheck);
 
-        $CPUCheck = New-IcingaCheck -Name 'CPU Usage' -Value $ProcessData.PerformanceData.PercentProcessorTime -Unit '%' -MetricIndex $processName -MetricName 'cpu' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_cpu_usage', $processName.ToLower())));
+        $CPUCheck = New-IcingaCheck -Name 'CPU Usage' -Value $entry.Value.Total.CpuUsage -Unit '%' -MetricIndex $ProcessName -MetricName 'cpu' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_cpu_usage', $ProcessName.ToLower())));
         $CPUCheck.WarnOutOfRange($TotalCPUWarning).CritOutOfRange($TotalCPUCritical) | Out-Null;
         $ProcessSummary.AddCheck($CPUCheck);
 
-        $ThreadCheck = New-IcingaCheck -Name 'Thread Count' -Value $ProcessData.PerformanceData.ThreadCount -Unit 'c' -MetricIndex $processName -MetricName 'threads' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_thread_count', $processName.ToLower())));
+        $ThreadCheck = New-IcingaCheck -Name 'Thread Count' -Value $entry.Value.Total.ThreadCount -Unit 'c' -MetricIndex $ProcessName -MetricName 'threads' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_thread_count', $ProcessName.ToLower())));
         $ThreadCheck.WarnOutOfRange($TotalThreadCountWarning).CritOutOfRange($TotalThreadCountCritical) | Out-Null;
         $ProcessSummary.AddCheck($ThreadCheck);
 
-        $ProcessCheck = New-IcingaCheck -Name 'Process Count' -Value $ProcessData.ProcessList.Count -Unit 'c' -MetricIndex $processName -MetricName 'count' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_process_count', $processName.ToLower())));
+        $ProcessCheck = New-IcingaCheck -Name 'Process Count' -Value $entry.Value.Total.ProcessCount -Unit 'c' -MetricIndex $processName -MetricName 'count' -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0}_process_count', $processName.ToLower())));
         $ProcessCheck.WarnOutOfRange($TotalProcessCountWarning).CritOutOfRange($TotalProcessCountCritical) | Out-Null;
         $ProcessSummary.AddCheck($ProcessCheck);
 
