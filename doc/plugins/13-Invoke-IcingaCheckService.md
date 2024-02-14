@@ -24,12 +24,12 @@ To execute this plugin you will require to grant the following user permissions.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Service | Array | false | @() | Used to specify an array of services which should be checked against the status. Supports '*' for wildcards. |
-| Exclude | Array | false | @() | Allows to exclude services which might come in handy for checking services which are configured to start automatically on Windows but are not running and weren't exited properly. |
+| Service | Array | false | @() | Used to specify an array of services which should be checked against the status. Supports '*' for<br /> wildcards. |
+| Exclude | Array | false | @() | Allows to exclude services which might come in handy for checking services which are configured to start automatically<br /> on Windows but are not running and weren't exited properly. |
 | Status | String | false | Running | Status for the specified service or services to check against. |
-| FilterStartupType | Array | false | @() | Allows to include only services with a specific startup type inside the monitoring, in case you check for a list of specific services by using `-Service` |
-| MitigateUnknown | SwitchParameter | false | False | This will tell the plugin to return OK instead of UNKNOWN, in case no service was added to this check |
-| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
+| FilterStartupType | Array | false | @() | Allows to include only services with a specific startup type inside the monitoring,<br /> in case you check for a list of specific services by using `-Service` |
+| MitigateUnknown | SwitchParameter | false | False | This will tell the plugin to return OK instead of UNKNOWN, in case no service was added to this<br /> check |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed:<br /> 0 (default): Only service checks/packages with state not OK will be printed<br /> 1: Only services with not OK will be printed including OK checks of affected check packages including Package config<br /> 2: Everything will be printed regardless of the check state<br /> 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | NoPerfData | SwitchParameter | false | False | Disables the performance data output of this plugin |
 | ThresholdInterval | String |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
