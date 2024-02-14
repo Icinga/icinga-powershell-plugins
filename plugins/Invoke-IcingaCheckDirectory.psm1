@@ -148,6 +148,8 @@
     String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.
 
     Thereby all files with a size of 5 MB or less are considered within the check.
+.PARAMETER FileContainPattern
+    String Pattern which a file should contain
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -189,6 +191,7 @@ function Invoke-IcingaCheckDirectory()
         [string]$CreationYoungerThan,
         [string]$FileSizeGreaterThan,
         [string]$FileSizeSmallerThan,
+        [string]$FileContainPattern,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity              = 0,
         [switch]$NoPerfData          = $FALSE
@@ -198,7 +201,7 @@ function Invoke-IcingaCheckDirectory()
         -ChangeYoungerThan $ChangeYoungerThan -ChangeOlderThan $ChangeOlderThan `
         -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
         -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
-        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
+        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan -FileContainPattern $FileContainPattern;
 
     $DirectoryCheck = New-IcingaCheckPackage -Name ([string]::Format('Directory Check: "{0}"', $Path)) -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
 
