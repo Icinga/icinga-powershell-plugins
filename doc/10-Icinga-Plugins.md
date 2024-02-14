@@ -26,32 +26,32 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 
 | Plugin Name | Description |
 | ---         | --- |
-| [Invoke-IcingaCheckBiosSerial](plugins/01-Invoke-IcingaCheckBiosSerial.md) | Finds out the Bios Serial |
-| [Invoke-IcingaCheckCertificate](plugins/02-Invoke-IcingaCheckCertificate.md) | Check whether a certificate is still trusted and when it runs out or starts. |
-| [Invoke-IcingaCheckCheckSum](plugins/03-Invoke-IcingaCheckCheckSum.md) | Checks hash against file hash of a file |
-| [Invoke-IcingaCheckCPU](plugins/04-Invoke-IcingaCheckCPU.md) | Checks cpu usage of cores. |
-| [Invoke-IcingaCheckDirectory](plugins/05-Invoke-IcingaCheckDirectory.md) | Checks for amount of files within a directory depending on the set filters |
-| [Invoke-IcingaCheckDiskHealth](plugins/20-Invoke-IcingaCheckDiskHealth.md) | Checks availability, state and utilization of the physical hard disk |
-| [Invoke-IcingaCheckEventlog](plugins/06-Invoke-IcingaCheckEventlog.md) | Checks how many eventlog occurrences of a given type there are. |
-| [Invoke-IcingaCheckFirewall](plugins/07-Invoke-IcingaCheckFirewall.md) | Checks whether a firewall module is enabled or not |
-| [Invoke-IcingaCheckHttpJsonResponse](plugins/28-Invoke-IcingaCheckHttpJsonResponse.md) | Retrieves a JSON-Object via Request and performs desired checks |
-| [Invoke-IcingaCheckHTTPStatus](plugins/25-Invoke-IcingaCheckHTTPStatus.md) | Checks the response time, the return code and content of HTTP requests. |
-| [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md) | Checks via ICMP requests to a target destination for response time and availability |
-| [Invoke-IcingaCheckMemory](plugins/09-Invoke-IcingaCheckMemory.md) | Checks on memory usage |
-| [Invoke-IcingaCheckMPIO](plugins/26-Invoke-IcingaCheckMPIO.md) | Monitors the number of paths for each MPIO driver on your system. |
-| [Invoke-IcingaCheckNetworkInterface](plugins/21-Invoke-IcingaCheckNetworkInterface.md) | Checks availability, state and Usage of Network interfaces and Interface Teams |
-| [Invoke-IcingaCheckNLA](plugins/10-Invoke-IcingaCheckNLA.md) | Checks whether the network location awareness(NLA) found the correct firewall profile for a given network adapter |
-| [Invoke-IcingaCheckPerfcounter](plugins/11-Invoke-IcingaCheckPerfcounter.md) | Performs checks on various performance counter |
-| [Invoke-IcingaCheckProcess](plugins/27-Invoke-IcingaCheckProcess.md) | A plugin to check thread, cpu, memory and pagefile usage for each single process |
-| [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md) | Checks how many processes of a process exist. |
+| [Invoke-IcingaCheckUsedPartitionSpace](plugins/16-Invoke-IcingaCheckUsedPartitionSpace.md) | Checks how much space on a partition is used. |
 | [Invoke-IcingaCheckScheduledTask](plugins/19-Invoke-IcingaCheckScheduledTask.md) | Checks the current state for a list of specified tasks based on their name and prints the result |
+| [Invoke-IcingaCheckBiosSerial](plugins/01-Invoke-IcingaCheckBiosSerial.md) | Finds out the Bios Serial |
+| [Invoke-IcingaCheckEventlog](plugins/06-Invoke-IcingaCheckEventlog.md) | Checks how many eventlog occurrences of a given type there are. |
+| [Invoke-IcingaCheckHttpJsonResponse](plugins/28-Invoke-IcingaCheckHttpJsonResponse.md) | Retrieves a JSON-Object via Request and performs desired checks |
+| [Invoke-IcingaCheckNetworkInterface](plugins/21-Invoke-IcingaCheckNetworkInterface.md) | Checks availability, state and Usage of Network interfaces and Interface Teams |
+| [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md) | Checks how many processes of a process exist. |
+| [Invoke-IcingaCheckUsers](plugins/17-Invoke-IcingaCheckUsers.md) | Checks how many users are logged on to the host |
 | [Invoke-IcingaCheckService](plugins/13-Invoke-IcingaCheckService.md) | Checks if defined services have a specific status or checks for all automatic services and if they are running and have not been terminated with exit code 0 |
-| [Invoke-IcingaCheckStoragePool](plugins/21-Invoke-IcingaCheckStoragePool.md) | Checks availability, utilization and state of a StoragePool. |
-| [Invoke-IcingaCheckTCP](plugins/23-Invoke-IcingaCheckTCP.md) | Checks the connection for an address and a range of ports and fetches the connection status including the time require to connect. |
-| [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md) | Gets Network Time Protocol time(SMTP/NTP) from a specified server |
+| [Invoke-IcingaCheckCPU](plugins/04-Invoke-IcingaCheckCPU.md) | Checks cpu usage of cores. |
 | [Invoke-IcingaCheckUNCPath](plugins/24-Invoke-IcingaCheckUNCPath.md) | Checks a given path / unc path and determines the size of the volume including free space |
 | [Invoke-IcingaCheckUpdates](plugins/14-Invoke-IcingaCheckUpdates.md) | Checks how many updates are to be applied |
+| [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md) | Gets Network Time Protocol time(SMTP/NTP) from a specified server |
+| [Invoke-IcingaCheckDiskHealth](plugins/20-Invoke-IcingaCheckDiskHealth.md) | Checks availability, state and utilization of the physical hard disk |
+| [Invoke-IcingaCheckTCP](plugins/23-Invoke-IcingaCheckTCP.md) | Checks the connection for an address and a range of ports and fetches the connection status including the time require to connect. |
+| [Invoke-IcingaCheckHTTPStatus](plugins/25-Invoke-IcingaCheckHTTPStatus.md) | Checks the response time, the return code and content of HTTP requests. |
+| [Invoke-IcingaCheckFirewall](plugins/07-Invoke-IcingaCheckFirewall.md) | Checks whether a firewall module is enabled or not |
+| [Invoke-IcingaCheckPerfcounter](plugins/11-Invoke-IcingaCheckPerfcounter.md) | Performs checks on various performance counter |
+| [Invoke-IcingaCheckMemory](plugins/09-Invoke-IcingaCheckMemory.md) | Checks on memory usage |
 | [Invoke-IcingaCheckUptime](plugins/15-Invoke-IcingaCheckUptime.md) | Checks how long a Windows system has been up for. |
-| [Invoke-IcingaCheckUsedPartitionSpace](plugins/16-Invoke-IcingaCheckUsedPartitionSpace.md) | Checks how much space on a partition is used. |
-| [Invoke-IcingaCheckUsers](plugins/17-Invoke-IcingaCheckUsers.md) | Checks how many users are logged on to the host |
+| [Invoke-IcingaCheckCheckSum](plugins/03-Invoke-IcingaCheckCheckSum.md) | Checks hash against file hash of a file |
+| [Invoke-IcingaCheckMPIO](plugins/26-Invoke-IcingaCheckMPIO.md) | Monitors the number of paths for each MPIO driver on your system. |
+| [Invoke-IcingaCheckNLA](plugins/10-Invoke-IcingaCheckNLA.md) | Checks whether the network location awareness(NLA) found the correct firewall profile for a given network adapter |
+| [Invoke-IcingaCheckICMP](plugins/08-Invoke-IcingaCheckICMP.md) | Checks via ICMP requests to a target destination for response time and availability |
+| [Invoke-IcingaCheckCertificate](plugins/02-Invoke-IcingaCheckCertificate.md) | Check whether a certificate is still trusted and when it runs out or starts. |
+| [Invoke-IcingaCheckStoragePool](plugins/21-Invoke-IcingaCheckStoragePool.md) | Checks availability, utilization and state of a StoragePool. |
+| [Invoke-IcingaCheckDirectory](plugins/05-Invoke-IcingaCheckDirectory.md) | Checks for amount of files within a directory depending on the set filters |
+| [Invoke-IcingaCheckProcess](plugins/27-Invoke-IcingaCheckProcess.md) | A plugin to check thread, cpu, memory and pagefile usage for each single process |
 

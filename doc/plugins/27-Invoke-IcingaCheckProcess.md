@@ -40,6 +40,7 @@ No special permissions required.
 | TotalProcessCountWarning | Object | false |  | Compares process count for all processes with the same name against the given threshold. Will throw warning if exceeded.  Follows the Icinga Plugin threshold guidelines. |
 | TotalProcessCountCritical | Object | false |  | Compares process count for all processes with the same name against the given threshold. Will throw critical if exceeded.  Follows the Icinga Plugin threshold guidelines. |
 | Process | Array | false | @() | Allows to filter for a list of processes with a given name. Use the process name without file ending, like '.exe'. |
+| ExcludeProcess | Array | false | @() | Define a list of process names which are excluded from the final result. Only the process name is required without '.exe' at the end. |
 | NoPerfData | SwitchParameter | false | False | Set this argument to not write any performance data |
 | Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | ThresholdInterval | String |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
@@ -49,34 +50,34 @@ No special permissions required.
 ### Example Command 1
 
 ```powershell
-Invoke-IcingaCheckProcess -Process 'msedge';
+Invoke-IcingaCheckProcess -Process 'powershell';
 ```
 
 ### Example Output 1
 
 ```powershell
 [OK] Process Overview: 1 Ok
-| 'msedge_process_count'=809c;; 'msedge_page_file_usage'=4611576B;;;0;9728 'msedge_cpu_usage'=5%;;;0;100 'msedge_thread_count'=809c;; 'msedge_memory_usage'=2335887000B;;;0;68636310000    
+| 'powershell::ifw_process::cpu'=76%;;;0;100 'powershell::ifw_process::memory'=1501471000B;;;0;6436880000 'powershell::ifw_process::pagefile'=1885120B;;;0;6979322000 'powershell::ifw_process::count'=7c;; 'powershell::ifw_process::threads'=106c;;    
 ```
 
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckProcess -Process 'msedge' -CPUWarning '1%' -TotalCPUWarning '5%';
+Invoke-IcingaCheckProcess -Process 'powershell' -CPUWarning '1%' -TotalCPUWarning '5%';
 ```
 
 ### Example Output 2
 
 ```powershell
-[WARNING] Process Overview: 1 Warning [WARNING] msedge
-\_ [WARNING] msedge
-    \_ [WARNING] msedge [29508]
-        \_ [WARNING] CPU Usage: 101.00% is greater than threshold 1%
-    \_ [WARNING] msedge [55744]
-        \_ [WARNING] CPU Usage: 96.00% is greater than threshold 1%
-    \_ [WARNING] msedge Summary
-        \_ [WARNING] CPU Usage: 197.00% is greater than threshold 5%
-| 'msedge_process_count'=946c;; 'msedge_page_file_usage'=4962844B;;;0;9728 'msedge_cpu_usage'=197%;5;;0;197 'msedge_thread_count'=946c;; 'msedge_memory_usage'=2743132000B;;;0;68636310000    
+[WARNING] Process Overview: 1 Warning [WARNING] powershell
+\_ [WARNING] powershell
+    \_ [WARNING] powershell [13436]
+        \_ [WARNING] CPU Usage: 75.00% is greater than threshold 1%
+    \_ [WARNING] powershell [9332]
+        \_ [WARNING] CPU Usage: 98.00% is greater than threshold 1%
+    \_ [WARNING] powershell Summary
+        \_ [WARNING] CPU Usage: 173.00% is greater than threshold 5%
+| 'powershell::ifw_process::cpu'=173%;5;;0;173 'powershell::ifw_process::memory'=1510900000B;;;0;6436880000 'powershell::ifw_process::pagefile'=1892332B;;;0;6979322000 'powershell::ifw_process::count'=7c;; 'powershell::ifw_process::threads'=112c;;    
 ```
 
 ### Example Command 3
@@ -90,9 +91,9 @@ Invoke-IcingaCheckProcess -Process 'SearchIndexer' -MemoryWarning '0.1%';
 ```powershell
 [WARNING] Process Overview: 1 Warning [WARNING] SearchIndexer
 \_ [WARNING] SearchIndexer
-    \_ [WARNING] SearchIndexer [16176]
-        \_ [WARNING] Memory Usage: 0.58% (382.17MiB) is greater than threshold 0.1% (65.46MiB)
-| 'searchindexer_cpu_usage'=0%;;;0;100 'searchindexer_memory_usage'=400736300B;;;0;68636310000 'searchindexer_thread_count'=44c;; 'searchindexer_page_file_usage'=605704B;;;0;9728 'searchindexer_process_count'=44c;;    
+    \_ [WARNING] SearchIndexer [5112]
+        \_ [WARNING] Memory Usage: 0.30% (18.56MiB) is greater than threshold 0.1% (6.14MiB)
+| 'searchindexer::ifw_process::count'=1c;; 'searchindexer::ifw_process::pagefile'=24156B;;;0;6979322000 'searchindexer::ifw_process::threads'=8c;; 'searchindexer::ifw_process::cpu'=0%;;;0;100 'searchindexer::ifw_process::memory'=19460100B;;;0;6436880000    
 ```
 
 
