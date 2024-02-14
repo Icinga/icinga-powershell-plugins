@@ -142,22 +142,34 @@ function Invoke-IcingaCheckEventlog()
         [int]$Verbosity           = 0
     );
 
-    $After  = Convert-IcingaPluginThresholds $After;
-    $Before = Convert-IcingaPluginThresholds $Before;
-
     $EventLogPackage = New-IcingaCheckPackage -Name 'EventLog' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
-    $EventLogData    = Get-IcingaEventLog -LogName $LogName -IncludeEventId $IncludeEventId -ExcludeEventId $ExcludeEventId -IncludeUsername $IncludeUsername -ExcludeUsername $ExcludeUsername `
-        -IncludeEntryType $IncludeEntryType -ExcludeEntryType $ExcludeEntryType -IncludeMessage $IncludeMessage -ExcludeMessage $ExcludeMessage `
-        -IncludeSource $IncludeSource -ExcludeSource $ExcludeSource -After $After.Value -Before $Before.Value -MaxEntries $MaxEntries -DisableTimeCache $DisableTimeCache;
+    $EventLogData    = Get-IcingaProviderDataValuesEventlog -ProviderFilter @{
+        'Eventlog' = @{
+            'LogName'          = $LogName;
+            'IncludeEventId'   = $IncludeEventId;
+            'ExcludeEventId'   = $ExcludeEventId;
+            'IncludeUsername'  = $IncludeUsername;
+            'ExcludeUsername'  = $ExcludeUsername;
+            'IncludeEntryType' = $IncludeEntryType;
+            'ExcludeEntryType' = $ExcludeEntryType;
+            'IncludeMessage'   = $IncludeMessage;
+            'ExcludeMessage'   = $ExcludeMessage;
+            'IncludeSource'    = $IncludeSource;
+            'ExcludeSource'    = $ExcludeSource;
+            'EventsAfter'      = $After;
+            'EventsBefore'     = $Before;
+            'MaxEntries'       = $MaxEntries;
+            'DisableTimeCache' = $DisableTimeCache;
+        }
+    };
 
-    [hashtable]$EventLogSource = @{};
+    if ($EventLogData.Metrics.HasEvents) {
+        foreach ($event in (Get-IcingaProviderElement $EventLogData.Metrics.List)) {
 
-    if ($EventLogData.eventlog.Count -ne 0) {
-        foreach ($event in $EventLogData.eventlog.Keys) {
-            $eventEntry = $EventLogData.eventlog[$event];
+            $eventEntry = $event.Value;
 
             $EventLogEntryPackage = New-IcingaCheckPackage -Name ([string]::Format('Between: [{0}] - [{1}] there occurred {2} event(s).', $eventEntry.OldestEntry, $eventEntry.NewestEntry, $eventEntry.Count)) -OperatorAnd -Verbose $Verbosity;
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $EventLogData.eventlog[$event].EventId)) -Value $eventEntry.Count -NoPerfData;
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $eventEntry.EventId)) -Value $eventEntry.Count -NoPerfData;
             $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
             $EventLogEntryPackage.AddCheck($IcingaCheck);
             $EventMessage = New-IcingaCheck -Name ([string]::Format('Event Message: {0}', ($eventEntry.Message).Replace("`r`n", '').Replace("`n", ''))) -NoPerfData;
@@ -168,8 +180,8 @@ function Invoke-IcingaCheckEventlog()
 
         $EventLogCountPackage = New-IcingaCheckPackage -Name 'EventLog Count' -OperatorAnd -Verbose $Verbosity -Hidden;
 
-        foreach ($event in $EventLogData.events.Keys) {
-            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $event)) -Value $EventLogData.events[$event] -Unit 'c' -MetricIndex $event -MetricName 'count';
+        foreach ($event in (Get-IcingaProviderElement $EventLogData.Metrics.Events)) {
+            $IcingaCheck = New-IcingaCheck -Name ([string]::Format('EventId {0}', $event.Name)) -Value $event.Value -Unit 'c' -MetricIndex $event.Name -MetricName 'count';
             $EventLogCountPackage.AddCheck($IcingaCheck);
         }
 
