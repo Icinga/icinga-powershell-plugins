@@ -36,6 +36,11 @@
 .PARAMETER OverallOnly
     If this flag is set, the Warning and Critical thresholds will only apply to the `Overall Load` metric instead of all
     returned cores. Requires that the plugin either fetches all cores with `*` or `Total` for the -Core argument
+.PARAMETER OverallTotalAsSum
+    Changes the output of the overall total load to report the sum of all sockets combined instead of the default
+    average of all sockets
+.PARAMETER DisableProcessList
+    Disables the reporting of the top 10 CPU consuming process list
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -54,18 +59,21 @@
 function Invoke-IcingaCheckCPU()
 {
     param (
-        $Warning             = $null,
-        $Critical            = $null,
-        [string]$Core        = '*',
-        [array]$SocketFilter = @(),
-        [switch]$OverallOnly = $FALSE,
+        $Warning                    = $null,
+        $Critical                   = $null,
+        [string]$Core               = '*',
+        [array]$SocketFilter        = @(),
+        [switch]$OverallOnly        = $FALSE,
+        [switch]$OverallTotalAsSum  = $FALSE,
+        [switch]$DisableProcessList = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity      = 0
+        [int]$Verbosity             = 0
     );
 
-    $CpuData    = Get-IcingaProviderDataValuesCpu;
-    $CpuPackage = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
+    $CpuData        = Get-IcingaProviderDataValuesCpu;
+    $CpuPackage     = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
+    $ProcessPackage = New-IcingaCheckPackage -Name 'Top 10 Process CPU usage' -OperatorAnd -Verbose 2 -IgnoreEmptyPackage;
 
     foreach ($socket in (Get-IcingaProviderElement $CpuData.Metrics)) {
         [string]$SocketId = $socket.Name.Replace('Socket #', '');
@@ -105,16 +113,41 @@ function Invoke-IcingaCheckCPU()
     }
 
     if ($Core -eq '*' -Or $Core -Like '*Total*') {
+        $TotalLoadValue = $CpuData.Metadata.TotalLoad;
+
+        if ($OverallTotalAsSum) {
+            $TotalLoadValue = $CpuData.Metadata.TotalLoadSum;
+        }
+
         $IcingaCheck = (
             New-IcingaCheck `
                 -Name 'Overall Load' `
-                -Value $CpuData.Metadata.TotalLoad `
+                -Value $TotalLoadValue `
                 -Unit '%' `
                 -MetricIndex 'totalload' `
                 -MetricName 'load'
         ).WarnOutOfRange($Warning).CritOutOfRange($Critical);
 
         $CpuPackage.AddCheck($IcingaCheck);
+    }
+
+    if ($DisableProcessList -eq $FALSE) {
+        $ProcessData   = Get-IcingaProviderDataValuesProcess;
+        [bool]$HasData = $FALSE;
+
+        foreach ($cpuProcess in (Get-IcingaProviderElement $ProcessData.Metadata.Hot.Cpu)) {
+            $HasData      = $TRUE;
+            $ProcessCheck = New-IcingaCheck -Name ([string]::Format('Process {0} with id {1}', $cpuProcess.Value.Name, $cpuProcess.Value.ProcessId)) -Value $cpuProcess.Value.CpuUsage -Unit '%' -NoPerfData;
+            $ProcessPackage.AddCheck($ProcessCheck);
+        }
+
+        if ($HasData -eq $FALSE) {
+            $ProcessCheck = New-IcingaCheck -Name 'Process Data' -NoPerfData;
+            $ProcessCheck.SetOk('No process with high CPU usage found', $TRUE) | Out-Null;
+            $ProcessPackage.AddCheck($ProcessCheck);
+        }
+
+        $CpuPackage.AddCheck($ProcessPackage);
     }
 
     return (New-IcingaCheckResult -Name 'CPU Load' -Check $CpuPackage -NoPerfData $NoPerfData -Compile);

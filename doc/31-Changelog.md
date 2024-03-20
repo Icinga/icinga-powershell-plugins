@@ -11,14 +11,13 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#375](https://github.com/Icinga/icinga-powershell-plugins/pull/375) Fixes a memory leak on the Icinga EventLog provider for fetching Windows EventLog information
 * [#384](https://github.com/Icinga/icinga-powershell-plugins/pull/384) Adds new data provider for Invoke-IcingaCheckProcess and extends functionality by adding a new 'ExcludeProcess' argument
 * [#386](https://github.com/Icinga/icinga-powershell-plugins/pull/386) Adds new provider for Invoke-IcingaCheckEventLog, to improve performance and fix memory leaks
 
-# 1.11.2 (tbd)
+### Enhancements
 
-### Bugfixes
-
-* [#375](https://github.com/Icinga/icinga-powershell-plugins/pull/375) Fixes a memory leak on the Icinga EventLog provider for fetching Windows EventLog information
+* [#366](https://github.com/Icinga/icinga-powershell-plugins/issues/366) Adds support to `Invoke-IcingaCheckCPU` to report top CPU consuming process information as well as a switch to change the overall load from average to sum
 
 # 1.11.1 (2023-11-07)
 
