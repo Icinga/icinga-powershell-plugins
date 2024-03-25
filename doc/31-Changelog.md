@@ -12,6 +12,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#384](https://github.com/Icinga/icinga-powershell-plugins/pull/384) Adds new data provider for Invoke-IcingaCheckProcess and extends functionality by adding a new 'ExcludeProcess' argument
+* [#386](https://github.com/Icinga/icinga-powershell-plugins/pull/386) Adds new provider for Invoke-IcingaCheckEventLog, to improve performance and fix memory leaks
 
 # 1.11.2 (tbd)
 

@@ -33,15 +33,15 @@ To execute this plugin you will require to grant the following user permissions.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Warning | Object | false |  | Used to specify a Warning threshold. This can either be a byte-value type like '10GB' or a %-value, like '10%' |
-| Critical | Object | false |  | Used to specify a Critical threshold. This can either be a byte-value type like '10GB' or a %-value, like '10%' |
-| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked. e.g. 'C:','D:' |
-| Exclude | Array | false | @() | Used to specify an array of partitions to be excluded. e.g. 'C:','D:' |
-| IgnoreEmptyChecks | SwitchParameter | false | False | Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example). Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set. |
+| Warning | Object | false |  | Used to specify a Warning threshold. This can either be a byte-value type like '10GB'<br /> or a %-value, like '10%' |
+| Critical | Object | false |  | Used to specify a Critical threshold. This can either be a byte-value type like '10GB'<br /> or a %-value, like '10%' |
+| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.<br /> e.g. 'C:','D:' |
+| Exclude | Array | false | @() | Used to specify an array of partitions to be excluded.<br /> e.g. 'C:','D:' |
+| IgnoreEmptyChecks | SwitchParameter | false | False | Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example).<br /> Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set. |
 | NoPerfData | SwitchParameter | false | False | Disables the performance data output of this plugin |
 | SkipUnknown | SwitchParameter | false | False | Allows to set Unknown partitions to Ok in case no metrics could be loaded. |
 | CheckUsedSpace | SwitchParameter | false | False | Switches the behaviour of the plugin from checking with threshold for the free space (default) to the remaining (used) space instead |
-| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed:<br /> 0 (default): Only service checks/packages with state not OK will be printed<br /> 1: Only services with not OK will be printed including OK checks of affected check packages including Package config<br /> 2: Everything will be printed regardless of the check state<br /> 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | ThresholdInterval | String |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples
