@@ -59,6 +59,11 @@
 .PARAMETER Exclude
     Used to specify an array of partitions to be excluded.
     e.g. 'C:','D:'
+.PARAMETER RequiredPartition
+    Allows to define a list of partitions which should be included in the check.
+    e.g. 'C:','D:'
+
+    In case they are missing, the plugin will report CRITICAL
 .PARAMETER Include
     Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.
     e.g. 'C:','D:'
@@ -93,6 +98,7 @@ function Invoke-IcingaCheckPartitionSpace()
         $Critical                  = $null,
         [array]$Include            = @(),
         [array]$Exclude            = @(),
+        [array]$RequiredPartition  = @(),
         [switch]$IgnoreEmptyChecks = $FALSE,
         [switch]$NoPerfData        = $FALSE,
         [switch]$SkipUnknown       = $FALSE,
@@ -101,8 +107,9 @@ function Invoke-IcingaCheckPartitionSpace()
         [int]$Verbosity            = 0
     );
 
-    $Disks       = Get-IcingaPartitionSpace;
-    $DiskPackage = $null;
+    $Disks                  = Get-IcingaPartitionSpace;
+    $DiskPackage            = $null;
+    [array]$KnownPartitions = @();
 
     if ($CheckUsedSpace) {
         $DiskPackage = New-IcingaCheckPackage -Name 'Used Partition Space' -Verbose $Verbosity -IgnoreEmptyPackage:$IgnoreEmptyChecks -OperatorAnd -AddSummaryHeader;
@@ -111,14 +118,17 @@ function Invoke-IcingaCheckPartitionSpace()
     }
 
     foreach ($partition in $Disks.Keys) {
-        $partition        = $Disks[$partition];
-        $ProcessPartition = $TRUE;
+        $partition          = $Disks[$partition];
+        $ProcessPartition   = $TRUE;
+        $PartitionMandatory = $FALSE;
 
         if ([string]::IsNullOrEmpty($partition.DriveLetter)) {
             continue;
         }
 
         $FormattedLetter = $partition.DriveLetter.Replace(':', '').ToLower();
+
+        [array]$KnownPartitions += $FormattedLetter;
 
         foreach ($entry in $Include) {
             $ProcessPartition = $FALSE;
@@ -157,6 +167,15 @@ function Invoke-IcingaCheckPartitionSpace()
         }
 
         $DiskPackage.AddCheck($IcingaCheck);
+    }
+
+    foreach ($mandatoryPartition in $RequiredPartition) {
+        $reqPartition = $mandatoryPartition.Replace(':', '').Replace('\', '').Replace('/', '').ToLower();
+
+        if ($KnownPartitions.Contains($reqPartition) -eq $FALSE) {
+            $IcingaCheck = (New-IcingaCheck -Name ([string]::Format('Partition {0}', $reqPartition.ToUpper())) -Value 'Mandatory partition not found on host' -NoPerfData).SetCritical();
+            $DiskPackage.AddCheck($IcingaCheck);
+        }
     }
 
     return (New-IcingaCheckResult -Check $DiskPackage -NoPerfData $NoPerfData -Compile);
