@@ -19,12 +19,9 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#288](https://github.com/Icinga/icinga-powershell-plugins/issues/288) Adds support to `Invoke-IcingaCheckPartitionSpace` to define mandatory partitions which should always be present
 * [#366](https://github.com/Icinga/icinga-powershell-plugins/issues/366) Adds support to `Invoke-IcingaCheckCPU` to report top CPU consuming process information as well as a switch to change the overall load from average to sum
-
-# 1.11.1 (2023-11-07)
-
 * [#378](https://github.com/Icinga/icinga-powershell-plugins/pull/378) Adds support for `Invoke-IcingaCheckService` to change the output for not found services from UNKNOWN to OK, WARNING or CRITICAL instead
 
-# 1.11.1 (tbd)
+# 1.11.1 (2023-11-07)
 
 ### Bugfixes
 
