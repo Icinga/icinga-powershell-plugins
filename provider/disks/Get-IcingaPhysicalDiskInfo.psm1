@@ -285,7 +285,9 @@ function Global:Get-IcingaPhysicalDiskInfo()
             }
         );
 
-        $PhysicalDiskData.Add($MSFTDiskId, $DiskInfo);
+        if(!$PhysicalDiskData.ContainsKey($MSFTDiskId)) {
+            $PhysicalDiskData.Add($MSFTDiskId, $DiskInfo);
+        }
     }
 
     return $PhysicalDiskData;
