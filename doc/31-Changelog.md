@@ -11,7 +11,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/20)
 
+### Enhancements
+
 * [#397](https://github.com/Icinga/icinga-powershell-plugins/issues/397) Adds support to `Invoke-IcingaCheckEventLog` to provide occurring problem event id's for the Eventlog and corresponding acknowledgement id's, providing an indicator if certain issues are resolved or still present
+* [#411](https://github.com/Icinga/icinga-powershell-plugins/pull/411) Adds argument `Limit100Percent` to `Invoke-IcingaCheckCPU` for limiting each threads CPU usage to 100%
 
 # 1.12.0 (2024-03-26)
 

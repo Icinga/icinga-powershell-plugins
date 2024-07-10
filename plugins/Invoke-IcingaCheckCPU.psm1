@@ -41,6 +41,9 @@
     average of all sockets
 .PARAMETER DisableProcessList
     Disables the reporting of the top 10 CPU consuming process list
+.PARAMETER Limit100Percent
+    If this flag is set, the plugin will limit the CPU usage for each thread to 100%. This happens on systems with Intel TurboBoost or AMD PBO (Precision Boost Overdrive) enabled.
+    Read more about this behavior on the Microsoft docs: https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/cpu-usage-exceeds-100
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -66,12 +69,17 @@ function Invoke-IcingaCheckCPU()
         [switch]$OverallOnly        = $FALSE,
         [switch]$OverallTotalAsSum  = $FALSE,
         [switch]$DisableProcessList = $FALSE,
+        [switch]$Limit100Percent    = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity             = 0
     );
 
-    $CpuData        = Get-IcingaProviderDataValuesCpu;
+    $CpuData        = Get-IcingaProviderDataValuesCpu -ProviderFilter @{
+        'Cpu' = @{
+            'Limit100Percent' = $Limit100Percent;
+        }
+    };
     $CpuPackage     = New-IcingaCheckPackage -Name 'CPU Load' -OperatorAnd -Verbose $Verbosity;
     $ProcessPackage = New-IcingaCheckPackage -Name 'Top 10 Process CPU usage' -OperatorAnd -Verbose 2 -IgnoreEmptyPackage;
 
