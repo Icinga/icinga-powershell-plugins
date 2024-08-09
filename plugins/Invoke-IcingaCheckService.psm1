@@ -139,7 +139,7 @@ function Invoke-IcingaCheckService()
                 (New-IcingaWindowsServiceCheckObject -Status $Status -Service $services)
             );
 
-            $ServiceSummary = Add-IcingaServiceSummary -ServiceStatus $StatusRaw -ServiceData $ServiceSummary;
+            $ServiceSummary = Add-IcingaServiceSummary -ServiceStatus $services.configuration.Status.Raw -ServiceData $ServiceSummary;
         }
     }
 
