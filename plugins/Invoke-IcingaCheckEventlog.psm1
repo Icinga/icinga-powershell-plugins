@@ -100,6 +100,15 @@
     Used to specify an array of message sources within the eventlog to be included.
 .PARAMETER ExcludeSource
     Used to specify an array of message sources within the eventlog to be excluded.
+.PARAMETER ProblemId
+    Used to specify an array of event IDs that should be marked as problems. These event IDs will be compared to the provided AcknowledgeIds.
+    If no event ID for an AcknowledgeId is found after the corresponding problem event ID has occurred, it will be marked as a problem.
+    If you provide multiple ProblemIds, you must specify the same number of AcknowledgeIds. If you have multiple ProblemIds but only one AcknowledgeId,
+    you need to add the AcknowledgeId multiple times to the AcknowledgeIds array.
+.PARAMETER AcknowledgeId
+    Used to specify an array of event IDs that should be marked as acknowledged. These event IDs will be compared to the provided ProblemIds.
+    If no event ID for a ProblemId is found it will be marked as a problem. If you provide multiple ProblemIds, you must specify the same number of AcknowledgeIds.
+    If you have multiple ProblemIds but only one AcknowledgeId, you need to add the AcknowledgeId multiple times to this array.
 .PARAMETER After
     Defines the starting point on which timeframe the plugin will start to read event log information.
     Using 4h as argument as example, will provide all entries from the time the plugin was executed to the past 4 hours.
@@ -181,6 +190,8 @@ function Invoke-IcingaCheckEventlog()
         [array]$ExcludeMessage    = @(),
         [array]$IncludeSource     = @(),
         [array]$ExcludeSource     = @(),
+        [array]$ProblemId         = @(),
+        [array]$AcknowledgeId     = @(),
         $After                    = $null,
         $Before                   = $null,
         [int]$MaxEntries          = 40000,
@@ -192,6 +203,7 @@ function Invoke-IcingaCheckEventlog()
 
     [hashtable]$SourceCache = @{ };
     $EventLogPackage        = New-IcingaCheckPackage -Name ([string]::Format('Eventlog {0}', $LogName)) -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
+    $EventLogProblems       = New-IcingaCheckPackage -Name 'Not acknowledged problems' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
     $EventLogData           = Get-IcingaProviderDataValuesEventlog -ProviderFilter @{
         'Eventlog' = @{
             'LogName'          = $LogName;
@@ -205,6 +217,8 @@ function Invoke-IcingaCheckEventlog()
             'ExcludeMessage'   = $ExcludeMessage;
             'IncludeSource'    = $IncludeSource;
             'ExcludeSource'    = $ExcludeSource;
+            'ProblemId'        = $ProblemId;
+            'AcknowledgeId'    = $AcknowledgeId;
             'EventsAfter'      = $After;
             'EventsBefore'     = $Before;
             'MaxEntries'       = $MaxEntries;
@@ -244,6 +258,19 @@ function Invoke-IcingaCheckEventlog()
             $EventLogSourcePackage.AddCheck($EventLogEntryPackage);
         }
 
+        foreach ($event in (Get-IcingaProviderElement $EventLogData.Metrics.Problems)) {
+            $eventEntry   = $event.Value;
+            $EventProblem = New-IcingaCheckPackage -Name ([string]::Format('Event Id {0}', $eventEntry.EventId)) -OperatorAnd -Verbose $Verbosity;
+            $EventCount   = New-IcingaCheck -Name 'Not acknowledged Events' -Value $eventEntry.Count -Unit 'c' -NoPerfData;
+            $EventCount.SetCritical($eventEntry.Count, $TRUE) | Out-Null;
+            $EventMessage = New-IcingaCheck -Name 'Message' -Value $eventEntry.Message -NoPerfData;
+
+            $EventProblem.AddCheck($EventCount);
+            $EventProblem.AddCheck($EventMessage);
+
+            $EventLogProblems.AddCheck($EventProblem);
+        }
+
         foreach ($entry in $SourceCache.Keys) {
             $EventLogPackage.AddCheck($SourceCache[$entry]);
         }
@@ -256,6 +283,7 @@ function Invoke-IcingaCheckEventlog()
         }
 
         $EventLogPackage.AddCheck($EventLogCountPackage);
+        $EventLogPackage.AddCheck($EventLogProblems);
     } else {
         $IcingaCheck = New-IcingaCheck -Name 'Events found matching the filter' -Value 0 -Unit 'c' -NoPerfData;
         $EventLogPackage.AddCheck($IcingaCheck);
