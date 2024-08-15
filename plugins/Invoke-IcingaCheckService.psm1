@@ -150,6 +150,7 @@ function Invoke-IcingaCheckService()
 
     # Check our included services and add an unknown state for each service which was not found on the system
     foreach ($ServiceArg in $Service) {
+        $ServiceArg = $ServiceArg.Replace('`', '');
         if ($null -eq $FetchedServices -Or $FetchedServices.ContainsKey($ServiceArg) -eq $FALSE) {
             if ($ServiceArg.Contains('*')) {
                 continue;

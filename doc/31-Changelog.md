@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#398](https://github.com/Icinga/icinga-powershell-plugins/issues/398) Fixes an issue with service names not interpreted correctly by `Invoke-IcingaCheckService` in case it contains `[]`
 * [#412](https://github.com/Icinga/icinga-powershell-plugins/pull/412) Fixes `Invoke-IcingaCheckService` to not add summary performance metrics in case the user filtered for specific services
 
 # 1.12.0 (2024-03-26)
