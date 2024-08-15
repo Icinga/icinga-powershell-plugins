@@ -94,6 +94,10 @@
     Allows to filter for a list of processes with a given name. Use the process name without file ending, like '.exe'.
 .PARAMETER ExcludeProcess
     Define a list of process names which are excluded from the final result. Only the process name is required without '.exe' at the end.
+.PARAMETER OverrideNotFound
+    This argument will allow you to override the default behavior of the plugin in case a process was not found on the
+    system. By default, it will report UNKNOWN but you can set with this argument if the process state should be
+    OK, WARNING or CRITICAL instead
 .PARAMETER NoPerfData
     Set this argument to not write any performance data
 .PARAMETER Verbosity
@@ -150,6 +154,8 @@ function Invoke-IcingaCheckProcess()
         $TotalProcessCountWarning  = $null,
         $TotalProcessCountCritical = $null,
         [array]$Process            = @(),
+        [ValidateSet('Ok', 'Warning', 'Critical', 'Unknown')]
+        [string]$OverrideNotFound  = 'Unknown',
         [array]$ExcludeProcess     = @(),
         [switch]$NoPerfData        = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
@@ -213,6 +219,45 @@ function Invoke-IcingaCheckProcess()
         $ProcessPackage.AddCheck($ProcessSummary);
 
         $ProcessOverviewPackage.AddCheck($ProcessPackage);
+    }
+
+    # Check our included services and add an unknown state for each service which was not found on the system
+    foreach ($proc in $Process) {
+        $proc = $proc.Replace('`', '');
+        [bool]$FoundProcess = $FALSE;
+        foreach ($foundProc in (Get-IcingaProviderElement $ProcessData.Metrics).Name) {
+            if ($foundProc -Like $proc) {
+                $FoundProcess = $TRUE;
+                break;
+            }
+        }
+
+        if ($FoundProcess -eq $FALSE) {
+            $ProcessNotFound = $null;
+            $UnknownName     = [string]::Format('{0}:', $proc);
+            $UnknownValue    = 'Process not found';
+
+            switch ($OverrideNotFound.ToLower()) {
+                'ok' {
+                    $ProcessNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetOk();
+                    break;
+                };
+                'warning' {
+                    $ProcessNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetWarning();
+                    break;
+                };
+                'critical' {
+                    $ProcessNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetCritical();
+                    break;
+                };
+                default {
+                    $ProcessNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetUnknown();
+                    break;
+                };
+            }
+
+            $ProcessOverviewPackage.AddCheck($ProcessNotFound);
+        }
     }
 
     return (New-IcingaCheckResult -Check $ProcessOverviewPackage -NoPerfData $NoPerfData -Compile);

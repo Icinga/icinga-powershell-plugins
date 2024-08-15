@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#397](https://github.com/Icinga/icinga-powershell-plugins/issues/397) Adds support to `Invoke-IcingaCheckEventLog` to provide occurring problem event id's for the Eventlog and corresponding acknowledgement id's, providing an indicator if certain issues are resolved or still present
+* [#409](https://github.com/Icinga/icinga-powershell-plugins/issues/409) Adds support to `Invoke-IcingaCheckProcess` for reporting properly if a defined process was not found on the system and using `-OverrideNotFound` argument to define the plugin output in this case
 * [#413](https://github.com/Icinga/icinga-powershell-plugins/pull/413) Adds argument `Limit100Percent` to `Invoke-IcingaCheckCPU` for limiting each threads CPU usage to 100%
 
 ### Bugfixes
