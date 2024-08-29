@@ -139,6 +139,10 @@ function Invoke-IcingaCheckCPU()
         $CpuPackage.AddCheck($IcingaCheck);
     }
 
+    <#
+    # This code right now causes a huge performance impact on the plugin execution time.
+    # We will remove this feature for now
+    # Todo: Rework with a better performance
     if ($DisableProcessList -eq $FALSE) {
         $ProcessData   = Get-IcingaProviderDataValuesProcess;
         [bool]$HasData = $FALSE;
@@ -157,6 +161,7 @@ function Invoke-IcingaCheckCPU()
 
         $CpuPackage.AddCheck($ProcessPackage);
     }
+    #>
 
     return (New-IcingaCheckResult -Name 'CPU Load' -Check $CpuPackage -NoPerfData $NoPerfData -Compile);
 }
