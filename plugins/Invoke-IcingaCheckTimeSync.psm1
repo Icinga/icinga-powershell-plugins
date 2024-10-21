@@ -89,9 +89,7 @@ function Invoke-IcingaCheckTimeSync()
         -MetricIndex $Server `
         -MetricName 'service';
 
-    if ($IgnoreService -eq $FALSE) {
-        $TimeCheck.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
-    }
+    $TimeCheck.CritIfNotMatch($ProviderEnums.ServiceStatus.Running) | Out-Null;
 
     $SyncStatus = New-IcingaCheck `
         -Name 'Sync Status' `
@@ -101,13 +99,15 @@ function Invoke-IcingaCheckTimeSync()
 
     $SyncStatus.CritIfMatch($ProviderEnums.TimeSyncStatus.ClockNotSynchronized) | Out-Null;
 
+    if ($IgnoreService) {
+        $checks = @($OffsetCheck, $SyncStatus)
+    } else {
+        $checks = @($OffsetCheck, $TimeCheck, $SyncStatus)
+    }
+
     $CheckPackage = New-IcingaCheckPackage `
         -Name 'Time Package' `
-        -Checks @(
-            $OffsetCheck,
-            $TimeCheck,
-            $SyncStatus
-        ) `
+        -Checks $checks `
         -OperatorAnd `
         -Verbose $Verbosity;
 
