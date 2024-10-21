@@ -99,6 +99,7 @@ function Invoke-IcingaCheckTimeSync()
 
     $SyncStatus.CritIfMatch($ProviderEnums.TimeSyncStatus.ClockNotSynchronized) | Out-Null;
 
+    $checks = @()
     if ($IgnoreService) {
         $checks = @($OffsetCheck, $SyncStatus)
     } else {
