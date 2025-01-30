@@ -7,6 +7,16 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.13.0 (2025-01-30)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/21)
+
+### Enhancements
+
+### Bugfixes
+
+* [#424](https://github.com/Icinga/icinga-powershell-plugins/pull/424) Fixes exception "Item has already been added" for `Invoke-IcingaCheckDiskHeath`
+
 # 1.12.0 (tbd)
 
 ### Bugfixes
