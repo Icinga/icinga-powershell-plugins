@@ -3,7 +3,7 @@
     GUID              = 'e3e7850e-2f24-4173-8268-c2a29ec35750'
     Author            = 'Lord Hepipud'
     CompanyName       = 'Icinga GmbH'
-    Copyright         = '(c) 2021 Icinga GmbH | GPLv2'
+    Copyright         = '(c) 2025 Icinga GmbH | GPLv2'
     Description       = 'A collection of Icinga Plugins for general Windows checks for Icinga for Windows.'
     PowerShellVersion = '4.0'
     RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.13.0' })
