@@ -19,6 +19,8 @@ function Get-IcingaDirectoryAll()
         return;
     }
 
+    $Path = Rename-IcingaDirectoryPathEscaping -Path $Path;
+
     [hashtable]$DirectoryCollector = @{
         'FileList'     = $null;
         'FileCount'    = 0;
@@ -66,7 +68,9 @@ function Get-IcingaDirectoryAll()
     }
 
     foreach ($entry in $DirectoryData) {
-        if ((Get-Item $entry.FullName) -Is [System.IO.DirectoryInfo]) {
+        [string]$DirectoryPath = Rename-IcingaDirectoryPathEscaping -Path $entry.FullName;
+
+        if ((Get-Item $DirectoryPath) -Is [System.IO.DirectoryInfo]) {
             $DirectoryCollector.FolderCount += 1;
         } else {
             $DirectoryCollector.FileCount += 1;
@@ -260,4 +264,20 @@ function Get-IcingaDirectoryCreationTimeEqual()
     $DirectoryData = ($DirectoryData | Where-Object {$_.CreationTime.Day -eq $CreationTimeEqual.Day -And $_.CreationTime.Month -eq $CreationTimeEqual.Month -And $_.CreationTime.Year -eq $CreationTimeEqual.Year})
 
     return $DirectoryData;
+}
+
+function Rename-IcingaDirectoryPathEscaping()
+{
+    param (
+        [string]$Path = ''
+    );
+
+    if ($Path.Contains('[')) {
+        $Path = $Path.Replace('[', '`[');
+    }
+    if ($Path.Contains(']')) {
+        $Path = $Path.Replace(']', '`]');
+    }
+
+    return $Path;
 }

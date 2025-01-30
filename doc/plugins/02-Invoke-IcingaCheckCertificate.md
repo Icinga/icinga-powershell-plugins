@@ -17,11 +17,11 @@ No special permissions required.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Trusted | SwitchParameter | false | False | Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root. Will return Critical in case of untrusted.  Note: it is currently required that the root and intermediate CA is known and trusted by the local system. |
-| CriticalStart | Object | false |  | Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully. Use format like: 'yyyy-MM-dd' |
-| WarningEnd | Object | false | 30d: | Used to specify a Warning range for the end date of an certificate. In this case a string. Allowed units include: ms, s, m, h, d, w, M, y |
-| CriticalEnd | Object | false | 10d: | Used to specify a Critical range for the end date of an certificate. In this case a string. Allowed units include: ms, s, m, h, d, w, M, y |
-| CertStore | String | false | None | Used to specify which CertStore to check. Valid choices are 'None', '*', 'LocalMachine', 'CurrentUser'. Use 'None' if you do not want to check the certificate store (Default) |
+| Trusted | SwitchParameter | false | False | Used to switch on trusted behavior. Whether to check, If the certificate is trusted by the system root.<br /> Will return Critical in case of untrusted.<br /> <br /> Note: it is currently required that the root and intermediate CA is known and trusted by the local system. |
+| CriticalStart | Object | false |  | Used to specify a date. The start date of the certificate has to be past the date specified, otherwise the check results in critical. Use carefully.<br /> Use format like: 'yyyy-MM-dd' |
+| WarningEnd | Object | false | 30d: | Used to specify a Warning range for the end date of an certificate. In this case a string.<br /> Allowed units include: ms, s, m, h, d, w, M, y |
+| CriticalEnd | Object | false | 10d: | Used to specify a Critical range for the end date of an certificate. In this case a string.<br /> Allowed units include: ms, s, m, h, d, w, M, y |
+| CertStore | String | false | None | Used to specify which CertStore to check. Valid choices are 'None', '*', 'LocalMachine', 'CurrentUser'.<br /> Use 'None' if you do not want to check the certificate store (Default) |
 | CertThumbprint | Array | false |  | Used to specify an array of Thumbprints, which are used to determine what certificate to check, within the CertStore. |
 | CertSubject | Array | false |  | Used to specify an array of Subjects, which are used to determine what certificate to check, within the CertStore. |
 | ExcludePattern | Array | false |  | Used to specify an array of exclusions, tested against Subject, Subject Alternative Name, Issuer and Thumbprint. |
@@ -30,7 +30,7 @@ No special permissions required.
 | CertName | Array | false |  | Used to specify an array of certificate names of certificate files to check. Use with CertPaths. |
 | Recurse | SwitchParameter | false | False | Includes sub-directories and entries while looking for certificates on a given path |
 | IgnoreEmpty | SwitchParameter | false | False | Will return `OK` instead of `UNKNOWN`, in case no certificates for the given filter and path were found |
-| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed:<br /> 0 (default): Only service checks/packages with state not OK will be printed<br /> 1: Only services with not OK will be printed including OK checks of affected check packages including Package config<br /> 2: Everything will be printed regardless of the check state<br /> 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | ThresholdInterval | String |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples

@@ -51,6 +51,10 @@
 .PARAMETER MitigateUnknown
     This will tell the plugin to return OK instead of UNKNOWN, in case no service was added to this
     check
+.PARAMETER OverrideNotFound
+    This argument will allow you to override the default behavior of the plugin in case a service was not found on the
+    system. By default, it will report UNKNOWN but you can set with this argument if the service state should be
+    OK, WARNING or CRITICAL instead
 .PARAMETER NoPerfData
     Disables the performance data output of this plugin
 .PARAMETER Verbosity
@@ -67,7 +71,6 @@
     https://github.com/Icinga/icinga-powershell-plugins
 .NOTES
 #>
-
 function Invoke-IcingaCheckService()
 {
     param (
@@ -78,6 +81,8 @@ function Invoke-IcingaCheckService()
         [ValidateSet('Boot', 'System', 'Automatic', 'Manual', 'Disabled', 'Unknown')]
         [array]$FilterStartupType = @(),
         [switch]$MitigateUnknown  = $FALSE,
+        [ValidateSet('Ok', 'Warning', 'Critical', 'Unknown')]
+        [string]$OverrideNotFound = 'Unknown',
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity           = 0,
         [switch]$NoPerfData
@@ -134,7 +139,7 @@ function Invoke-IcingaCheckService()
                 (New-IcingaWindowsServiceCheckObject -Status $Status -Service $services)
             );
 
-            $ServiceSummary = Add-IcingaServiceSummary -ServiceStatus $StatusRaw -ServiceData $ServiceSummary;
+            $ServiceSummary = Add-IcingaServiceSummary -ServiceStatus $services.configuration.Status.Raw -ServiceData $ServiceSummary;
         }
     }
 
@@ -145,6 +150,7 @@ function Invoke-IcingaCheckService()
 
     # Check our included services and add an unknown state for each service which was not found on the system
     foreach ($ServiceArg in $Service) {
+        $ServiceArg = $ServiceArg.Replace('`', '');
         if ($null -eq $FetchedServices -Or $FetchedServices.ContainsKey($ServiceArg) -eq $FALSE) {
             if ($ServiceArg.Contains('*')) {
                 continue;
@@ -167,9 +173,30 @@ function Invoke-IcingaCheckService()
                 continue;
             }
 
-            $ServicesPackage.AddCheck(
-                (New-IcingaCheck -Name ([string]::Format('{0}: Service not found', $ServiceArg)) -NoPerfData).SetUnknown()
-            );
+            $ServiceNotFound = $null;
+            $UnknownName     = [string]::Format('{0}:', $ServiceArg);
+            $UnknownValue    = 'Service not found';
+
+            switch ($OverrideNotFound.ToLower()) {
+                'ok' {
+                    $ServiceNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetOk();
+                    break;
+                };
+                'warning' {
+                    $ServiceNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetWarning();
+                    break;
+                };
+                'critical' {
+                    $ServiceNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetCritical();
+                    break;
+                };
+                default {
+                    $ServiceNotFound = (New-IcingaCheck -Name $UnknownName -Value $UnknownValue -NoPerfData).SetUnknown();
+                    break;
+                };
+            }
+
+            $ServicesPackage.AddCheck($ServiceNotFound);
         }
     }
 

@@ -16,7 +16,7 @@ No special permissions required.
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
 | Server | String | false |  | The NTP Server you want to connect to. |
-| TimeOffset | Object | false | 0 | The maximum acceptable offset between the local clock and the NTP Server, in seconds e.g. if you allow up to 0.5s timeoffset you can also enter 500ms. Invoke-IcingaCheckTimeSync will return OK, if there is no difference between them, WARNING, if the time difference exceeds the Warning threshold, CRITICAL, if the time difference exceeds the Critical threshold. |
+| TimeOffset | Object | false | 0 | The maximum acceptable offset between the local clock and the NTP Server, in seconds e.g. if you allow up to 0.5s timeoffset you can also enter 500ms.<br /> Invoke-IcingaCheckTimeSync will return OK, if there is no difference between them,<br /> WARNING, if the time difference exceeds the Warning threshold,<br /> CRITICAL, if the time difference exceeds the Critical threshold. |
 | Warning | Object | false |  | Used to specify a offset Warning threshold e.g 10ms or 0.01s |
 | Critical | Object | false |  | Used to specify a offset Critical threshold e.g 20ms or 0.02s. |
 | Timeout | Int32 | false | 10 | Seconds before connection times out (default: 10) |
@@ -24,7 +24,7 @@ No special permissions required.
 | Port | Int32 | false | 123 | Port number (default: 123) |
 | IgnoreService | SwitchParameter | false | False | Ignores the W32Time service during check execution and will not throw warning or critical in case the service is not running |
 | NoPerfData | SwitchParameter | false | False |  |
-| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed: 0 (default): Only service checks/packages with state not OK will be printed 1: Only services with not OK will be printed including OK checks of affected check packages including Package config 2: Everything will be printed regardless of the check state 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
+| Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed:<br /> 0 (default): Only service checks/packages with state not OK will be printed<br /> 1: Only services with not OK will be printed including OK checks of affected check packages including Package config<br /> 2: Everything will be printed regardless of the check state<br /> 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | ThresholdInterval | String |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/service/10-Register-Service-Checks/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
 
 ## Examples

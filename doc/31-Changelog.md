@@ -11,23 +11,42 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/21)
 
-### Enhancements
-
 ### Bugfixes
 
 * [#424](https://github.com/Icinga/icinga-powershell-plugins/pull/424) Fixes exception "Item has already been added" for `Invoke-IcingaCheckDiskHeath`
 
-# 1.12.0 (tbd)
+### Bugfixes
+
+## 1.13.0 Beta-1 (2024-08-30)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/20)
+
+### Enhancements
+
+* [#397](https://github.com/Icinga/icinga-powershell-plugins/issues/397) Adds support to `Invoke-IcingaCheckEventLog` to provide occurring problem event id's for the Eventlog and corresponding acknowledgement id's, providing an indicator if certain issues are resolved or still present
+* [#409](https://github.com/Icinga/icinga-powershell-plugins/issues/409) Adds support to `Invoke-IcingaCheckProcess` for reporting properly if a defined process was not found on the system and using `-OverrideNotFound` argument to define the plugin output in this case
+* [#413](https://github.com/Icinga/icinga-powershell-plugins/pull/413) Adds argument `Limit100Percent` to `Invoke-IcingaCheckCPU` for limiting each threads CPU usage to 100%
+* [#419](https://github.com/Icinga/icinga-powershell-plugins/pull/419) Removes process list feature for `Invoke-IcingaCheckCPU`, which causes too much CPU overhead and increase execution time by a lot without substantial gain of information
 
 ### Bugfixes
 
-* [#384](https://github.com/Icinga/icinga-powershell-plugins/pull/384) Adds new data provider for Invoke-IcingaCheckProcess and extends functionality by adding a new 'ExcludeProcess' argument
+* [#398](https://github.com/Icinga/icinga-powershell-plugins/issues/398) Fixes an issue with service names not interpreted correctly by `Invoke-IcingaCheckService` in case it contains `[]`
+* [#401](https://github.com/Icinga/icinga-powershell-plugins/issues/401) Fixes `Invoke-IcingaCheckDirectory` which could not resolve `-Path` arguments in case closing `[` or open brackets `]` were part of the path
+* [#412](https://github.com/Icinga/icinga-powershell-plugins/pull/412) Fixes `Invoke-IcingaCheckService` to not add summary performance metrics in case the user filtered for specific services
 
-# 1.11.2 (tbd)
+# 1.12.0 (2024-03-26)
 
 ### Bugfixes
 
 * [#375](https://github.com/Icinga/icinga-powershell-plugins/pull/375) Fixes a memory leak on the Icinga EventLog provider for fetching Windows EventLog information
+* [#384](https://github.com/Icinga/icinga-powershell-plugins/pull/384) Adds new data provider for Invoke-IcingaCheckProcess and extends functionality by adding a new 'ExcludeProcess' argument
+* [#386](https://github.com/Icinga/icinga-powershell-plugins/pull/386) Adds new provider for Invoke-IcingaCheckEventLog, to improve performance and fix memory leaks
+
+### Enhancements
+
+* [#288](https://github.com/Icinga/icinga-powershell-plugins/issues/288) Adds support to `Invoke-IcingaCheckPartitionSpace` to define mandatory partitions which should always be present
+* [#366](https://github.com/Icinga/icinga-powershell-plugins/issues/366) Adds support to `Invoke-IcingaCheckCPU` to report top CPU consuming process information as well as a switch to change the overall load from average to sum
+* [#378](https://github.com/Icinga/icinga-powershell-plugins/pull/378) Adds support for `Invoke-IcingaCheckService` to change the output for not found services from UNKNOWN to OK, WARNING or CRITICAL instead
 
 # 1.11.1 (2023-11-07)
 
