@@ -117,7 +117,7 @@ function Invoke-IcingaCheckHTTPStatus()
         $Minimum = $Url.Count;
     }
 
-    $HTTPAllStatusPackage = New-IcingaCheckPackage -Name "HTTP Status Check" -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
+    $HTTPAllStatusPackage = New-IcingaCheckPackage -Name "HTTP Status Check" -OperatorMin $Minimum -Verbose $Verbosity -AddSummaryHeader;
 
     foreach ($SingleUrl in $Url) {
 
@@ -181,9 +181,9 @@ function Invoke-IcingaCheckHTTPStatus()
 
         # Content Package
         if ($HTTPData.$SingleUrl.'StatusCodes'.Value -ne $null) {
-            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -OperatorMin $Minimum -Verbose $Verbosity -IgnoreEmptyPackage;
+            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -Verbose $Verbosity -IgnoreEmptyPackage;
         } else {
-            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -OperatorMin $Minimum -Verbose $Verbosity -IgnoreEmptyPackage -Hidden;
+            $ContentPackage = New-IcingaCheckPackage -Name "HTTP Content Check" -Verbose $Verbosity -IgnoreEmptyPackage -Hidden;
         }
 
         # Found & Not Found
