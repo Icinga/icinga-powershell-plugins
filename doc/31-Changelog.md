@@ -11,6 +11,16 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/22)
 
+## 1.13.1 (tbd)
+
+### Breaking Changes
+
+* The performance metrics for `Invoke-IcingaCheckScheduledTask` have changed for `lastruntime` and `nextruntime`, which now store the offset from the last/next runtime to the execution time in seconds. This also means you have to **update** your thresholds for warning/critical for these checks, as the value will now increase over time!
+
+### Bugfixes
+
+* [#436](https://github.com/Icinga/icinga-powershell-plugins/issues/436) Fixes performance data for ScheduledTask plugin for Last and Next RunTime
+
 ## 1.13.0 (2025-01-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/21)
