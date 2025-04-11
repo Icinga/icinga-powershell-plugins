@@ -226,7 +226,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Reworked Plugins
 
-Please have a look on the [upgrading docs](30-Upgrading-Plugins) for these plugins
+Please have a look on the [upgrading docs](30-Upgrading-Plugins.md) for these plugins
 
 * Invoke-IcingaCheckNetworkInterface
 * Invoke-IcingaCheckMemory
@@ -333,7 +333,7 @@ If you are going to install this plugin release, please have a look on the [upgr
 
 This release adds the following new plugins:
 
-* [Invoke-IcingaCheckTimeSync](https://icinga.com/docs/windows/latest/plugins/doc/plugins/18-Invoke-IcingaChecTimeSync/): Allows to compare local machine time with a time server to check for possible time missmatch
+* [Invoke-IcingaCheckTimeSync](plugins/18-Invoke-IcingaCheckTimeSync.md): Allows to compare local machine time with a time server to check for possible time missmatch
 * [Invoke-IcingaCheckScheduledTask](https://icinga.com/docs/windows/latest/plugins/doc/plugins/19-Invoke-IcingaCheckScheduledTask/): Allows to check the current state for a list of provided scheduled tasks
 * [Invoke-IcingaCheckDiskHealth](https://icinga.com/docs/windows/latest/plugins/doc/plugins/20-Invoke-IcingaCheckDiskHealth/): Allows to check for several disk Performance Counters and the disk health in general
 
