@@ -1,6 +1,6 @@
 # Installation
 
-To install this [Icinga for Windows](https://icinga.com/docs/icinga-for-windows) component, you can use the [official Icinga repositories](https://packages.icinga.com/IcingaForWindows/). You can read more about this on how to [install components](https://icinga.com/docs/icinga-for-windows/latest/doc/110-Installation/20-Install-Components/) for adding existing repositories or [create own repositories](https://icinga.com/docs/icinga-for-windows/latest/doc/110-Installation/07-Create-Own-Repositories/).
+To install this [Icinga for Windows](https://icinga.com/docs/icinga-for-windows) component, you can use the [official Icinga repositories](https://packages.icinga.com/IcingaForWindows/). You can read more about this on how to [install components](https://icinga.com/docs/icinga-for-windows/latest/doc/110-Installation/20-Install-Components/) for adding existing repositories or [create own repositories](https://icinga.com/docs/icinga-for-windows/latest/doc/120-Repository-Manager/07-Create-Own-Repositories/).
 
 ## General Note on Installation/Updates
 
