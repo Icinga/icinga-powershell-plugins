@@ -17,6 +17,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#377](https://github.com/Icinga/icinga-powershell-plugins/issues/377) Fixes `Invoke-IcingaCheckPerfCounter` to write correct performance data in case only certain instances are checked to ensure perf data are assigned to checks accordingly
 * [#436](https://github.com/Icinga/icinga-powershell-plugins/issues/436) Fixes performance data for ScheduledTask plugin for Last and Next RunTime
 
 ### Enhancements
