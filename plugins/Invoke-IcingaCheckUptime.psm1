@@ -13,15 +13,15 @@
 
     * Root\Cimv2
 .EXAMPLE
-   PS> Invoke-IcingaCheckUptime -Warning 18d -Critical 20d
-   [WARNING]: Check package "Windows Uptime: Days: 19 Hours: 13 Minutes: 48 Seconds: 29" is [WARNING]
-   | 'Windows Uptime'=1691309,539176s;1555200;1728000
+   PS> Invoke-IcingaCheckUptime -Warning '10m'
+   [WARNING] System Uptime: 0d 1h 25m 50s [WARNING] System Uptime
+   \_ [WARNING] System Uptime: Value 1.43h is greater than threshold 10m
+   | windows::ifw_uptime::uptime=5149.979s;600;;;
 .EXAMPLE
-   PS> Invoke-IcingaCheckUptime -Warning 25d:
-   [WARNING] Check package "System Uptime: 22d 16h 42m 35s" - [WARNING] System Uptime
-   \_ [WARNING] System Uptime: Value "1960955.28s" is lower than threshold "2160000s"
-   | 'system_uptime'=1960955.28s;2160000:;
-   1
+   PS> Invoke-IcingaCheckUptime -Warning '2h:'
+   [WARNING] System Uptime: 0d 1h 28m 40s [WARNING] System Uptime
+   \_ [WARNING] System Uptime: Value 1.48h is lower than threshold 2h
+   | windows::ifw_uptime::uptime=5319.563s;7200:;;;
 .PARAMETER Warning
    Used to specify a Warning threshold. In this case a string.
    Allowed units include: ms, s, m, h, d, w, M, y
@@ -54,7 +54,9 @@ function Invoke-IcingaCheckUptime()
     );
 
     $WindowsData  = Get-IcingaWindows;
-    $Name         = ([string]::Format('System Uptime: {0}', (ConvertFrom-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value).Replace(',', '.')));
+    $TimeSpan     = New-TimeSpan -Seconds $WindowsData.windows.metadata.uptime.value;
+    $UptimeHR     = [string]::Format('{0}d {1}h {2}m {3}s', $TimeSpan.Days, $TimeSpan.Hours, $TimeSpan.Minutes, $TimeSpan.Seconds);
+    $Name         = [string]::Format('System Uptime: {0}', $UptimeHR);
 
     $CheckPackage = New-IcingaCheckPackage -Name $Name -OperatorAnd -Verbose $Verbosity;
 
