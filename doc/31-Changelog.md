@@ -21,6 +21,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#436](https://github.com/Icinga/icinga-powershell-plugins/issues/436) Fixes performance data for ScheduledTask plugin for Last and Next RunTime
 
+### Enhancements
+
+* [#408](https://github.com/Icinga/icinga-powershell-plugins/issues/408) Adds support for `Invoke-IcingaCheckDiskHealth` to filter disks by their friendly name
+
 ## 1.13.0 (2025-01-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/21)

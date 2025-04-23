@@ -42,6 +42,8 @@ To execute this plugin you will require to grant the following user permissions.
 | ExcludeDisk | Array | false | @() | Specify the index id of disks you want to exclude from checks. Example 0, 1 |
 | IncludePartition | Array | false | @() | Specify the partition drive letters for disks to include for checks. Example C:, D: |
 | ExcludePartition | Array | false | @() | Specify the partition drive letters for disks to exclude from checks. Example C:, D: |
+| IncludeFriendlyName | Array | false | @() | Specify the friendly name of disks you want to include for checks. Example "Samsung SSD 970 EVO Plus 1TB" |
+| ExcludeFriendlyName | Array | false | @() | Specify the friendly name of disks you want to exclude from checks. Example "Samsung SSD 970 EVO Plus 1TB" |
 | DiskReadSecWarning | Object | false |  | Warning threshold for disk Reads/sec is the rate of read operations on the disk. |
 | DiskReadSecCritical | Object | false |  | Critical threshold for disk Reads/sec is the rate of read operations on the disk. |
 | DiskWriteSecWarning | Object | false |  | Warning threshold for disk Writes/sec is the rate of write operations on the disk. |
