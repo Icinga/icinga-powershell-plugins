@@ -66,6 +66,8 @@
 .PARAMETER ConnectionErrAsCrit
     By default the plugin will return UNKNOWN in case a connection to a webserver is not possible. By using this
     flag, the result will be modified from UNKNOWN to CRITICAL
+.PARAMETER IgnoreSSL
+    Use this flag to ignore SSL errors in case your endpoints are not trusted by the client or you are using self-signed certificates.
 .PARAMETER NoPerfData
     Used to disable PerfData.
 .PARAMETER Verbosity
@@ -105,12 +107,13 @@ function Invoke-IcingaCheckHTTPStatus()
         [switch]$Negate              = $FALSE,
         [switch]$AddOutputContent    = $FALSE,
         [switch]$ConnectionErrAsCrit = $FALSE,
+        [switch]$IgnoreSSL           = $FALSE,
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity              = 0
     )
 
-    $HTTPData = (Get-IcingaCheckHTTPQuery -Url $Url -VHost $VHost -Headers $Headers -Timeout $Timeout -Username $Username -Password $Password -ProxyUsername $ProxyUsername -ProxyPassword $ProxyPassword -ProxyServer $ProxyServer -Content $Content -StatusCode $StatusCode -ConnectionErrAsCrit:$ConnectionErrAsCrit);
+    $HTTPData = (Get-IcingaCheckHTTPQuery -Url $Url -VHost $VHost -Headers $Headers -Timeout $Timeout -Username $Username -Password $Password -ProxyUsername $ProxyUsername -ProxyPassword $ProxyPassword -ProxyServer $ProxyServer -Content $Content -StatusCode $StatusCode -ConnectionErrAsCrit:$ConnectionErrAsCrit -IgnoreSSL:$IgnoreSSL -Verbose $Verbosity);
 
     # In case -Minimum isn't set, implied -OperatorAnd
     if ($Minimum -eq -1) {
