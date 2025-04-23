@@ -103,7 +103,7 @@ function Invoke-IcingaCheckUpdates()
         $RebootPending.WarnIfMatch([int][bool]$WarnOnReboot) | Out-Null;
     }
     if ($CritOnReboot) {
-        $RebootPending.CritIfMatch([int][bool]$WarnOnReboot) | Out-Null;
+        $RebootPending.CritIfMatch([int][bool]$CritOnReboot) | Out-Null;
     }
 
     $TotalPendingUpdates.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
