@@ -107,8 +107,14 @@ function Invoke-IcingaCheckPerfCounter()
             $CounterFailed = $FALSE;
 
             if ($instance -IsNot [hashtable]) {
-                $CounterInfo = Get-IcingaPerformanceCounterDetails -Counter $counter;
-                $IcingaCheck = New-IcingaCheck -Name $counter -Value $Counters[$counter].Value -MetricIndex $CounterInfo.Category -MetricName $CounterInfo.Counter;
+                $CounterInfo        = Get-IcingaPerformanceCounterDetails -Counter $counter;
+                [string]$MetricName = $CounterInfo.Counter;
+
+                if ([string]::IsNullOrEmpty($CounterInfo.CounterInstance) -eq $FALSE) {
+                    $MetricName = $CounterInfo.CounterInstance;
+                }
+
+                $IcingaCheck = New-IcingaCheck -Name $counter -Value $Counters[$counter].Value -MetricIndex $CounterInfo.Category -MetricName $MetricName;
                 $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
                 $CounterPackage.AddCheck($IcingaCheck);
                 break;
