@@ -12,7 +12,8 @@ function Get-IcingaCheckHTTPQuery()
         [string]$ProxyServer         = '',
         [array]$Content              = @(),
         [array]$StatusCode           = @(),
-        [switch]$ConnectionErrAsCrit = $FALSE
+        [switch]$ConnectionErrAsCrit = $FALSE,
+        [switch]$IgnoreSSL           = $FALSE
     );
 
     if ($Url.count -eq 0) {
@@ -72,8 +73,11 @@ function Get-IcingaCheckHTTPQuery()
             ) -Force;
         }
 
-        # Receive information
+        if ($IgnoreSSL) {
+            Enable-IcingaUntrustedCertificateValidation -SuppressMessages;
+        }
 
+        # Receive information
         Start-IcingaTimer -Name 'HTTPRequest';
         try {
             $HTTPInformation = (Invoke-WebRequest @InvokeArguments);
@@ -89,6 +93,10 @@ function Get-IcingaCheckHTTPQuery()
             }
         }
         Stop-IcingaTimer -Name 'HTTPRequest';
+
+        if ($IgnoreSSL) {
+            Disable-IcingaUntrustedCertificateValidation -SuppressMessages;
+        }
 
         [hashtable]$HTTPData = @{ };
 

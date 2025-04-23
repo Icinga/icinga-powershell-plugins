@@ -35,10 +35,14 @@ function Global:Get-IcingaHttpResponse()
     Set-IcingaTLSVersion;
 
     if ($IgnoreSSL) {
-        Enable-IcingaUntrustedCertificateValidation;
+        Enable-IcingaUntrustedCertificateValidation -SuppressMessages;
     }
 
     $response = Invoke-RestMethod -Uri $URI -Method Get -Headers $authHeader -TimeoutSec $Timeout;
+
+    if ($IgnoreSSL) {
+        Disable-IcingaUntrustedCertificateValidation -SuppressMessages;
+    }
 
     Write-IcingaDebugMessage -Message 'Response: {0}' -Objects $response;
 
