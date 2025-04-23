@@ -4,8 +4,8 @@
 ##################################################################################################>
 
 [hashtable]$BiosCharacteristics = @{
-    0  = 'Reserved'; 
-    1  = 'Reserved'; 
+    0  = 'Reserved';
+    1  = 'Reserved';
     2  = 'Unknown';
     3  = 'BIOS Characteristics Not Supported';
     4  = 'ISA is supported';

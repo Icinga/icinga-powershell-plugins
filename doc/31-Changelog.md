@@ -26,6 +26,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Enhancements
 
+* [#389](https://github.com/Icinga/icinga-powershell-plugins/issues/389) Adds support for disk health check to `Invoke-IcingaCheckDiskHealth` (thanks @audiocoach)
 * [#408](https://github.com/Icinga/icinga-powershell-plugins/issues/408) Adds support for `Invoke-IcingaCheckDiskHealth` to filter disks by their friendly name
 * [#430](https://github.com/Icinga/icinga-powershell-plugins/issues/430) Adds support for `Invoke-IcingaCheckHTTPStatus` to allow for ignoring SSL/TLS errors
 
