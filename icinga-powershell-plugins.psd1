@@ -6,7 +6,7 @@
     Copyright         = '(c) 2025 Icinga GmbH | GPLv2'
     Description       = 'A collection of Icinga Plugins for general Windows checks for Icinga for Windows.'
     PowerShellVersion = '4.0'
-    RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.13.0' })
+    RequiredModules   = @(@{ModuleName = 'icinga-powershell-framework'; ModuleVersion = '1.13.3' })
     NestedModules     = @(
         '.\compiled\icinga-powershell-plugins.ifw_compilation.psm1'
     )

@@ -35,22 +35,24 @@
     Supports Icinga default threshold syntax.
 .PARAMETER WarningLastRunTime
     Allows to specify a time interval, on which the check will return warning based on the last run time
-    of a task and the current time. The value will be subtracted from the current time
+    of a task and the current time. The LastRunTime is an offset of the last time the task run to the current time, therefore increasing over time
 
-    Values have to be specified as time units like, -10m, -1d, -1w, -2M, -1y
+    Values have to be specified as time units like, 10m, 1d, 1w, 2M, 1y
 .PARAMETER CriticalLastRunTime
     Allows to specify a time interval, on which the check will return critical based on the last run time
-    of a task and the current time. The value will be subtracted from the current time
+    of a task and the current time. The LastRunTime is an offset of the last time the task run to the current time, therefore increasing over time
 
-    Values have to be specified as time units like, -10m, -1d, -1w, -2M, -1y
+    Values have to be specified as time units like, 10m, 1d, 1w, 2M, 1y
 .PARAMETER WarningNextRunTime
     Allows to specify a time interval, on which the check will return warning based on the next run time
-    of a task and the current time. The value will be added to the current time
+    of a task and the current time. The NextRunTime is an offset of the next time the task will run to the current time, therefore increasing over time.
+    Negative NextRunTime values mean the task is scheduled in the future
 
     Values have to be specified as time units like, 10m, 1d, 1w, 2M, 1y
 .PARAMETER CriticalNextRunTime
     Allows to specify a time interval, on which the check will return critical based on the next run time
-    of a task and the current time. The value will be added to the current time
+    of a task and the current time. The NextRunTime is an offset of the next time the task will run to the current time, therefore increasing over time.
+    Negative NextRunTime values mean the task is scheduled in the future
 
     Values have to be specified as time units like, 10m, 1d, 1w, 2M, 1y
 .PARAMETER IgnoreLastRunTime
@@ -140,17 +142,19 @@ function Invoke-IcingaCheckScheduledTask()
                     -MetricName 'lasttaskresult';
 
                 $TaskLastRunTime = New-IcingaCheck `
-                    -Name 'Last Run Time' `
+                    -Name ([string]::Format('Last Run Time [{0}]', $task.LastRunTime)) `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) LastRunTime', $task.TaskName, $task.TaskPath))) `
-                    -Value $task.LastRunTime `
+                    -Value (Get-IcingaUnixTimeOffsetNow -TimeString $task.LastRunTime) `
+                    -Unit 's' `
                     -Translation @{ 0 = 'Never'; } `
                     -MetricIndex $MetricIndex `
                     -MetricName 'lastruntime';
 
                 $TaskNextRunTime = New-IcingaCheck `
-                    -Name 'Next Run Time' `
+                    -Name ([string]::Format('Next Run Time [{0}]', $task.NextRunTime)) `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) NextRunTime', $task.TaskName, $task.TaskPath))) `
-                    -Value $task.NextRunTime `
+                    -Value (Get-IcingaUnixTimeOffsetNow -TimeString $task.NextRunTime) `
+                    -Unit 's' `
                     -Translation @{ 0 = 'Never'; } `
                     -MetricIndex $MetricIndex `
                     -MetricName 'nextruntime';
@@ -163,8 +167,8 @@ function Invoke-IcingaCheckScheduledTask()
                 if ($task.LastTaskResult -ne 0 -And $IgnoreLastRunTime -eq $FALSE -and $IgnoreExitCodes -NotContains $task.LastTaskResult) {
                     $TaskLastResult.SetCritical() | Out-Null;
                 }
-                $TaskLastRunTime.WarnDateTime($WarningLastRunTime).CritDateTime($CriticalLastRunTime) | Out-Null;
-                $TaskNextRunTime.WarnDateTime($WarningNextRunTime).CritDateTime($CriticalNextRunTime) | Out-Null;
+                $TaskLastRunTime.WarnOutOfRange($WarningLastRunTime).CritOutOfRange($CriticalLastRunTime) | Out-Null;
+                $TaskNextRunTime.WarnOutOfRange($WarningNextRunTime).CritOutOfRange($CriticalNextRunTime) | Out-Null;
 
                 $TaskPackage.AddCheck($TaskState);
                 $TaskPackage.AddCheck($TaskMissedRunes);
