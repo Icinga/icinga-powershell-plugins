@@ -223,7 +223,15 @@ function Global:Get-IcingaPhysicalDiskInfo()
                 'name'  = (Get-IcingaProviderEnumData -Enum $ProviderEnums -Key 'DiskBusType' -Index $disk.BusType);
             }
         )
-        $DiskInfo.Add('HealthStatus', $disk.HealthStatus);
+
+        $DiskInfo.Add(
+            'HealthStatus',
+            @{
+                'Value' = $disk.HealthStatus;
+                'Name'  = (Get-IcingaProviderEnumData -Enum $ProviderEnums -Key 'StorageHealthStatus' -Index $disk.HealthStatus);
+            }
+        );
+
         if ($null -ne $disk.OperationalStatus) {
             $OperationalStatus = @{ };
 
