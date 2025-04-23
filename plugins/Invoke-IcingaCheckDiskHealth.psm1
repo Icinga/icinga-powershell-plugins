@@ -35,6 +35,10 @@
     Specify the partition drive letters for disks to include for checks. Example C:, D:
 .PARAMETER ExcludePartition
     Specify the partition drive letters for disks to exclude from checks. Example C:, D:
+.PARAMETER IncludeFriendlyName
+    Specify the friendly name of disks you want to include for checks. Example "Samsung SSD 970 EVO Plus 1TB"
+.PARAMETER ExcludeFriendlyName
+    Specify the friendly name of disks you want to exclude from checks. Example "Samsung SSD 970 EVO Plus 1TB"
 .PARAMETER DiskReadSecWarning
     Warning threshold for disk Reads/sec is the rate of read operations on the disk.
 .PARAMETER DiskReadSecCritical
@@ -133,6 +137,8 @@ function Invoke-IcingaCheckDiskHealth()
         [array]$ExcludeDisk          = @(),
         [array]$IncludePartition     = @(),
         [array]$ExcludePartition     = @(),
+        [array]$IncludeFriendlyName  = @(),
+        [array]$ExcludeFriendlyName  = @(),
         $DiskReadSecWarning          = $null,
         $DiskReadSecCritical         = $null,
         $DiskWriteSecWarning         = $null,
@@ -178,7 +184,9 @@ function Invoke-IcingaCheckDiskHealth()
         -IncludeDisk $IncludeDisk `
         -ExcludeDisk $ExcludeDisk `
         -IncludePartition $IncludePartition `
-        -ExcludePartition $ExcludePartition;
+        -ExcludePartition $ExcludePartition `
+        -IncludeFriendlyName $IncludeFriendlyName `
+        -ExcludeFriendlyName $ExcludeFriendlyName;
 
     foreach ($DiskPart in $SortedDisks.Keys) {
         $DiskObjects      = $SortedDisks[$DiskPart];

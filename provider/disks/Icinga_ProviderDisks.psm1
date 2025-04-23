@@ -88,10 +88,12 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
 {
     param (
         [array]$DiskCounter,
-        [array]$IncludeDisk      = @(),
-        [array]$ExcludeDisk      = @(),
-        [array]$IncludePartition = @(),
-        [array]$ExcludePartition = @()
+        [array]$IncludeDisk         = @(),
+        [array]$ExcludeDisk         = @(),
+        [array]$IncludePartition    = @(),
+        [array]$ExcludePartition    = @(),
+        [array]$IncludeFriendlyName = @(),
+        [array]$ExcludeFriendlyName = @()
     );
 
     [hashtable]$PhysicalDiskData = @{ };
@@ -119,6 +121,10 @@ function Join-IcingaPhysicalDiskDataPerfCounter()
 
         if ((Test-Numeric $DiskId) -And $GetDisk.ContainsKey([int]$DiskId)) {
             $DiskData = $GetDisk[[int]$DiskId];
+        }
+
+        if ([string]::IsNullOrEmpty($DiskData.FriendlyName) -eq $FALSE -And (Test-IcingaArrayFilter -InputObject $DiskData.FriendlyName -Include $IncludeFriendlyName -Exclude $ExcludeFriendlyName) -eq $FALSE) {
+            continue;
         }
 
         $PhysicalDiskData.Add(
