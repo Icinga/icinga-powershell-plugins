@@ -141,8 +141,14 @@ function Invoke-IcingaCheckScheduledTask()
                     -MetricIndex $MetricIndex `
                     -MetricName 'lasttaskresult';
 
+                [string]$TaskLastRunTimeDate = $task.LastRunTime;
+
+                if ([string]::IsNullOrEmpty($TaskLastRunTimeDate)) {
+                    $TaskLastRunTimeDate = 'Never';
+                }
+
                 $TaskLastRunTime = New-IcingaCheck `
-                    -Name ([string]::Format('Last Run Time [{0}]', $task.LastRunTime)) `
+                    -Name ([string]::Format('Last Run Time [{0}]', $TaskLastRunTimeDate)) `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) LastRunTime', $task.TaskName, $task.TaskPath))) `
                     -Value (Get-IcingaUnixTimeOffsetNow -TimeString $task.LastRunTime) `
                     -Unit 's' `
@@ -150,8 +156,14 @@ function Invoke-IcingaCheckScheduledTask()
                     -MetricIndex $MetricIndex `
                     -MetricName 'lastruntime';
 
+                [string]$TaskNextRunTimeDate = $task.NextRunTime;
+
+                if ([string]::IsNullOrEmpty($TaskNextRunTimeDate)) {
+                    $TaskNextRunTimeDate = 'Never';
+                }
+
                 $TaskNextRunTime = New-IcingaCheck `
-                    -Name ([string]::Format('Next Run Time [{0}]', $task.NextRunTime)) `
+                    -Name ([string]::Format('Next Run Time [{0}]', $TaskNextRunTimeDate)) `
                     -LabelName (Format-IcingaPerfDataLabel ([string]::Format('{0} ({1}) NextRunTime', $task.TaskName, $task.TaskPath))) `
                     -Value (Get-IcingaUnixTimeOffsetNow -TimeString $task.NextRunTime) `
                     -Unit 's' `
