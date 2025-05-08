@@ -11,7 +11,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/22)
 
-## 1.13.1 (tbd)
+## 1.13.1 (2025-05-08)
 
 ### Breaking Changes
 
