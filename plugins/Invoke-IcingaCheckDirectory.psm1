@@ -132,6 +132,14 @@
     String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.
 
     Thereby all files which have a creation date older then 20 days are considered within the check.
+.PARAMETER AccessYoungerThan
+    String in the format like "20d" (allowed units: ms, s, m, h, d, w, M, y).
+
+    Only considers files/folders whose last access time is newer than the given period.
+.PARAMETER AccessOlderThan
+    String in the format like "20d" (allowed units: ms, s, m, h, d, w, M, y).
+
+    Only considers files/folders whose last access time is older than the given period.
 .PARAMETER ChangeTimeEqual
     String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.
 
@@ -187,6 +195,8 @@ function Invoke-IcingaCheckDirectory()
         [string]$CreationTimeEqual,
         [string]$CreationOlderThan,
         [string]$CreationYoungerThan,
+        [string]$AccessYoungerThan,
+        [string]$AccessOlderThan,
         [string]$FileSizeGreaterThan,
         [string]$FileSizeSmallerThan,
         [ValidateSet(0, 1, 2, 3)]
@@ -198,6 +208,7 @@ function Invoke-IcingaCheckDirectory()
         -ChangeYoungerThan $ChangeYoungerThan -ChangeOlderThan $ChangeOlderThan `
         -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
         -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
+        -AccessYoungerThan $AccessYoungerThan -AccessOlderThan $AccessOlderThan `
         -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
 
     $DirectoryCheck = New-IcingaCheckPackage -Name ([string]::Format('Directory Check: "{0}"', $Path)) -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
