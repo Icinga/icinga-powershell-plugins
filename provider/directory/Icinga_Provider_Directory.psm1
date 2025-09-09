@@ -10,6 +10,8 @@ function Get-IcingaDirectoryAll()
         [string]$CreationTimeEqual,
         [string]$CreationOlderThan,
         [string]$CreationYoungerThan,
+        [string]$AccessYoungerThan,
+        [string]$AccessOlderThan,
         [string]$FileSizeGreaterThan,
         [string]$FileSizeSmallerThan
     );
@@ -59,6 +61,12 @@ function Get-IcingaDirectoryAll()
         if ([string]::IsNullOrEmpty($CreationYoungerThan) -eq $FALSE) {
             $DirectoryData = Get-IcingaDirectoryCreationYoungerThan -CreationYoungerThan $CreationYoungerThan -DirectoryData $DirectoryData;
         }
+    }
+    if ([string]::IsNullOrEmpty($AccessOlderThan) -eq $FALSE) {
+        $DirectoryData = Get-IcingaDirectoryAccessOlderThan -AccessOlderThan $AccessOlderThan -DirectoryData $DirectoryData;
+    }
+    if ([string]::IsNullOrEmpty($AccessYoungerThan) -eq $FALSE) {
+        $DirectoryData = Get-IcingaDirectoryAccessYoungerThan -AccessYoungerThan $AccessYoungerThan -DirectoryData $DirectoryData;
     }
     if ([string]::IsNullOrEmpty($FileSizeGreaterThan) -eq $FALSE) {
         $DirectoryData = (Get-IcingaDirectorySizeGreaterThan -FileSizeGreaterThan $FileSizeGreaterThan -DirectoryData $DirectoryData);
@@ -237,6 +245,32 @@ function Get-IcingaDirectoryCreationYoungerThan()
     )
     $CreationYoungerThan = Set-NumericNegative (ConvertTo-Seconds $CreationYoungerThan);
     $DirectoryData = ($DirectoryData | Where-Object {$_.CreationTime -gt (Get-Date).AddSeconds($CreationYoungerThan)})
+
+    return $DirectoryData;
+}
+
+
+function Get-IcingaDirectoryAccessOlderThan()
+{
+    param (
+        [string]$AccessOlderThan,
+        $DirectoryData
+    )
+    $AccessOlderThan = Set-NumericNegative (ConvertTo-Seconds $AccessOlderThan);
+    $DirectoryData = ($DirectoryData | Where-Object {$_.LastAccessTime -lt (Get-Date).AddSeconds($AccessOlderThan)})
+
+    return $DirectoryData;
+}
+
+
+function Get-IcingaDirectoryAccessYoungerThan()
+{
+    param (
+        [string]$AccessYoungerThan,
+        $DirectoryData
+    )
+    $AccessYoungerThan = Set-NumericNegative (ConvertTo-Seconds $AccessYoungerThan);
+    $DirectoryData = ($DirectoryData | Where-Object {$_.LastAccessTime -gt (Get-Date).AddSeconds($AccessYoungerThan)})
 
     return $DirectoryData;
 }
