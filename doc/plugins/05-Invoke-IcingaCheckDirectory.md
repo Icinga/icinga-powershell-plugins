@@ -40,9 +40,9 @@ No special permissions required.
 | CreationTimeEqual | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.<br /> <br /> Thereby all files which have been created 20 days ago are considered within the check. |
 | CreationOlderThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.<br /> <br /> Thereby all files which have a creation date older then 20 days are considered within the check. |
 | CreationYoungerThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.<br /> <br /> Thereby all files which have a creation date younger then 20 days are considered within the check. |
-| AccessYoungerThan | String | false | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.<br /> <br /> Thereby all files which have a access date younger then 20 days 
-| FileSizeGreaterThan | String | false |  | String that expects input format like "20MB", which translates to the filze size 20 MB. Allowed units: B, KB, MB, GB, TB.<br /> <br /> Thereby all files with a size of 20 MB or larger are are considered within the check. |
-| AccessOlderThan | String | false |  | String that expects input format like "20d", which translates to 20 days. Allowed units: ms, s, m, h, d, w, M, y.<br /> <br /> Thereby all files which have a access date older then 20 days are considered within the check. |
+| AccessYoungerThan | String | false |  | String in the format like "20d" (allowed units: ms, s, m, h, d, w, M, y).<br /> <br /> Only considers files/folders whose last access time is newer than the given period. |
+| AccessOlderThan | String | false |  | String in the format like "20d" (allowed units: ms, s, m, h, d, w, M, y).<br /> <br /> Only considers files/folders whose last access time is older than the given period. |
+| FileSizeGreaterThan | String | false |  | String that expects input format like "20MB", which translates to the filze size 20 MB. Allowed units: B, KB, MB, GB, TB.<br /> <br /> Thereby all files with a size of 20 MB or larger are considered within the check. |
 | FileSizeSmallerThan | String | false |  | String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.<br /> <br /> Thereby all files with a size of 5 MB or less are considered within the check. |
 | Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed:<br /> 0 (default): Only service checks/packages with state not OK will be printed<br /> 1: Only services with not OK will be printed including OK checks of affected check packages including Package config<br /> 2: Everything will be printed regardless of the check state<br /> 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | NoPerfData | SwitchParameter | false | False |  |
@@ -140,5 +140,6 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 \_ [WARNING] Total Size: 2.48GiB is greater than threshold 2.00GiB
 | 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;2147484000; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;    
 ```
+
 
 
