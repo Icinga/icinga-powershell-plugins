@@ -11,6 +11,9 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/22)
 
+### Enhancements
+
+* [#451](https://github.com/Icinga/icinga-powershell-plugins/pull/451) Adds support to override the plugin output for `Invoke-IcingaCheckService` with `-OverrideNotOk` in for thresholds not matching the service running state
 * [#453](https://github.com/Icinga/icinga-powershell-plugins/pull/453) Fixes `Invoke-IcingaCheckPartitionSpace` to properly report the total size of partition, even when user disk quotas are set
 
 ## 1.13.1 (2025-05-08)
