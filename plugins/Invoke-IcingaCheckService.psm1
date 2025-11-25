@@ -51,6 +51,13 @@
 .PARAMETER MitigateUnknown
     This will tell the plugin to return OK instead of UNKNOWN, in case no service was added to this
     check
+.PARAMETER WarningOnly
+    This will convert all non-OK states into WARNING states. This can be useful if you want to monitor
+    services but don't want to get a critical alert in case a service is not running.
+.PARAMETER OverrideNotOk
+    This argument will allow you to override the default behavior of the plugin in case a service is not returning OK.
+    By default, it will report CRITICAL but you can set with this argument if the service state should be
+    OK, WARNING, CRITICAL or UNKNOWN instead
 .PARAMETER OverrideNotFound
     This argument will allow you to override the default behavior of the plugin in case a service was not found on the
     system. By default, it will report UNKNOWN but you can set with this argument if the service state should be
@@ -82,16 +89,18 @@ function Invoke-IcingaCheckService()
         [array]$FilterStartupType = @(),
         [switch]$MitigateUnknown  = $FALSE,
         [ValidateSet('Ok', 'Warning', 'Critical', 'Unknown')]
+        [string]$OverrideNotOk    = 'Critical',
+        [ValidateSet('Ok', 'Warning', 'Critical', 'Unknown')]
         [string]$OverrideNotFound = 'Unknown',
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity           = 0,
-        [switch]$NoPerfData
+        [switch]$NoPerfData       = $FALSE
     );
 
-    $ServicesPackage       = New-IcingaCheckPackage -Name 'Services' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader -IgnoreEmptyPackage:$MitigateUnknown;
-    $ServicesCountPackage  = New-IcingaCheckPackage -Name 'Count Services' -OperatorAnd -Verbose $Verbosity -Hidden;
-    $FetchedServices       = @{};
-    $ServiceSummary        = $null;
+    $ServicesPackage      = New-IcingaCheckPackage -Name 'Services' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader -IgnoreEmptyPackage:$MitigateUnknown;
+    $ServicesCountPackage = New-IcingaCheckPackage -Name 'Count Services' -OperatorAnd -Verbose $Verbosity -Hidden;
+    $FetchedServices      = @{};
+    $ServiceSummary       = $null;
 
     # Automatic load auto start services and check for errors in case no service
     # to check for is configured
@@ -109,7 +118,7 @@ function Invoke-IcingaCheckService()
             # Check if the service is running
             if ($autoservice.configuration.Status.Raw -eq $ProviderEnums.ServiceStatus.Running) {
                 $ServicesPackage.AddCheck(
-                    (New-IcingaWindowsServiceCheckObject -Status 'Running' -Service $autoservice -NoPerfData)
+                    (New-IcingaWindowsServiceCheckObject -Status 'Running' -Service $autoservice -NoPerfData -OverrideNotOk $OverrideNotOk)
                 );
                 continue;
             }
@@ -117,14 +126,14 @@ function Invoke-IcingaCheckService()
             # Service is not running but the ExitCode is 0 -> this is fine and should not raise a critical
             if ($autoservice.configuration.ExitCode -eq 0) {
                 $ServicesPackage.AddCheck(
-                    (New-IcingaWindowsServiceCheckObject -Status 'Stopped' -Service $autoservice -NoPerfData)
+                    (New-IcingaWindowsServiceCheckObject -Status 'Stopped' -Service $autoservice -NoPerfData -OverrideNotOk $OverrideNotOk)
                 );
                 continue;
             }
 
-            # Services which should be running, but are not
+            # Should be running but is not
             $ServicesPackage.AddCheck(
-                (New-IcingaWindowsServiceCheckObject -Status 'Running' -Service $autoservice -NoPerfData)
+                (New-IcingaWindowsServiceCheckObject -Status 'Running' -Service $autoservice -NoPerfData -OverrideNotOk $OverrideNotOk)
             );
         }
     } else {
@@ -135,10 +144,10 @@ function Invoke-IcingaCheckService()
                     continue;
                 }
             }
-            $ServicesPackage.AddCheck(
-                (New-IcingaWindowsServiceCheckObject -Status $Status -Service $services)
-            );
 
+            $ServicesPackage.AddCheck(
+                (New-IcingaWindowsServiceCheckObject -Status $Status -Service $services -OverrideNotOk $OverrideNotOk)
+            );
             $ServiceSummary = Add-IcingaServiceSummary -ServiceStatus $services.configuration.Status.Raw -ServiceData $ServiceSummary;
         }
     }
@@ -226,7 +235,7 @@ function Invoke-IcingaCheckService()
             (New-IcingaCheck -Name 'service count' -Value $ServiceSummary.ServicesCounted -MetricIndex 'summary' -MetricName 'count')
         );
 
-        $ServicesPackage.AddCheck($ServicesCountPackage)
+        $ServicesPackage.AddCheck($ServicesCountPackage);
     }
 
     return (New-IcingaCheckResult -Name 'Services' -Check $ServicesPackage -NoPerfData $NoPerfData -Compile);

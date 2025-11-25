@@ -29,15 +29,36 @@ function New-IcingaWindowsServiceCheckObject()
         $Service,
         [ValidateSet('Stopped', 'StartPending', 'StopPending', 'Running', 'ContinuePending', 'PausePending', 'Paused')]
         $Status,
-        [switch]$NoPerfData
+        [ValidateSet('Ok', 'Warning', 'Critical', 'Unknown')]
+        [string]$OverrideNotOk = 'Critical',
+        [switch]$NoPerfData    = $FALSE
     );
 
     $ServiceName     = Get-IcingaServiceCheckName -ServiceInput $Service.metadata.DisplayName -Service $Service;
     $ConvertedStatus = ConvertTo-ServiceStatusCode -Status $Status;
     $StatusRaw       = $Service.configuration.Status.raw;
-
     $IcingaCheck     = New-IcingaCheck -Name $ServiceName -Value $StatusRaw -ObjectExists $Service -Translation $ProviderEnums.ServiceStatusName -MetricIndex $Service.metadata.ServiceName -MetricName 'state' -NoPerfData:$NoPerfData;
-    $IcingaCheck.CritIfNotMatch($ConvertedStatus) | Out-Null;
+    
+    switch ($OverrideNotOk.ToLower()) {
+        'ok' {
+            $IcingaCheck.WarnIfNotMatch($ConvertedStatus) | Out-Null;
+            $IcingaCheck.SetOk($null, $TRUE) | Out-Null;
+            break;
+        };
+        'warning' {
+            $IcingaCheck.WarnIfNotMatch($ConvertedStatus) | Out-Null;
+            break;
+        };
+        'critical' {
+            $IcingaCheck.CritIfNotMatch($ConvertedStatus) | Out-Null;
+            break;
+        };
+        'unknown' {
+            $IcingaCheck.WarnIfNotMatch($ConvertedStatus) | Out-Null;
+            $IcingaCheck.SetUnknown($null, $TRUE) | Out-Null;
+            break;
+        };
+    }
 
     return $IcingaCheck;
 }
