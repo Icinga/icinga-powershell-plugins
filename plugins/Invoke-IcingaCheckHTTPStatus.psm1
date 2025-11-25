@@ -51,7 +51,7 @@
    Used to specify a proxy server as string to authenticate with.
 .PARAMETER Content
    Used to specify an array of regex-match-strings to match against the content of the webrequest response.
-.PARAMETER Content
+.PARAMETER StatusCode
    Used to specify expected HTTP status code as array. Multiple status codes which are considered 'OK' can be used.
    This overwrites the default outcomes for HTTP status codes:
    <   200      Unknown

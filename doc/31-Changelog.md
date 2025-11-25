@@ -34,6 +34,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#389](https://github.com/Icinga/icinga-powershell-plugins/issues/389) Adds support for disk health check to `Invoke-IcingaCheckDiskHealth` (thanks @audiocoach)
 * [#408](https://github.com/Icinga/icinga-powershell-plugins/issues/408) Adds support for `Invoke-IcingaCheckDiskHealth` to filter disks by their friendly name
 * [#430](https://github.com/Icinga/icinga-powershell-plugins/issues/430) Adds support for `Invoke-IcingaCheckHTTPStatus` to allow for ignoring SSL/TLS errors
+* [#455](https://github.com/Icinga/icinga-powershell-plugins/pull/455) Adds support for `Invoke-IcingaCheckDirectory` to output the content of `-FileList` as new output type `[INFO]` every time
 
 ## 1.13.0 (2025-01-30)
 
