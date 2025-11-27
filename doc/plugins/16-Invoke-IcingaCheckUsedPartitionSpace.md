@@ -35,8 +35,8 @@ To execute this plugin you will require to grant the following user permissions.
 | ---      | ---  | ---      | ---     | ---         |
 | Warning | Object | false |  | Used to specify a Warning threshold. This can either be a byte-value type like '10GB'<br /> or a %-value, like '10%' |
 | Critical | Object | false |  | Used to specify a Critical threshold. This can either be a byte-value type like '10GB'<br /> or a %-value, like '10%' |
-| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.<br /> e.g. 'C:','D:' |
-| Exclude | Array | false | @() | Used to specify an array of partitions to be excluded.<br /> e.g. 'C:','D:' |
+| Include | Array | false | @() | Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.<br /> e.g. 'C:','D:', 'D:\SysDB\'<br /> <br /> If you want to only include partitions from the system volume, like `\\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\` you can define a wildcard include filter with<br /> '*`\\?*' |
+| Exclude | Array | false | @() | Used to specify an array of partitions to be excluded.<br /> e.g. 'C:','D:', 'D:\SysDB\'<br /> <br /> If you want to only exclude partitions from the system volume, like `\\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\` you can define a wildcard exclude filter with<br /> '*`\\?*' |
 | IgnoreEmptyChecks | SwitchParameter | false | False | Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example).<br /> Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set. |
 | NoPerfData | SwitchParameter | false | False | Disables the performance data output of this plugin |
 | SkipUnknown | SwitchParameter | false | False | Allows to set Unknown partitions to Ok in case no metrics could be loaded. |
