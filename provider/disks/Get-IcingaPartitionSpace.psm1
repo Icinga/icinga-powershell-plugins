@@ -10,11 +10,11 @@ function Get-IcingaPartitionSpace()
     [hashtable]$DiskData = @{ };
 
     foreach ($disk in $Volumes) {
-        if ([string]::IsNullOrEmpty($disk.DriveLetter)) {
+        if ([string]::IsNullOrEmpty($disk.Name)) {
             continue;
         }
 
-        if ($DiskData.ContainsKey($disk.DriveLetter)) {
+        if ($DiskData.ContainsKey($disk.Name)) {
             continue;
         }
 
@@ -24,7 +24,7 @@ function Get-IcingaPartitionSpace()
         # Now loop through all our partitions for the partition with our drive letter and
         # get the actual size from there, ignoring possible user quotas
         foreach ($partition in $Partitions) {
-            if ([string]::IsNullOrEmpty($partition.DriveLetter)) {
+            if ([string]::IsNullOrEmpty($partition.DriveLetter) -or [string]::IsNullOrEmpty($disk.DriveLetter)) {
                 continue;
             }
 
@@ -37,12 +37,14 @@ function Get-IcingaPartitionSpace()
         }
 
         $DiskData.Add(
-            $disk.DriveLetter,
+            $disk.Name,
             @{
                 'Size'        = $DiskSize;
                 'FreeSpace'   = $disk.FreeSpace;
                 'UsedSpace'   = ($DiskSize - $disk.FreeSpace);
                 'DriveLetter' = $disk.DriveLetter;
+                'DriveName'   = $disk.Name;
+                'HasLetter'   = -not [string]::IsNullOrEmpty($disk.DriveLetter);
             }
         );
     }
