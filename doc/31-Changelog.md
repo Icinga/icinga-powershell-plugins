@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Enhancements
 
+* [#450](https://github.com/Icinga/icinga-powershell-plugins/pull/450) Adds support for access time to `Invoke-IcingaCheckDirectory`
 * [#451](https://github.com/Icinga/icinga-powershell-plugins/pull/451) Adds support to override the plugin output for `Invoke-IcingaCheckService` with `-OverrideNotOk` in for thresholds not matching the service running state
 * [#457](https://github.com/Icinga/icinga-powershell-plugins/pull/457) Adds improved handling for partition plugin, which now also include mount points for MSSQL for example
 
