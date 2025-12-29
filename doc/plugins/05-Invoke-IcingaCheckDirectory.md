@@ -140,6 +140,3 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 \_ [WARNING] Total Size: 2.48GiB is greater than threshold 2.00GiB
 | 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;2147484000; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;    
 ```
-
-
-
