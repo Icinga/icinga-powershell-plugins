@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#453](https://github.com/Icinga/icinga-powershell-plugins/pull/453) Fixes `Invoke-IcingaCheckPartitionSpace` to properly report the total size of partition, even when user disk quotas are set
+* [#455](https://github.com/Icinga/icinga-powershell-plugins/pull/455) Adds support for `Invoke-IcingaCheckDirectory` to output the content of `-FileList` as new output type `[INFO]` every time
 
 ### Enhancements
 
