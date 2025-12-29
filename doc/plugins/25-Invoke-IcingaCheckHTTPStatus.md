@@ -27,7 +27,7 @@ No special permissions required.
 | ProxyPassword | SecureString | false |  | Used to specify a proxy password as securestring to authenticate with. Use with: -ProxyUsername & -ProxyServer |
 | ProxyServer | String | false |  | Used to specify a proxy server as string to authenticate with. |
 | Content | Array | false | @() | Used to specify an array of regex-match-strings to match against the content of the webrequest response. |
-| StatusCode | Array | false | @() |  |
+| StatusCode | Array | false | @() | Used to specify expected HTTP status code as array. Multiple status codes which are considered 'OK' can be used.<br /> This overwrites the default outcomes for HTTP status codes:<br /> <   200      Unknown<br />     200-399  OK<br />     400-499  Warning<br />     500-599  Critical<br /> >=  600      Unknown |
 | Minimum | Int32 | false | -1 |  |
 | Negate | SwitchParameter | false | False | A switch used to invert check results. |
 | AddOutputContent | SwitchParameter | false | False | Adds the returned content of a website to the plugin output for debugging purpose |
