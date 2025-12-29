@@ -58,22 +58,28 @@
     or a %-value, like '10%'
 .PARAMETER Exclude
     Used to specify an array of partitions to be excluded.
-    e.g. 'C:','D:'
-.PARAMETER RequiredPartition
-    Allows to define a list of partitions which should be included in the check.
-    e.g. 'C:','D:'
+    e.g. 'C:','D:', 'D:\SysDB\'
 
-    In case they are missing, the plugin will report CRITICAL
+    If you want to only exclude partitions from the system volume, like `\\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\` you can define a wildcard exclude filter with
+    '*`\\?*'
 .PARAMETER Include
     Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.
-    e.g. 'C:','D:'
+    e.g. 'C:','D:', 'D:\SysDB\'
+
+    If you want to only include partitions from the system volume, like `\\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\` you can define a wildcard include filter with
+    '*`\\?*'
+.PARAMETER RequiredPartition
+    Allows to define a list of partitions which should be included in the check.
+    e.g. 'C:','D:', 'D:\SysDB\'
+
+    In case they are missing, the plugin will report CRITICAL
 .PARAMETER IgnoreEmptyChecks
-    Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example).
+    Overrides the default behavior of the plugin in case no check element is left for being checked (if all elements are filtered out for example).
     Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set.
 .PARAMETER SkipUnknown
     Allows to set Unknown partitions to Ok in case no metrics could be loaded.
 .PARAMETER CheckUsedSpace
-    Switches the behaviour of the plugin from checking with threshold for the free space (default) to the remaining (used) space instead
+    Switches the behavior of the plugin from checking with threshold for the free space (default) to the remaining (used) space instead
 .PARAMETER NoPerfData
     Disables the performance data output of this plugin
 .PARAMETER Verbosity
@@ -121,24 +127,27 @@ function Invoke-IcingaCheckPartitionSpace()
         $partition          = $Disks[$partition];
         $ProcessPartition   = $TRUE;
         $PartitionMandatory = $FALSE;
+        $PartitionName      = $partition.DriveLetter;
 
-        if ([string]::IsNullOrEmpty($partition.DriveLetter)) {
-            continue;
+        $FormattedLetter = '';
+        if ([string]::IsNullOrEmpty($partition.DriveLetter) -eq $FALSE) {
+            $FormattedLetter  = $partition.DriveLetter.Replace(':', '').ToLower();
+            $KnownPartitions += $FormattedLetter;
+        } else {
+            $PartitionName    = $partition.DriveName;
+            $KnownPartitions += $PartitionName.ToLower();
         }
-
-        $FormattedLetter = $partition.DriveLetter.Replace(':', '').ToLower();
-
-        [array]$KnownPartitions += $FormattedLetter;
 
         foreach ($entry in $Include) {
             $ProcessPartition = $FALSE;
-            if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
+
+            if (($partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $FormattedLetter -Include $entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower())) -or (-not $partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $partition.DriveName.ToLower() -Include $entry.ToLower()))) {
                 $ProcessPartition = $TRUE;
                 break;
             }
         }
         foreach ($entry in $Exclude) {
-            if ($entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower() -eq $FormattedLetter) {
+            if (($partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $FormattedLetter -Exclude $entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower()) -eq $FALSE) -or (-not $partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $partition.DriveName.ToLower() -Exclude $entry.ToLower()) -eq $FALSE)) {
                 $ProcessPartition = $FALSE;
                 break;
             }
@@ -151,9 +160,9 @@ function Invoke-IcingaCheckPartitionSpace()
         $IcingaCheck = $null;
 
         if ($CheckUsedSpace) {
-            $IcingaCheck = New-IcingaCheck -MetricIndex $partition.DriveLetter -MetricName 'used' -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+            $IcingaCheck = New-IcingaCheck -MetricIndex $PartitionName -MetricName 'used' -Name ([string]::Format('Partition {0}', $PartitionName)) -Value $partition.UsedSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('used_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
         } else {
-            $IcingaCheck = New-IcingaCheck -MetricIndex $partition.DriveLetter -MetricName 'free' -Name ([string]::Format('Partition {0}', $partition.DriveLetter)) -Value $partition.FreeSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('free_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
+            $IcingaCheck = New-IcingaCheck -MetricIndex $PartitionName -MetricName 'free' -Name ([string]::Format('Partition {0}', $PartitionName)) -Value $partition.FreeSpace -Unit 'B' -Minimum 0 -Maximum $partition.Size -LabelName ([string]::Format('free_space_partition_{0}', $FormattedLetter)) -NoPerfData:$SetUnknown -BaseValue $partition.Size;
         }
 
         if ([string]::IsNullOrEmpty($partition.Size)) {
@@ -170,10 +179,10 @@ function Invoke-IcingaCheckPartitionSpace()
     }
 
     foreach ($mandatoryPartition in $RequiredPartition) {
-        $reqPartition = $mandatoryPartition.Replace(':', '').Replace('\', '').Replace('/', '').ToLower();
+        $reqPartitionLetter = $mandatoryPartition.Replace(':', '').Replace('\', '').Replace('/', '').ToLower();
 
-        if ($KnownPartitions.Contains($reqPartition) -eq $FALSE) {
-            $IcingaCheck = (New-IcingaCheck -Name ([string]::Format('Partition {0}', $reqPartition.ToUpper())) -Value 'Mandatory partition not found on host' -NoPerfData).SetCritical();
+        if ($KnownPartitions.Contains($reqPartitionLetter) -eq $FALSE -and $KnownPartitions.Contains($mandatoryPartition.ToLower()) -eq $FALSE) {
+            $IcingaCheck = (New-IcingaCheck -Name ([string]::Format('Partition {0}', $mandatoryPartition)) -Value 'Mandatory partition not found on host' -NoPerfData).SetCritical();
             $DiskPackage.AddCheck($IcingaCheck);
         }
     }
@@ -232,10 +241,16 @@ function Invoke-IcingaCheckPartitionSpace()
     or a %-value, like '10%'
 .PARAMETER Exclude
     Used to specify an array of partitions to be excluded.
-    e.g. 'C:','D:'
+    e.g. 'C:','D:', 'D:\SysDB\'
+
+    If you want to only exclude partitions from the system volume, like `\\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\` you can define a wildcard exclude filter with
+    '*`\\?*'
 .PARAMETER Include
     Used to specify an array of partitions to be included. If not set, the check expects that all not excluded partitions should be checked.
-    e.g. 'C:','D:'
+    e.g. 'C:','D:', 'D:\SysDB\'
+
+    If you want to only include partitions from the system volume, like `\\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\` you can define a wildcard include filter with
+    '*`\\?*'
 .PARAMETER IgnoreEmptyChecks
     Overrides the default behaviour of the plugin in case no check element is left for being checked (if all elements are filtered out for example).
     Instead of returning `Unknown` the plugin will return `Ok` instead if this argument is set.

@@ -214,13 +214,13 @@ function Invoke-IcingaCheckDirectory()
     $DirectoryCheck = New-IcingaCheckPackage -Name ([string]::Format('Directory Check: "{0}"', $Path)) -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
 
     if ($ShowFileList) {
-        $DirectoryFileList = New-IcingaCheckPackage -Name 'File List' -OperatorAnd -Verbose 3;
+        $DirectoryFileList = New-IcingaCheckPackage -Name 'File List' -IsNoticePackage -OperatorAnd -Verbose 3;
 
         foreach ($entry in $DirectoryData.FileList) {
-            $FileDetailPackage = New-IcingaCheckPackage -Name $entry.FullName -OperatorAnd -Verbose 3;
+            $FileDetailPackage = New-IcingaCheckPackage -Name $entry.FullName -IsNoticePackage -OperatorAnd -Verbose 3;
 
             $FileDetailPackage.AddCheck(
-                (New-IcingaCheck -Name 'File Size' -Value $entry.Length -Unit 'B' -NoPerfData)
+                (New-IcingaCheck -Name 'File Size' -Value $entry.Length -Unit 'B' -NoPerfData).SetNotice()
             );
 
             $DirectoryFileList.AddCheck($FileDetailPackage);
