@@ -12,25 +12,69 @@
    - the match result of the status code match, will either be 'OK' or 'CRITICAL'.
    Thereby the final match result will change between 'OK', 'WARNING' or 'CRITICAL'. The function will return one of these given codes.
 .EXAMPLE
-   PS> Invoke-IcingaCheckHTTPStatus -URL https://icinga.com -StatusCode 200,105 -Content "Test" -Warning 1 -Verbosity 3
-   [OK] Check package "HTTP Status Check" (Match All)
-   \_ [OK] Check package "HTTP Content Check" ()
-      \_ [OK] HTTP Content "Test": True
-      \_ [OK] HTTP Response Time: 0.508972s
-      \_ [OK] HTTP Status Code: 200
-   | 'http_content_test'=1;; 'http_response_time'=0.508972s;1; 'http_status'=200;; 'http_content_size'=47917B;;
+    PS> Invoke-IcingaCheckHTTPStatus -URL https://icinga.com -StatusCode 200,105 -Content 'Test' -Warning 1 -Verbosity 3;
+
+    Check the HTTP status of a website and lookup a specific content text element
+
+    [OK] HTTP Status Check: 1 Ok (Atleast 1 must be [OK])
+    \_ [OK] HTTP Status Check https://icinga.com (All must be [OK])
+        \_ [OK] HTTP Content Check (Atleast 1 must be [OK])
+            \_ [OK] HTTP Content "Test": Found
+        \_ [OK] HTTP Response Time: 144ms
+        \_ [OK] HTTP Status Code: 200
+    | https_icinga_com::ifw_httpstatus::responsetime=0.144446s;1;;; https_icinga_com::ifw_httpstatus::statuscode=200;;;; https_icinga_com::ifw_httpstatus::contentsize=467701B;;;;
 .EXAMPLE
-   PS> Invoke-IcingaCheckHTTPStatus -URL https://icinga.com -StatusCode 200,105 -Content "FooBar" -Warning 1 -Verbosity 3}
-   [OK] Check package "HTTP Status Check" (Match All)
-   \_ [OK] Check package "HTTP Content Check" ()
-   \_ [CRITICAL] HTTP Content "FooBar"
-      \_ [OK] HTTP Response Time: 0.251071s
-      \_ [OK] HTTP Status Code: 200
-   | 'http_content_foobar'=0;; 'http_response_time'=0.251071s;1; 'http_status'=200;; 'http_content_size'=89970B;;
+    PS> Invoke-IcingaCheckHTTPStatus -URL https://icinga.com -StatusCode 200,105 -Content 'FooBar' -Warning 1 -Verbosity 3;
+
+    Check the HTTP status of a website and lookup a specific content text element. Report CRITICAL on missing content
+
+    [CRITICAL] HTTP Status Check: 1 Critical [CRITICAL] HTTP Status Check https://icinga.com (Atleast 1 must be [OK])
+    \_ [CRITICAL] HTTP Status Check https://icinga.com (All must be [OK])
+        \_ [CRITICAL] HTTP Content Check (Atleast 1 must be [OK])
+            \_ [CRITICAL] HTTP Content "FooBar": Not Found
+        \_ [OK] HTTP Response Time: 226ms
+        \_ [OK] HTTP Status Code: 200
+    | https_icinga_com::ifw_httpstatus::responsetime=0.225516s;1;;; https_icinga_com::ifw_httpstatus::statuscode=200;;;; https_icinga_com::ifw_httpstatus::contentsize=467701B;;;;
+.EXAMPLE
+    PS> Invoke-IcingaCheckHTTPStatus -Url 'https://netways.de', 'https://icinga.com' -Content 'Experten' -StatusMinimum 1 -Verbosity 3;
+
+    Check multiple URLs with content checks. Use -StatusMinimum to report OK if at least one URL package is OK
+
+    [OK] HTTP Status Check: 1 Critical 1 Ok [CRITICAL] HTTP Status Check https://icinga.com (Atleast 1 must be [OK])
+    \_ [CRITICAL] HTTP Status Check https://icinga.com (All must be [OK])
+        \_ [CRITICAL] HTTP Content Check (Atleast 1 must be [OK])
+            \_ [CRITICAL] HTTP Content "Experten": Not Found
+        \_ [INFO] HTTP Response Time: 148ms
+        \_ [OK] HTTP Status Code: 200
+    \_ [OK] HTTP Status Check https://netways.de (All must be [OK])
+        \_ [OK] HTTP Content Check (Atleast 1 must be [OK])
+            \_ [OK] HTTP Content "Experten": Found
+        \_ [INFO] HTTP Response Time: 133ms
+        \_ [OK] HTTP Status Code: 200
+    | https_icinga_com::ifw_httpstatus::responsetime=0.148016s;;;; https_icinga_com::ifw_httpstatus::statuscode=200;;;; https_icinga_com::ifw_httpstatus::contentsize=467701B;;;; https_netways_de::ifw_httpstatus::responsetime=0.132889s;;;; https_netways_de::ifw_httpstatus::statuscode=200;;;; https_netways_de::ifw_httpstatus::contentsize=335050B;;;;
+.EXAMPLE
+    PS> Invoke-IcingaCheckHTTPStatus -Url 'https://netways.de', 'https://icinga.com' -Verbosity 3 -Content 'Experten', 'team' -Minimum 1;
+
+    Check multiple URLs for content matches,  but only require at least one content match per URL
+
+    [OK] HTTP Status Check: 2 Ok (Atleast 2 must be [OK])
+    \_ [OK] HTTP Status Check https://icinga.com (All must be [OK])
+        \_ [OK] HTTP Content Check (Atleast 1 must be [OK])
+            \_ [CRITICAL] HTTP Content "Experten": Not Found
+            \_ [OK] HTTP Content "team": Found
+        \_ [INFO] HTTP Response Time: 136ms
+        \_ [OK] HTTP Status Code: 200
+    \_ [OK] HTTP Status Check https://netways.de (All must be [OK])
+        \_ [OK] HTTP Content Check (Atleast 1 must be [OK])
+            \_ [OK] HTTP Content "Experten": Found
+            \_ [OK] HTTP Content "team": Found
+        \_ [INFO] HTTP Response Time: 258ms
+        \_ [OK] HTTP Status Code: 200
+    | https_icinga_com::ifw_httpstatus::responsetime=0.136292s;;;; https_icinga_com::ifw_httpstatus::statuscode=200;;;; https_icinga_com::ifw_httpstatus::contentsize=467701B;;;; https_netways_de::ifw_httpstatus::responsetime=0.258167s;;;; https_netways_de::ifw_httpstatus::statuscode=200;;;; https_netways_de::ifw_httpstatus::contentsize=335050B;;;;
 .PARAMETER Warning
-   Used to specify the webrequest response time warning threshold in seconds, everything past that threshold is considered a WARNING.
+   Used to specify the web request response time warning threshold in seconds, everything past that threshold is considered a WARNING.
 .PARAMETER Critical
-   Used to specify the webrequest response time critical threshold in seconds, everything past that threshold is considered a CRITICAL.
+   Used to specify the web request response time critical threshold in seconds, everything past that threshold is considered a CRITICAL.
 .PARAMETER Url
    Used to specify the URL of the host to check http as string. Use 'http://' or 'https://' to actively chose a protocol. Likewise ':80' or any other port number to specify a port, etc.
 .PARAMETER VHost
@@ -38,19 +82,19 @@
 .PARAMETER Headers
    Used to specify headers as Array. Like: -Headers 'Accept:application/json'
 .PARAMETER Timeout
-   Used to specify the timeout in seconds of the webrequest as integer. The default is 10 for 10 seconds.
+   Used to specify the timeout in seconds of the web request as integer. The default is 10 for 10 seconds.
 .PARAMETER Username
    Used to specify a username as string to authenticate with. Authentication is only possible with 'https://'. Use with: -Password
 .PARAMETER Password
-   Used to specify a password as securestring to authenticate with. Authentication is only possible with 'https://'.Use with: -Username
+   Used to specify a password as secure string to authenticate with. Authentication is only possible with 'https://'.Use with: -Username
 .PARAMETER ProxyUsername
    Used to specify a proxy username as string to authenticate with. Use with: -ProxyPassword & -ProxyServer
 .PARAMETER ProxyPassword
-   Used to specify a proxy password as securestring to authenticate with. Use with: -ProxyUsername & -ProxyServer
+   Used to specify a proxy password as secure string to authenticate with. Use with: -ProxyUsername & -ProxyServer
 .PARAMETER ProxyServer
    Used to specify a proxy server as string to authenticate with.
 .PARAMETER Content
-   Used to specify an array of regex-match-strings to match against the content of the webrequest response.
+   Used to specify an array of regex-match-strings to match against the content of the web request response.
 .PARAMETER StatusCode
    Used to specify expected HTTP status code as array. Multiple status codes which are considered 'OK' can be used.
    This overwrites the default outcomes for HTTP status codes:
@@ -59,6 +103,13 @@
        400-499  Warning
        500-599  Critical
    >=  600      Unknown
+.PARAMETER Minimum
+    Used to specify the minimum number of content matches that must be found to consider the content check as 'OK'.
+    If not specified, all content matches must be found.
+.PARAMETER StatusMinimum
+    Used to specify the minimum number of of the 'HTTP Status Check' package checks that must be 'OK' to consider the overall check as 'OK'.
+    This will evaluate the entire package of the Url check, including Status Code, Content Matches and Response Time.
+    If not specified, all checks must be 'OK' in order for the overall check to be 'OK'.
 .PARAMETER Negate
     A switch used to invert check results.
 .PARAMETER AddOutputContent
@@ -84,9 +135,6 @@
    https://github.com/Icinga/icinga-powershell-plugins
 .NOTES
 #>
-# Error Handling
-# Array umbauen
-
 function Invoke-IcingaCheckHTTPStatus()
 {
     param (
@@ -104,6 +152,7 @@ function Invoke-IcingaCheckHTTPStatus()
         [array]$Content              = @(),
         [array]$StatusCode           = @(),
         [int]$Minimum                = -1,
+        [int]$StatusMinimum          = -1,
         [switch]$Negate              = $FALSE,
         [switch]$AddOutputContent    = $FALSE,
         [switch]$ConnectionErrAsCrit = $FALSE,
@@ -111,16 +160,21 @@ function Invoke-IcingaCheckHTTPStatus()
         [switch]$NoPerfData,
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity              = 0
-    )
+    );
 
     $HTTPData = (Get-IcingaCheckHTTPQuery -Url $Url -VHost $VHost -Headers $Headers -Timeout $Timeout -Username $Username -Password $Password -ProxyUsername $ProxyUsername -ProxyPassword $ProxyPassword -ProxyServer $ProxyServer -Content $Content -StatusCode $StatusCode -ConnectionErrAsCrit:$ConnectionErrAsCrit -IgnoreSSL:$IgnoreSSL -Verbose $Verbosity);
 
     # In case -Minimum isn't set, implied -OperatorAnd
     if ($Minimum -eq -1) {
-        $Minimum = $Url.Count;
+        $Minimum = $Content.Count;
     }
 
-    $HTTPAllStatusPackage = New-IcingaCheckPackage -Name "HTTP Status Check" -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
+    # If not specified, assume the -StatusMinimum is equal to the number of URLs
+    if ($StatusMinimum -eq -1) {
+        $StatusMinimum = $Url.Count; # All checks must be OK
+    }
+
+    $HTTPAllStatusPackage = New-IcingaCheckPackage -Name "HTTP Status Check" -OperatorMin $StatusMinimum -Verbose $Verbosity -AddSummaryHeader;
 
     foreach ($SingleUrl in $Url) {
 
@@ -134,26 +188,25 @@ function Invoke-IcingaCheckHTTPStatus()
         $HTTPStatusCodeCheck = New-IcingaCheck `
             -Name "HTTP Status Code" `
             -Value $HTTPData[$SingleUrl]['StatusCodes'].Value `
-            -LabelName ([string]::Format('{0}.http_status', $TransformedUrl)) `
             -MetricIndex $MetricIndex `
             -MetricName 'statuscode';
 
         if ($Negate -eq $false) {
             # Normal
             switch ($HTTPData[$SingleUrl]['StatusCodes'].State) {
-                $IcingaEnums.IcingaExitCode.OK {
-                    # Do nothing
+                0 {
+                    $HTTPStatusCodeCheck.SetOk() | Out-Null;
                     break;
                 };
-                $IcingaEnums.IcingaExitCode.Warning {
+                1 {
                     $HTTPStatusCodeCheck.SetWarning() | Out-Null;
                     break;
                 };
-                $IcingaEnums.IcingaExitCode.Critical {
+                2 {
                     $HTTPStatusCodeCheck.SetCritical() | Out-Null;
                     break;
                 };
-                $IcingaEnums.IcingaExitCode.Unknown {
+                3 {
                     $HTTPStatusCodeCheck.SetUnknown() | Out-Null;
                     break;
                 };
@@ -161,19 +214,19 @@ function Invoke-IcingaCheckHTTPStatus()
         } else {
             # Negate
             switch ($HTTPData[$SingleUrl]['StatusCodes'].State) {
-                $IcingaEnums.IcingaExitCode.OK {
+                0 {
                     $HTTPStatusCodeCheck.SetCritical() | Out-Null;
                     break;
                 };
-                $IcingaEnums.IcingaExitCode.Warning {
-                    # Do nothing
+                1 {
+                    $HTTPStatusCodeCheck.SetOk() | Out-Null;
                     break;
                 };
-                $IcingaEnums.IcingaExitCode.Critical {
-                    # Do nothing
+                2 {
+                    $HTTPStatusCodeCheck.SetOk() | Out-Null;
                     break;
                 };
-                $IcingaEnums.IcingaExitCode.Unknown {
+                3 {
                     $HTTPStatusCodeCheck.SetUnknown() | Out-Null;
                     break;
                 };
@@ -212,6 +265,9 @@ function Invoke-IcingaCheckHTTPStatus()
 
             if ($HTTPData[$SingleUrl]['Matches'][$ContentKeys] -eq $FALSE) {
                 $HTTPContentMatchPackage.SetCritical() | Out-Null;
+            } else {
+                # Ensure we do not move into INFO state
+                $HTTPContentMatchPackage.SetOk() | Out-Null;
             }
             $ContentPackage.AddCheck($HTTPContentMatchPackage);
         }

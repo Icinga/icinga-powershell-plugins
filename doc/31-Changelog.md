@@ -14,12 +14,13 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#453](https://github.com/Icinga/icinga-powershell-plugins/pull/453) Fixes `Invoke-IcingaCheckPartitionSpace` to properly report the total size of partition, even when user disk quotas are set
-* [#455](https://github.com/Icinga/icinga-powershell-plugins/pull/455) Adds support for `Invoke-IcingaCheckDirectory` to output the content of `-FileList` as new output type `[INFO]` every time
+* [#459](https://github.com/Icinga/icinga-powershell-plugins/pull/459) Fixes `Invoke-IcingaCheckHTTPStatus` to make status code monitoring output working again, adds documentation for `-Minimum` argument and added new argument `StatusMinimum` to determine how many HTTP checks should return OK for the overall check to return OK (required for monitoring cluster resources for example)
 
 ### Enhancements
 
 * [#450](https://github.com/Icinga/icinga-powershell-plugins/pull/450) Adds support for access time to `Invoke-IcingaCheckDirectory`
 * [#451](https://github.com/Icinga/icinga-powershell-plugins/pull/451) Adds support to override the plugin output for `Invoke-IcingaCheckService` with `-OverrideNotOk` in for thresholds not matching the service running state
+* [#455](https://github.com/Icinga/icinga-powershell-plugins/pull/455) Adds support for `Invoke-IcingaCheckDirectory` to output the content of `-FileList` as new output type `[INFO]` every time
 * [#457](https://github.com/Icinga/icinga-powershell-plugins/pull/457) Adds improved handling for partition plugin, which now also include mount points for MSSQL for example
 
 ## 1.13.1 (2025-05-08)
