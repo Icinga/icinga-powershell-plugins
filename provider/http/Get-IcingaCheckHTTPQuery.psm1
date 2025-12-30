@@ -26,6 +26,7 @@ function Get-IcingaCheckHTTPQuery()
         # Initialize
 
         $HTTPInformation = $null;
+        $Status          = 0
 
         # Determine command arguments
 
@@ -113,30 +114,30 @@ function Get-IcingaCheckHTTPQuery()
         # Determine status code match
 
         if ($StatusCode -contains $HTTPInformation.StatusCode) {
-            $Status = $IcingaEnums.IcingaExitCode.OK;
+            $Status = 0; # OK
         } else {
             # Defaults
             if (Test-Numeric $HTTPInformation.StatusCode) {
                 if ($HTTPInformation.StatusCode -eq $null) {
-                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                    $Status = 3; # Unknown
                 } elseif ($HTTPInformation.StatusCode -lt 200) { # < 200 Unknown
-                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                    $Status = 3; # Unknown
                 } elseif ($HTTPInformation.StatusCode -ge 600) { # >= 600 Unknown
-                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                    $Status = 3; # Unknown
                 } elseif ($HTTPInformation.StatusCode -In 200..399) { # 200-399 OK
-                    $Status = $IcingaEnums.IcingaExitCode.OK;
+                    $Status = 0; #Ok
                 } elseif ($HTTPInformation.StatusCode -In 400..499) { # 400-499 Warning
-                    $Status = $IcingaEnums.IcingaExitCode.Warning;
+                    $Status = 1; # Warning
                 } elseif ($HTTPInformation.StatusCode -In 500..599) { # 500-599 Critical
-                    $Status = $IcingaEnums.IcingaExitCode.Critical;
+                    $Status = 2; # Critical
                 } else {
-                    $Status = $IcingaEnums.IcingaExitCode.Unknown; # Proprietary
+                    $Status = 3; # Unknown #Propriatary
                 }
             } else {
                 if ($ConnectionErrAsCrit) {
-                    $Status = $IcingaEnums.IcingaExitCode.Critical;
+                    $Status = 2; # Critical
                 } else {
-                    $Status = $IcingaEnums.IcingaExitCode.Unknown;
+                    $Status = 3; # Unknown
                 }
             }
         }
