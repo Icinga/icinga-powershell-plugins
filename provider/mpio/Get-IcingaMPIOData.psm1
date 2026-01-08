@@ -36,39 +36,59 @@ function Get-IcingaMPIOData()
             -Force;
     }
 
-    $MpioDatas   = Get-IcingaWindowsInformation -ClassName MPIO_DISK_INFO -Namespace 'Root\WMI';
-    $MpioDrivers = @{ };
+    $VolumeData    = Get-Volume;
+    $PartitionData = Get-Partition;
+    $MpioData      = Get-IcingaWindowsInformation -ClassName MPIO_DISK_INFO -Namespace 'Root\WMI';
+    $VolumeObject  = @();
 
-    foreach ($instance in $MpioDatas) {
-        if ($MpioDrivers.ContainsKey($instance.InstanceName)) {
-            continue;
+    foreach ($vol in $VolumeData) {
+        [string]$VolumeName = $vol.FileSystemLabel;
+
+        if ([string]::IsNullOrEmpty($VolumeName)) {
+            $VolumeName = 'NoLabel';
         }
 
-        $MpioDrivers.Add(
-            $instance.InstanceName, @{
-                'Active'       = $instance.Active;
-                'InstanceName' = $instance.InstanceName;
-                'NumberDrives' = $instance.NumberDrives;
-                'DriveInfo'    = @{ }
-            }
-        );
+        $VolumeObject += [PSCustomObject]@{
+            'Volume'        = $VolumeName;
+            'DriveLetter'   = $vol.DriveLetter;
+            'FileSystem'    = $vol.FileSystem;
+            'Health'        = $vol.HealthStatus;
+            'SizeRemaining' = $vol.SizeRemaining;
+            'InstanceName'  = '';
+            'DiskNumber'    = -1;
+            'Partition'     = -1;
+            'Size'          = 0;
+            'NumberOfPaths' = 0;
+            'NumberDrives'  = 0;
+            'Active'        = 0;
+            'Type'          = '';
+            'DriveType'     = $vol.DriveType;
+        };
 
-        foreach ($driver in $instance.DriveInfo) {
-            if ($MpioDrivers[$instance.InstanceName].DriveInfo.ContainsKey($driver.Name)) {
-                continue;
+        foreach ($partition in $PartitionData) {
+            if ($partition.AccessPaths -contains $vol.Path) {
+                $VolumeObject[-1].DiskNumber = $partition.DiskNumber;
+                $VolumeObject[-1].Partition  = $partition.PartitionNumber;
+                $VolumeObject[-1].Size       = $partition.Size;
+                $VolumeObject[-1].Type       = $partition.Type;
             }
-
-            $MpioDrivers[$instance.InstanceName].DriveInfo.Add(
-                $driver.Name, @{
-                    'DsmName'        = $driver.DsnName;
-                    'Name'           = $driver.Name;
-                    'NumberPaths'    = $driver.NumberPaths;
-                    'SerialNumber'   = $driver.SerialNumber;
-                    'PSComputerName' = $driver.PSComputerName
-                }
-            );
         }
     }
 
-    return $MpioDrivers;
+    foreach ($obj in $VolumeObject) {
+        $diskId = $obj.DiskNumber;
+        foreach ($MpioInstance in $MpioData) {
+            foreach ($drive in $MpioInstance.DriveInfo) {
+                if ($drive.Name.replace('MPIO Disk', '') -eq $diskid) {
+                    $obj.InstanceName  = $MpioInstance.InstanceName;
+                    $obj.NumberDrives  = $MpioInstance.NumberDrives;
+                    $obj.Active        = $MpioInstance.Active;
+                    $obj.NumberOfPaths = $drive.NumberPaths;
+                    break;
+                }
+            }
+        }
+    }
+
+    return $VolumeObject;
 }
