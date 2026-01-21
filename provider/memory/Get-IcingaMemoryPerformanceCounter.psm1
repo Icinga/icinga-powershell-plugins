@@ -57,18 +57,20 @@ function Global:Get-IcingaMemoryPerformanceCounter()
                 continue;
             }
 
-            $MemoryData.PageFile.Add(
-                $entry.Name,
-                @{
-                    'InitialSize' = $entry.InitialSize * 1024 * 1024;
-                    'Managed'     = $TRUE;
-                    'Name'        = $entry.Name;
-                    'TotalSize'   = $entry.MaximumSize * 1024 * 1024;
-                }
-            );
+            if ($entry.MaximumSize -ne 0) {
+                $MemoryData.PageFile.Add(
+                    $entry.Name,
+                    @{
+                        'InitialSize' = $entry.InitialSize * 1024 * 1024;
+                        'Managed'     = $TRUE;
+                        'Name'        = $entry.Name;
+                        'TotalSize'   = $entry.MaximumSize * 1024 * 1024;
+                    }
+                );
 
-            $MemoryData['PageFile Total Bytes'] += $entry.MaximumSize * 1024 * 1024;
-            $MemoryData['PageFile Used Bytes']  += $entry.InitialSize * 1024 * 1024;
+                $MemoryData['PageFile Total Bytes'] += $entry.MaximumSize * 1024 * 1024;
+                $MemoryData['PageFile Used Bytes']  += $entry.InitialSize * 1024 * 1024;
+            }
         }
     }
 
