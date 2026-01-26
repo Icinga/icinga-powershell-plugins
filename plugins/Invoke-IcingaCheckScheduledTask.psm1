@@ -20,9 +20,29 @@
         \_ [CRITICAL] AutomaticBackup (\Microsoft\Windows\WindowsBackup\): Value "Ready" is not matching threshold "Disabled"
         \_ [CRITICAL] Windows Backup Monitor (\Microsoft\Windows\WindowsBackup\): Value "Ready" is not matching threshold "Disabled"
     | 'automaticbackup_microsoftwindowswindowsbackup'=Ready;;Disabled 'windows_backup_monitor_microsoftwindowswindowsbackup'=Ready;;Disabled
+.EXAMPLE
+    PS> Invoke-IcingaCheckScheduledTask -TaskPath '\Icinga\*' -Verbosity 3;
+
+    [INFO] Scheduled Tasks (All must be [OK])
+    \_ [INFO] \Icinga\Icinga for Windows\ (All must be [OK])
+        \_ [INFO] Renew Certificate (All must be [OK])
+            \_ [INFO] Last Run Time [2026/01/26 00:27:39]: 15.81h
+            \_ [INFO] Last Task Result: 0
+            \_ [INFO] Missed Runs: 0
+            \_ [INFO] Next Run Time [2026/01/27 00:00:00]: -7.73h
+            \_ [INFO] State: Ready
+        \_ [INFO] Set Process Priority (All must be [OK])
+            \_ [INFO] Last Run Time [2026/01/19 16:07:58]: 7.01d
+            \_ [INFO] Last Task Result: 0
+            \_ [INFO] Missed Runs: 0
+            \_ [INFO] Next Run Time [Never]: Never
+            \_ [INFO] State: Ready
+    | icinga_icingaforwindows_renewcertificate::ifw_scheduledtask::lastruntime=56927s;;;; icinga_icingaforwindows_renewcertificate::ifw_scheduledtask::lasttaskresult=0;;;; icinga_icingaforwindows_renewcertificate::ifw_scheduledtask::missedruns=0;;;; icinga_icingaforwindows_renewcertificate::ifw_scheduledtask::nextruntime=-27814s;;;; icinga_icingaforwindows_renewcertificate::ifw_scheduledtask::state=3;;;; icinga_icingaforwindows_setprocesspriority::ifw_scheduledtask::lastruntime=605308s;;;; icinga_icingaforwindows_setprocesspriority::ifw_scheduledtask::lasttaskresult=0;;;; icinga_icingaforwindows_setprocesspriority::ifw_scheduledtask::missedruns=0;;;; icinga_icingaforwindows_setprocesspriority::ifw_scheduledtask::nextruntime=0s;;;; icinga_icingaforwindows_setprocesspriority::ifw_scheduledtask::state=3;;;;
 .PARAMETER TaskName
     A list of tasks to check for. If your tasks contain spaces, wrap them around a ' to ensure they are
     properly handled as string
+.PARAMETER TaskPath
+    A list of task paths to filter for. If no path is specified all paths are checked.
 .PARAMETER State
     The state a task should currently have for the plugin to return [OK]
 .PARAMETER WarningMissedRuns
@@ -81,6 +101,7 @@ function Invoke-IcingaCheckScheduledTask()
 {
     param (
         [array]$TaskName             = @(),
+        [array]$TaskPath             = @(),
         [ValidateSet('Unknown', 'Disabled', 'Queued', 'Ready', 'Running')]
         [array]$State                = @(),
         [array]$IgnoreExitCodes      = @(),
@@ -97,15 +118,15 @@ function Invoke-IcingaCheckScheduledTask()
     );
 
     $TaskPackages  = New-IcingaCheckPackage -Name 'Scheduled Tasks' -OperatorAnd -Verbose $Verbosity;
-    $Tasks         = Get-IcingaScheduledTask -TaskName $TaskName;
+    $Tasks         = Get-IcingaScheduledTask -TaskName $TaskName -TaskPath $TaskPath;
 
-    foreach ($taskpath in $Tasks.Keys) {
-        $TaskArray = $Tasks[$taskpath];
+    foreach ($taskelement in $Tasks.Keys) {
+        $TaskArray = $Tasks[$taskelement];
 
-        $CheckPackage = New-IcingaCheckPackage -Name $taskpath -OperatorAnd -Verbose $Verbosity;
+        $CheckPackage = New-IcingaCheckPackage -Name $taskelement -OperatorAnd -Verbose $Verbosity;
 
         foreach ($task in $TaskArray) {
-            if ($taskpath -eq 'Unknown Tasks') {
+            if ($taskelement -eq 'Unknown Tasks') {
                 $CheckPackage.AddCheck(
                     (
                         New-IcingaCheck -Name ([string]::Format('{0}: Task not found', $task))
