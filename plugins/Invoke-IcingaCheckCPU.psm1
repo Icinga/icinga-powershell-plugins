@@ -90,7 +90,7 @@ function Invoke-IcingaCheckCPU()
             continue;
         }
 
-        $SocketPackage = New-IcingaCheckPackage -Name $socket.Name -OperatorAnd -Verbose $Verbosity;
+        $SocketPackage = New-IcingaCheckPackage -Name $socket.Name -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
 
         foreach ($thread in (Get-IcingaProviderElement $socket.Value)) {
             # Transform "_Total" to "Total"

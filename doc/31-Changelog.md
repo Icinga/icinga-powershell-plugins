@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Enhancements
 
+* [#447](https://github.com/Icinga/icinga-powershell-plugins/issues/447) Changes package behavior for `Invoke-IcingaCheckCPU` to automatically ignore empty packages because of the usage of `\Processor(*)\% Processor Time` counter instead of `\Processor Information(*)\% Processor Utility`
 * [#450](https://github.com/Icinga/icinga-powershell-plugins/pull/450) Adds support for access time to `Invoke-IcingaCheckDirectory`
 * [#451](https://github.com/Icinga/icinga-powershell-plugins/pull/451) Adds support to override the plugin output for `Invoke-IcingaCheckService` with `-OverrideNotOk` in for thresholds not matching the service running state
 * [#455](https://github.com/Icinga/icinga-powershell-plugins/pull/455) Adds support for `Invoke-IcingaCheckDirectory` to output the content of `-FileList` as new output type `[INFO]` every time
