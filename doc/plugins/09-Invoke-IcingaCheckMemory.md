@@ -42,28 +42,29 @@ To execute this plugin you will require to grant the following user permissions.
 ### Example Command 1
 
 ```powershell
-Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
+Invoke-IcingaCheckMemory -Warning '2GiB' -Critical '4GiB';;
 ```
 
 ### Example Output 1
 
 ```powershell
-[WARNING]: % Memory Check 78.74 is greater than 60    
+[CRITICAL] Memory Usage [CRITICAL] Used Memory
+\_ [CRITICAL] Used Memory: Value 5.84GiB is greater than threshold 4.00GiB
+| cpagefilesys::ifw_pagefile::used=625999900B;;;0;34359740000 memory::ifw_memory::used=6265967000B;2147484000;4294967000;0;8583315000    
 ```
 
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckMemory -WarningPercent 30 -CriticalPercent 50
+Invoke-IcingaCheckMemory -Warning 25% -Critical 50%;
 ```
 
 ### Example Output 2
 
 ```powershell
-[WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used
-\_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"
-| 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;8
-1    
+[CRITICAL] Memory Usage [CRITICAL] Used Memory
+\_ [CRITICAL] Used Memory: Value 5.56GiB (69.52%) is greater than threshold 4.00GiB (50%)
+| cpagefilesys::ifw_pagefile::used=629145600B;;;0;34359740000 memory::ifw_memory::used=5966939000B;2145828750;4291657500;0;8583315000    
 ```
 
 

@@ -5,7 +5,9 @@
 Checks how much space on a partition is used.
 
 Invoke-IcingaCheckUsedPartition returns either 'OK', 'WARNING' or 'CRITICAL', based on the thresholds set.
-e.g 'C:' is at 8% usage, WARNING is set to 60, CRITICAL is set to 80. In this case the check will return OK.
+e.g 'C:' is at 8% usage, WARNING is set to 60%, CRITICAL is set to 80%. In this case the check will return OK.
+Beside that the preset for percentage or unit measurement is now free to design, regardless of % values or GiB/TiB
+and so on.
 
 The plugin will return `UNKNOWN` in case partition data (size and free space) can not be fetched. This is
 normally happening in case the user the plugin is running with does not have permissions to fetch this
@@ -49,40 +51,63 @@ To execute this plugin you will require to grant the following user permissions.
 ### Example Command 1
 
 ```powershell
-Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80
+Invoke-IcingaCheckPartitionSpace -Warning 60% -Critical 80% -Verbosity 3;
 ```
 
 ### Example Output 1
 
 ```powershell
-[OK]: Check package "Used Partition Space" is [OK]
-| 'Partition C'=8,06204986572266%;60;;0;100 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100    
+[CRITICAL] Free Partition Space: 2 Critical 2 Ok [CRITICAL] Partition \\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\, Partition \\?\Volume{8acb585d-fd6a-4a7d-a0a1-33d6544b01b0}\ (All must be [OK])
+\_ [CRITICAL] Partition \\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\: Value 287.20MiB (95.73%) is greater than threshold 240.00MiB (80%)
+\_ [CRITICAL] Partition \\?\Volume{8acb585d-fd6a-4a7d-a0a1-33d6544b01b0}\: Value 266.22MiB (89.94%) is greater than threshold 236.80MiB (80%)
+\_ [OK] Partition \\?\Volume{ffad7660-2b91-4988-b8f6-dcb98d8992c1}\: 115.72MiB (16.05%)
+\_ [OK] Partition C: 30.23GiB (11.88%)
+| volume151b43fc3f7041b092ebdff7c419ccc0::ifw_partitionspace::free=301146100B;188741220;251654960;0;314568700 volume8acb585dfd6a4a7da0a133d6544b01b0::ifw_partitionspace::free=279154700B;186227100;248302800;0;310378500 volumeffad76602b914988b8f6dcb98d8992c1::ifw_partitionspace::free=121339900B;453611520;604815360;0;756019200 c::ifw_partitionspace::free=32461880000B;164013240000;218684320000;0;273355400000    
 ```
 
 ### Example Command 2
 
 ```powershell
-Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Exclude "C:"
+Invoke-IcingaCheckPartitionSpace -Warning 60% -Critical 80% -Exclude '*`\\?*' -Verbosity 3;
 ```
 
 ### Example Output 2
 
 ```powershell
-[OK]: Check package "Used Partition Space" is [OK]
-| 'Partition D'=12,06204736572266%;60;;0;100 'Partition K'=19,062047896572266%;60;;0;100    
+[OK] Free Partition Space: 1 Ok (All must be [OK])
+\_ [OK] Partition C: 30.23GiB (11.87%)
+| c::ifw_partitionspace::free=32456160000B;164013240000;218684320000;0;273355400000    
 ```
 
 ### Example Command 3
 
 ```powershell
-Invoke-IcingaCheckUsedPartitionSpace -Warning 60 -Critical 80 -Include "C:"
+Invoke-IcingaCheckPartitionSpace -Warning 60% -Critical 80% -Include 'C:' -Verbosity 3;
 ```
 
 ### Example Output 3
 
 ```powershell
-[OK]: Check package "Used Partition Space" is [OK]
-| 'Partition C'=8,06204986572266%;60;;0;100    
+[OK] Free Partition Space: 1 Ok (All must be [OK])
+\_ [OK] Partition C: 29.22GiB (11.48%)
+| c::ifw_partitionspace::free=31376350000B;164013240000;218684320000;0;273355400000    
+```
+
+### Example Command 4
+
+```powershell
+Invoke-IcingaCheckUsedPartitionSpace -Warning '1TB' -Critical '1.5TB' -Verbosity 3;
+```
+
+### Example Output 4
+
+```powershell
+[OK] Free Partition Space: 4 Ok (All must be [OK])
+\_ [OK] Partition \\?\Volume{151b43fc-3f70-41b0-92eb-dff7c419ccc0}\: 287.20MiB
+\_ [OK] Partition \\?\Volume{8acb585d-fd6a-4a7d-a0a1-33d6544b01b0}\: 266.22MiB
+\_ [OK] Partition \\?\Volume{ffad7660-2b91-4988-b8f6-dcb98d8992c1}\: 115.72MiB
+\_ [OK] Partition C: 29.22GiB
+| volume151b43fc3f7041b092ebdff7c419ccc0::ifw_partitionspace::free=301146100B;1000000000000;1000000000000;0;314568700 volume8acb585dfd6a4a7da0a133d6544b01b0::ifw_partitionspace::free=279154700B;1000000000000;1000000000000;0;310378500 volumeffad76602b914988b8f6dcb98d8992c1::ifw_partitionspace::free=121339900B;1000000000000;1000000000000;0;756019200 c::ifw_partitionspace::free=31376350000B;1000000000000;1000000000000;0;273355400000    
 ```
 
 

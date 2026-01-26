@@ -20,14 +20,15 @@
 
     * Performance Monitor Users
 .EXAMPLE
-    PS>Invoke-IcingaCheckMemory -Verbosity 3 -Warning 60 -Critical 80
-    [WARNING]: % Memory Check 78.74 is greater than 60
+    PS> Invoke-IcingaCheckMemory -Warning '2GiB' -Critical '4GiB';;
+    [CRITICAL] Memory Usage [CRITICAL] Used Memory
+    \_ [CRITICAL] Used Memory: Value 5.84GiB is greater than threshold 4.00GiB
+    | cpagefilesys::ifw_pagefile::used=625999900B;;;0;34359740000 memory::ifw_memory::used=6265967000B;2147484000;4294967000;0;8583315000
 .EXAMPLE
-    PS> Invoke-IcingaCheckMemory -WarningPercent 30 -CriticalPercent 50
-    [WARNING] Check package "Memory Usage" - [WARNING] Memory Percent Used
-    \_ [WARNING] Memory Percent Used: Value "48.07%" is greater than threshold "30%"
-    | 'memory_percent_used'=48.07%;0:30;0:50;0;100 'used_bytes'=3.85GB;;;0;8
-    1
+    PS> Invoke-IcingaCheckMemory -Warning 25% -Critical 50%;
+    [CRITICAL] Memory Usage [CRITICAL] Used Memory
+    \_ [CRITICAL] Used Memory: Value 5.56GiB (69.52%) is greater than threshold 4.00GiB (50%)
+    | cpagefilesys::ifw_pagefile::used=629145600B;;;0;34359740000 memory::ifw_memory::used=5966939000B;2145828750;4291657500;0;8583315000
 .PARAMETER Warning
     Used to specify a Warning threshold. In this case an string value.
     The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"
