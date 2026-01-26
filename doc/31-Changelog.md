@@ -24,6 +24,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#455](https://github.com/Icinga/icinga-powershell-plugins/pull/455) Adds support for `Invoke-IcingaCheckDirectory` to output the content of `-FileList` as new output type `[INFO]` every time
 * [#457](https://github.com/Icinga/icinga-powershell-plugins/pull/457) Adds improved handling for partition plugin, which now also include mount points for MSSQL for example
 * [#461](https://github.com/Icinga/icinga-powershell-plugins/pull/461) Updates MPIO plugin to use volume names instead of MPIO disk id's and allows thresholds for number of path assigned based on the volume name filter
+* [#462](https://github.com/Icinga/icinga-powershell-plugins/issues/462) Fixes documentation for `Invoke-IcingaCheckMemory` and `Inboke-IcingaCheckPartitionSpace` to better describe on how `%`monitoring works
 
 ## 1.13.1 (2025-05-08)
 
