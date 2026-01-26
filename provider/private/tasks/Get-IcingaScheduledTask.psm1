@@ -1,7 +1,8 @@
 function Get-IcingaScheduledTask()
 {
     param (
-        [array]$TaskName
+        [array]$TaskName,
+        [array]$TaskPath
     );
 
     $Tasks      = @( );
@@ -15,6 +16,10 @@ function Get-IcingaScheduledTask()
     }
 
     foreach ($task in $Tasks) {
+        if ((Test-IcingaArrayFilter -InputObject $task.TaskPath -Include $TaskPath) -eq $FALSE) {
+            continue;
+        }
+
         $CreatedTask = (New-IcingaTaskObject -Task $task)
 
         if ($TaskFilter.ContainsKey($task.TaskPath) -eq $FALSE) {
