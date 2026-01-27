@@ -36,6 +36,24 @@ function Global:Get-IcingaPhysicalDiskInfo()
     $LogicalDisk          = Get-IcingaWindowsInformation Win32_LogicalDisk -Filter 'DriveType = 3';
     $PartitionInformation = Get-IcingaDiskPartitionAssignment;
     $PhysicalDiskData     = @{ };
+    $PartitionMapping     = @{ };
+    $VolumeData           = Get-Volume;
+
+    # This will allow us to map the label of a volume to a certain disk later on
+    foreach ($volume in $VolumeData) {
+        $PartitionData = Get-Partition -Volume $volume;
+
+        if ([string]::IsNullOrEmpty($PartitionData.DiskNumber)) {
+            continue;
+        }
+
+        if ($PartitionMapping.ContainsKey($PartitionData.DiskNumber.ToString()) -eq $FALSE) {
+            $PartitionMapping.Add($PartitionData.DiskNumber.ToString(), @());
+        }
+
+        # Assign each volume to the disk number it belongs to
+        $PartitionMapping[$PartitionData.DiskNumber.ToString()] += $volume;
+    }
 
     foreach ($disk in $MSFT_Disks) {
         [int]$MSFTDiskId = [int]$disk.DeviceId;
@@ -60,6 +78,7 @@ function Global:Get-IcingaPhysicalDiskInfo()
                 'PartitionStyle'              = ''; # Set later on partition check
                 'PartitionLayout'             = @{ }; # Set later on partition check
                 'DriveReference'              = @{ };
+                'VolumeNames'                 = @();
                 'IsBoot'                      = $FALSE; # Always false here because we set the boot option later based on our partition config
                 'MaxBlockSize'                = 0; # 0 because we later count the block size based on the amount of partitions
                 'ErrorCleared'                = $physical_disk.ErrorCleared;
@@ -117,8 +136,20 @@ function Global:Get-IcingaPhysicalDiskInfo()
             };
 
             $Partitions = Get-CimAssociatedInstance -InputObject $physical_disk -ResultClass Win32_DiskPartition;
+            $MaxBlocks  = 0;
 
-            $MaxBlocks = 0;
+            # Map all available volume names to the disk info
+            if ($PartitionMapping.ContainsKey($DiskId)) {
+                foreach ($entry in $PartitionMapping[$DiskId]) {
+                    # Skip empty volume labels
+                    if ([string]::IsNullOrEmpty($entry.FileSystemLabel)) {
+                        continue;
+                    }
+
+                    # Add each volume name to our disk info
+                    $DiskInfo.VolumeNames += $entry.FileSystemLabel;
+                }
+            }
 
             foreach ($partition in $Partitions) {
                 $DriveLetter            = $null;
