@@ -299,11 +299,30 @@ function Invoke-IcingaCheckDiskHealth()
                         -NoPerfData
                 ).SetOk([string]$DiskObjects.Data.MediaType.Name, $TRUE)
             );
+
+            # Add assigned drive letters and volume names, but set default to None if none found
+            [string]$DriveReference = 'None';
+            [string]$VolumeNames    = 'None';
+            if ($DiskObjects.Data.DriveReference.Count -gt 0) {
+                $DriveReference = $DiskObjects.Data.DriveReference.Keys -Join '; ';
+            }
+            if ($DiskObjects.Data.VolumeNames.Count -gt 0) {
+                $VolumeNames = $DiskObjects.Data.VolumeNames -Join '; ';
+            }
+
             $PartCheckPackage.AddCheck(
                 (
                     New-IcingaCheck `
                         -Name ([string]::Format('{0} Assigned Partitions', $Partition)) `
-                        -Value ($DiskObjects.Data.DriveReference.Keys | Out-String).Replace("`r`n", ' ').Replace("`n", ' ') `
+                        -Value $DriveReference `
+                        -NoPerfData
+                )
+            );
+            $PartCheckPackage.AddCheck(
+                (
+                    New-IcingaCheck `
+                        -Name ([string]::Format('{0} Assigned Volumes', $Partition)) `
+                        -Value $VolumeNames `
                         -NoPerfData
                 )
             );
