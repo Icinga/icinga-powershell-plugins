@@ -31,6 +31,8 @@ To execute this plugin you will require to grant the following user permissions.
 | Critical | Object | false |  | Used to specify a Critical threshold. In this case an string value.<br /> The string has to be like, "20B", "20KB", "20MB", "20GB", "20TB", "20PB"<br /> This is using the default Icinga threshold handling.<br /> It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
 | PageFileWarning | Object | false |  | Allows to check the used page file and compare it against a size value, like "200MB"<br /> This is using the default Icinga threshold handling.<br />  It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
 | PageFileCritical | Object | false |  | Allows to check the used page file and compare it against a size value, like "200MB"<br /> This is using the default Icinga threshold handling.<br /> It is possible to enter e.g. 10% as threshold value if you want a percentage comparison. |
+| MemoryPagesSecWarning | Object | false |  | Allows to set a Warning threshold for the Memory Pages/sec performance counter.<br /> This is using the default Icinga threshold handling. |
+| MemoryPagesSecCritical | Object | false |  | Allows to set a Critical threshold for the Memory Pages/sec performance counter.<br /> This is using the default Icinga threshold handling. |
 | IncludePageFile | Array | false | @() | Allows to filter for page files being included for the check |
 | ExcludePageFile | Array | false | @() | Allows to filter for page files being excluded for the check |
 | Verbosity | Int32 | false | 0 |  |

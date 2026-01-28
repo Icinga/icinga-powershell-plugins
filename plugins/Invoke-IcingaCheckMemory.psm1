@@ -47,6 +47,12 @@
     Allows to check the used page file and compare it against a size value, like "200MB"
     This is using the default Icinga threshold handling.
     It is possible to enter e.g. 10% as threshold value if you want a percentage comparison.
+.PARAMETER MemoryPagesSecWarning
+    Allows to set a Warning threshold for the Memory Pages/sec performance counter.
+    This is using the default Icinga threshold handling.
+.PARAMETER MemoryPagesSecCritical
+    Allows to set a Critical threshold for the Memory Pages/sec performance counter.
+    This is using the default Icinga threshold handling.
 .PARAMETER IncludePageFile
     Allows to filter for page files being included for the check
 .PARAMETER ExcludePageFile
@@ -67,6 +73,8 @@ function Invoke-IcingaCheckMemory()
         $Critical               = $null,
         $PageFileWarning        = $null,
         $PageFileCritical       = $null,
+        $MemoryPagesSecWarning  = $null,
+        $MemoryPagesSecCritical = $null,
         [array]$IncludePageFile = @(),
         [array]$ExcludePageFile = @(),
         [ValidateSet(0, 1, 2, 3)]
@@ -77,6 +85,7 @@ function Invoke-IcingaCheckMemory()
     $MemoryPackage   = New-IcingaCheckPackage -Name 'Memory Usage' -OperatorAnd -Verbose $Verbosity;
     $PageFilePackage = New-IcingaCheckPackage -Name 'PageFile Usage' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
     $MemoryData      = Get-IcingaMemoryPerformanceCounter;
+    $MemoryPagesSec  = (New-IcingaPerformanceCounterArray '\Memory\Pages/sec').'\Memory\Pages/sec';
 
     $MemoryPackage.AddCheck(
         (
@@ -93,6 +102,21 @@ function Invoke-IcingaCheckMemory()
             $Warning
         ).CritOutOfRange(
             $Critical
+        )
+    );
+
+    $MemoryPackage.AddCheck(
+        (
+            New-IcingaCheck `
+                -Name 'Memory pages/sec' `
+                -Value $MemoryPagesSec.value `
+                -Unit 'c' `
+                -MetricIndex 'memory' `
+                -MetricName 'pagessec'
+        ).WarnOutOfRange(
+            $MemoryPagesSecWarning
+        ).CritOutOfRange(
+            $MemoryPagesSecCritical
         )
     );
 

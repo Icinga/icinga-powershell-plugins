@@ -27,6 +27,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#461](https://github.com/Icinga/icinga-powershell-plugins/pull/461) Updates MPIO plugin to use volume names instead of MPIO disk id's and allows thresholds for number of path assigned based on the volume name filter
 * [#462](https://github.com/Icinga/icinga-powershell-plugins/issues/462) Fixes documentation for `Invoke-IcingaCheckMemory` and `Inboke-IcingaCheckPartitionSpace` to better describe on how `%`monitoring works
 * [#466](https://github.com/Icinga/icinga-powershell-plugins/pull/466) Adds support for the disk health plugin to display not only the assigned driver letters to a disk but also the volume names
+* [#467](https://github.com/Icinga/icinga-powershell-plugins/pull/467) Adds additional metric to `Invoke-IcingaCheckMemory` to check for `\Memory\Pages/sec` performance counter in addition, ensuring potential performance degradation is detected early
 
 ## 1.13.1 (2025-05-08)
 
