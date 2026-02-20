@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.14.1 (tbd)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/23)
+
+### Bugfixes
+
+* [#471](https://github.com/Icinga/icinga-powershell-plugins/pull/471) Fixes `Invoke-IcingaCheckPartitionSpace` to report `UNKNOWN` if no usage data was used, which was previously handled by "No disk size available". As we now properly receive disk size data but still no usage data in these cases, we receive false positives
+
 ## 1.14.0 (2026-02-11)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/22)

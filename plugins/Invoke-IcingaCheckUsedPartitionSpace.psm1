@@ -181,6 +181,12 @@ function Invoke-IcingaCheckPartitionSpace()
             } else {
                 $IcingaCheck.SetOk('No disk size available', $TRUE) | Out-Null;
             }
+        } elseif ([string]::IsNullOrEmpty($partition.FreeSpace) -or [string]::IsNullOrEmpty($partition.UsedSpace)) {
+            if ($SkipUnknown -eq $FALSE) {
+                $IcingaCheck.SetUnknown('No disk usage size available', $TRUE) | Out-Null;
+            } else {
+                $IcingaCheck.SetOk('No disk usage available', $TRUE) | Out-Null;
+            }
         } else {
             $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
         }
