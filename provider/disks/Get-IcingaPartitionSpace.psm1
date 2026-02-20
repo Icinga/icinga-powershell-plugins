@@ -36,12 +36,18 @@ function Get-IcingaPartitionSpace()
             break;
         }
 
+        $UsedSpace = $null;
+
+        if ($null -ne $disk.FreeSpace) {
+            $UsedSpace = $DiskSize - [decimal]$disk.FreeSpace;
+        }
+
         $DiskData.Add(
             $disk.Name,
             @{
                 'Size'        = $DiskSize;
                 'FreeSpace'   = $disk.FreeSpace;
-                'UsedSpace'   = ($DiskSize - $disk.FreeSpace);
+                'UsedSpace'   = $UsedSpace;
                 'DriveLetter' = $disk.DriveLetter;
                 'DriveName'   = $disk.Name;
                 'HasLetter'   = -not [string]::IsNullOrEmpty($disk.DriveLetter);
