@@ -21,14 +21,10 @@ function Get-IcingaPartitionSpace()
         # Create a fallback value - shouldn't apply anyway
         [decimal]$DiskSize = $disk.Capacity;
 
-        # Now loop through all our partitions for the partition with our drive letter and
-        # get the actual size from there, ignoring possible user quotas
+        # Now loop through all our partitions and check if the disk device id
+        # is mapped to one of the partitions access paths
         foreach ($partition in $Partitions) {
-            if ([string]::IsNullOrEmpty($partition.DriveLetter) -or [string]::IsNullOrEmpty($disk.DriveLetter)) {
-                continue;
-            }
-
-            if ($partition.DriveLetter -ne $disk.DriveLetter.Replace(':', '').Replace('\', '')) {
+            if ($partition.AccessPaths -notcontains $disk.DeviceID) {
                 continue;
             }
 
