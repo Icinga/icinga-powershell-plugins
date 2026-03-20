@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.14.1 (2026-03-31)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/23)
+
+### Bugfixes
+
+* [#472](https://github.com/Icinga/icinga-powershell-plugins/pull/472) Fixes the partition size provider to no longer map the volume to partition by using the drive letter, but the device id instead, to ensure real partition size is applied for every use case
+
 ## 1.14.0 (2026-02-11)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/22)
