@@ -13,6 +13,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#471](https://github.com/Icinga/icinga-powershell-plugins/pull/471) Fixes `Invoke-IcingaCheckPartitionSpace` to report `UNKNOWN` if no usage data was used, which was previously handled by "No disk size available". As we now properly receive disk size data but still no usage data in these cases, we receive false positives
 * [#472](https://github.com/Icinga/icinga-powershell-plugins/pull/472) Fixes the partition size provider to no longer map the volume to partition by using the drive letter, but the device id instead, to ensure real partition size is applied for every use case
 
 ## 1.14.0 (2026-02-11)
