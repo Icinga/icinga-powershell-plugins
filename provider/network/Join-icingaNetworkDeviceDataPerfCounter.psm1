@@ -28,19 +28,11 @@ function Join-IcingaNetworkDeviceDataPerfCounter()
             continue;
         }
 
-        if ((Test-IcingaArrayFilter -InputObject $GetNetworkDevice[$DeviceName].DeviceId -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
-            continue;
-        }
-
-        if ((Test-IcingaArrayFilter -InputObject $DeviceName -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
-            continue;
-        }
-
         if ((Test-IcingaArrayFilter -InputObject $GetNetworkDevice[$DeviceName].Name -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
             continue;
         }
 
-        if (($GetNetworkDevice.Containskey($DeviceName)) -eq $fALSE) {
+        if (($GetNetworkDevice.ContainsKey($DeviceName)) -eq $fALSE) {
             continue;
         }
 
@@ -51,7 +43,7 @@ function Join-IcingaNetworkDeviceDataPerfCounter()
                 foreach ($key in $NetworkDeviceObject.Keys) {
                     $CounterObject = $NetworkDeviceObject[$key];
                     if (($CounterHashObject.ContainsKey($key)) -eq $TRUE) {
-                        $CounterHashObject[$key].value += $CounterObject.value; 
+                        $CounterHashObject[$key].value += $CounterObject.value;
                     } else {
                         $CounterHashObject.Add($key, $CounterObject);
                     }

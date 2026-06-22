@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.15.0 (2026-06-30)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/24)
+
+### Bugfixes
+
+* [#479](https://github.com/Icinga/icinga-powershell-plugins/pull/479) Fixes Network include filter for `Invoke-IcingaCheckNetworkInterface` being broken and never being applied properly
+
 ## 1.14.1 (2026-03-31)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/23)
