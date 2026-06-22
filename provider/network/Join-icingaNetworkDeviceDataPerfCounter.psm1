@@ -21,7 +21,22 @@ function Join-IcingaNetworkDeviceDataPerfCounter()
         $DeviceName          = $DeviceName.Replace('[', '(').Replace(']', ')');
 
         if ([regex]::Match($DeviceName, '_').success) {
-            $DeviceName = $DeviceName.Replace('_', '#');
+            $TmpDeviceName = $DeviceName.Replace('_', '#');
+
+            # Check if the device is found with a #
+            if (($GetNetworkDevice.ContainsKey($TmpDeviceName))) {
+                $DeviceName = $TmpDeviceName;
+            } else {
+                $TmpDeviceName = $DeviceName.Replace('_', '/');
+
+                # If not, check if the device is found with a / in name
+                if (($GetNetworkDevice.ContainsKey($TmpDeviceName))) {
+                    $DeviceName = $TmpDeviceName;
+                } elseif (($GetNetworkDevice.ContainsKey($DeviceName)) -eq $FALSE) {
+                    # If all substitutions fail and the original name with _ is not found either, skip
+                    continue;
+                }
+            }
         }
 
         if (($IncludeHiddenNetworkDevice -eq $False) -And $GetNetworkDevice[$DeviceName].Hidden -eq $TRUE) {
@@ -29,10 +44,6 @@ function Join-IcingaNetworkDeviceDataPerfCounter()
         }
 
         if ((Test-IcingaArrayFilter -InputObject $GetNetworkDevice[$DeviceName].Name -Include $IncludeNetworkDevice -Exclude $ExcludeNetworkDevice) -eq $FALSE) {
-            continue;
-        }
-
-        if (($GetNetworkDevice.ContainsKey($DeviceName)) -eq $fALSE) {
             continue;
         }
 

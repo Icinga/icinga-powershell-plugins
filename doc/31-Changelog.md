@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#479](https://github.com/Icinga/icinga-powershell-plugins/pull/479) Fixes Network include filter for `Invoke-IcingaCheckNetworkInterface` being broken and never being applied properly
+* [#482](https://github.com/Icinga/icinga-powershell-plugins/pull/482) Fixes network device mapping for performance counter metrics to network devices, which could contain `#`, `/` or simply just `_`
 
 ## 1.14.1 (2026-03-31)
 
