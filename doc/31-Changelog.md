@@ -13,6 +13,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 ### Bugfixes
 
+* [#476](https://github.com/Icinga/icinga-powershell-plugins/pull/476) Fixes mapping of MPIO drives to the correct LUN on the host for `Invoke-IcingaCheckMPIO`
 * [#479](https://github.com/Icinga/icinga-powershell-plugins/pull/479) Fixes Network include filter for `Invoke-IcingaCheckNetworkInterface` being broken and never being applied properly
 
 ## 1.14.1 (2026-03-31)
