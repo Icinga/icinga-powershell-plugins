@@ -26,14 +26,20 @@
 
     * Root\WMI
 .EXAMPLE
-    PS> Invoke-IcingaCheckMPIO -NumberOfPathWarning 'LUN002=9:','LUN003=4';
+    PS> Invoke-IcingaCheckMPIO -NumberOfPathWarning 'LUN002=9:','LUN003=4' -Verbosity 1;
 
-    [WARNING] Multipath-IO Package: 1 Warning [WARNING] ROOT\MPIO\0000_0 Package
-    \_ [WARNING] ROOT\MPIO\0000_0 Package
-        \_ [WARNING] ROOT\MPIO\0000_0 Drivers Package
-            \_ [WARNING] LUN002 Number Paths: Value 8c is lower than threshold 9
-            \_ [WARNING] LUN003 Number Paths: Value 8c is greater than threshold 4
-    | lun002::ifw_mpio::numberofpaths=8c;9:;;; lun003::ifw_mpio::numberofpaths=8c;4;;; nolabel::ifw_mpio::numberofpaths=8c;;;; windows::ifw_mpio::numberofpaths=8c;;;; windowsos::ifw_mpio::numberofpaths=8c;;;; rootmpio0000_0::ifw_mpio::numberofdrives=6c;;;;
+    [WARNING] Multipath-IO Package: 1 Ok 3 Warning [WARNING] MPIO Disk 2 [WARNING] MPIO Disk 3 (All must be [OK])
+    \_ [INFO] ROOT\MPIO\0000_0 Active: 1
+    \_ [WARNING] ROOT\MPIO\0000_0 Drives Package (All must be [OK])
+        \_ [WARNING] MPIO Disk 2 (All must be [OK])
+            \_ [INFO] Assigned Letters: None
+            \_ [INFO] Assigned Volumes: LUN002
+            \_ [WARNING] Number Paths: Value 8c is lower than threshold 9
+        \_ [WARNING] MPIO Disk 3 (All must be [OK])
+            \_ [INFO] Assigned Letters: None
+            \_ [INFO] Assigned Volumes: LUN003
+            \_ [WARNING] Number Paths: Value 8c is greater than threshold 4
+        | windows::ifw_mpio::numberofpaths=8c;;;; lun001::ifw_mpio::numberofpaths=4c;;;; lun002::ifw_mpio::numberofpaths=8c;9:;;; lun003::ifw_mpio::numberofpaths=8c;4:;;;
 #>
 function Invoke-IcingaCheckMPIO()
 {
@@ -48,99 +54,156 @@ function Invoke-IcingaCheckMPIO()
     );
 
     $CheckPackage            = New-IcingaCheckPackage -Name 'Multipath-IO Package' -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
-    $MpioData                = Get-IcingaMPIOData;
-    [hashtable]$MpioPackages = @{ };
+    $DrivePackage            = $null;
+    $DiskData                = Join-IcingaPhysicalDiskDataPerfCounter;
+    [bool]$AddedBasePackages = $false;
+    [bool]$FoundMpioData     = $false;
 
-    if ($MpioData -is [array]) {
-        foreach ($mpio in $MpioData) {
-            [string]$MpioInstance = $mpio.InstanceName;
+    foreach ($DiskPart in $DiskData.Keys) {
+        $DiskObjects           = $DiskData[$DiskPart];
 
-            # Create a new MPIO Package if it does not exist yet for each instance
-            if (-Not $MpioPackages.ContainsKey($MpioInstance)) {
-                $MpioPackages.Add(
-                    $MpioInstance,
-                    @{
-                        'MpioPackage'  = New-IcingaCheckPackage -Name ([string]::Format('{0} Package', $MpioInstance)) ` -OperatorAnd -Verbose $Verbosity;
-                        'DrivePackage' = New-IcingaCheckPackage -Name ([string]::Format('{0} Drivers Package', $MpioInstance)) ` -OperatorAnd -Verbose $Verbosity;
-                    }
-                );
+        if ($null -eq $DiskObjects.Data -or $DiskObjects.Data.DiskId -eq '_Total') {
+            continue;
+        }
 
-                # Add instance specific checks (rquired only once, because they are identical for all drives of an instance)
-                $MpioPackages[$MpioInstance]['MpioPackage'].AddCheck(
-                    (
-                        New-IcingaCheck `
-                            -Name ([string]::Format('{0} Active', $MpioInstance)) `
-                            -Value $mpio.Active `
-                            -NoPerfData
-                    )
-                );
+        $MpioWarningThreshold  = $null;
+        $MpioCriticalThreshold = $null;
+        $VolumeNames           = 'None';
+        $VolumeIndex           = [string]::Format('MPIO Disk {0}', $DiskObjects.Data.DiskId);
+        $MpioInstance          = '';
+        $DriveReferences       = 'None';
 
-                $MpioPackages[$MpioInstance]['MpioPackage'].AddCheck(
-                    (
-                        New-IcingaCheck `
-                            -Name ([string]::Format('{0} NumberDrives', $MpioInstance)) `
-                            -Value $mpio.NumberDrives `
-                            -Unit 'c' `
-                            -MetricIndex $MpioInstance `
-                            -MetricName 'numberofdrives'
-                    )
-                );
-            }
+        # Don't add non-mpio disks to the check package, but continue with the next one, as there might be multiple disks and only some of them are MPIO enabled
+        if ($null -eq $DiskObjects.Data.MPIO) {
+            continue;
+        }
 
-            $MpioWarningThreshold  = $null;
-            $MpioCriticalThreshold = $null;
+        $FoundMpioData = $true;
+        $MpioInstance  = $DiskObjects.Data.MPIO.InstanceName;
 
-            foreach ($entry in $NumberOfPathWarning) {
-                $parts = $entry.Split('=', 2);
-                if ($mpio.Volume -like $parts[0]) {
+        if ($null -ne $DiskObjects.Data.VolumeNames -and $DiskObjects.Data.VolumeNames.Count -gt 0) {
+            $VolumeIndex = $DiskObjects.Data.VolumeNames[0];
+            $VolumeNames = $DiskObjects.Data.VolumeNames -join '; ';
+        }
+
+        if ($null -ne $DiskObjects.Data.DriveReference -and $DiskObjects.Data.DriveReference.Count -gt 0) {
+            $DriveReferences = $DiskObjects.Data.DriveReference.Keys -join '; ';
+        }
+
+        # Only add these once, as the data is identical for every disk
+        if (-not $AddedBasePackages) {
+            $DrivePackage          = New-IcingaCheckPackage -Name ([string]::Format('{0} Drives Package', $MpioInstance)) -OperatorAnd -Verbose $Verbosity;
+
+            $IsActive              = New-IcingaCheck `
+                -Name ([string]::Format('{0} Active', $MpioInstance)) `
+                -Value $DiskObjects.Data.MPIO.Active `
+                -NoPerfData;
+
+            $NumberOfDrives        = New-IcingaCheck `
+                -Name ([string]::Format('{0} NumberDrives', $MpioInstance)) `
+                -Value $DiskObjects.Data.MPIO.NumberDrives `
+                -Unit 'c' `
+                -MetricIndex $MpioInstance `
+                -MetricName 'numberofdrives';
+
+            $CheckPackage.AddCheck($IsActive);
+            $CheckPackage.AddCheck($NumberOfDrives);
+            $AddedBasePackages = $true;
+        }
+
+        foreach ($entry in $NumberOfPathWarning) {
+            $parts             = $entry.Split('=', 2);
+            [bool]$VolumeMatch = $false;
+
+            foreach ($assignedVolume in $DiskObjects.Data.VolumeNames) {
+                if ($assignedVolume -like $parts[0]) {
                     $MpioWarningThreshold = $parts[1];
+                    $VolumeMatch          = $true;
                     break;
                 }
             }
 
-            foreach ($entry in $NumberOfPathCritical) {
-                $parts = $entry.Split('=', 2);
-                if ($mpio.Volume -like $parts[0]) {
+            if ($VolumeMatch) {
+                break;
+            }
+        }
+
+        foreach ($entry in $NumberOfPathCritical) {
+            $parts             = $entry.Split('=', 2);
+            [bool]$VolumeMatch = $false;
+
+            foreach ($assignedVolume in $DiskObjects.Data.VolumeNames) {
+                if ($assignedVolume -like $parts[0]) {
                     $MpioCriticalThreshold = $parts[1];
+                    $VolumeMatch           = $true;
                     break;
                 }
             }
 
-            # Add all drive specific checks from the MPIO instance
-            $MpioPackages[$MpioInstance]['DrivePackage'].AddCheck(
-                (
-                    New-IcingaCheck `
-                        -Name ([string]::Format('{0} Number Paths', $mpio.Volume)) `
-                        -Value $mpio.NumberOfPaths `
-                        -Unit 'c' `
-                        -MetricIndex $mpio.Volume `
-                        -MetricName 'numberofpaths'
-                ).WarnOutOfRange(
-                    $MpioWarningThreshold
-                ).CritOutOfRange(
-                    $MpioCriticalThreshold
-                )
-            );
+            if ($VolumeMatch) {
+                break;
+            }
         }
 
-        foreach ($check in $MpioPackages.Keys) {
-            $MpioCheckPackage = $MpioPackages[$check]['MpioPackage'];
-            $DriverPackage    = $MpioPackages[$check]['DrivePackage'];
+        $MPIODiskPackage = New-IcingaCheckPackage -Name ([string]::Format('MPIO Disk {0}', $DiskObjects.Data.DiskId)) -OperatorAnd -Verbose $Verbosity;
 
-            if ($MpioCheckPackage.HasChecks()) {
-                # Add Driver Package to MPIO Package
-                $MpioCheckPackage.AddCheck($DriverPackage);
+        $MpioDrive = New-IcingaCheck `
+            -Name 'Number Paths' `
+            -Value $DiskObjects.Data.MPIO.NumberPaths `
+            -Unit 'c' `
+            -MetricIndex $VolumeIndex `
+            -MetricName 'numberofpaths';
+
+        $MpioDrive.WarnOutOfRange($MpioWarningThreshold).CritOutOfRange($MpioCriticalThreshold) | Out-Null;
+
+        $MpioVolumes = New-IcingaCheck `
+            -Name 'Assigned Volumes' `
+            -Value $VolumeNames `
+            -NoPerfData;
+
+        $MpioLetters = New-IcingaCheck `
+            -Name 'Assigned Letters' `
+            -Value $DriveReferences `
+            -NoPerfData;
+
+        $MpioPartitions      = New-IcingaCheckPackage -Name 'Partitions' -IsNoticePackage -Verbose $Verbosity;
+        [bool]$HasPartitions = $false;
+
+        foreach ($entry in $DiskObjects.Data.PartitionLayout.Keys) {
+            $PartitionInfo = $DiskObjects.Data.PartitionLayout[$entry];
+
+            if ($null -eq $PartitionInfo.FileSystem) {
+                continue;
             }
 
-            $CheckPackage.AddCheck($MpioCheckPackage);
+            $HasPartitions = $true;
+
+            $MpioPartitionData = New-IcingaCheck `
+                -Name ([string]::Format('Filesystem on Partition {0}', $entry)) `
+                -Value $PartitionInfo.FileSystem `
+                -NoPerfData;
+
+            $MpioPartitions.AddCheck($MpioPartitionData);
         }
+
+        $MPIODiskPackage.AddCheck($MpioDrive);
+        $MPIODiskPackage.AddCheck($MpioVolumes);
+        $MPIODiskPackage.AddCheck($MpioLetters);
+
+        if ($HasPartitions) {
+            $MPIODiskPackage.AddCheck($MpioPartitions);
+        }
+
+        $DrivePackage.AddCheck($MPIODiskPackage);
+    }
+
+    if (-not $FoundMpioData) {
+        $Check = New-IcingaCheck -Name 'MultiPath-IO Check Status' -NoPerfData;
+        $Check.SetCritical('No MPIO devices were found on this machine', $TRUE) | Out-Null;
+        # Enforce the checks to critical in case we get an exception
+        $CheckPackage.AddCheck($Check);
     } else {
-        if ($MpioData -is [hashtable] -and $MpioData.ContainsKey('Exception')) {
-            $Check = New-IcingaCheck -Name 'MultiPath-IO Check Status' -NoPerfData;
-            $Check.SetCritical($TestIcingaWindowsInfoEnums.TestIcingaWindowsInfoText[[int]$MpioData.Exception], $TRUE) | Out-Null;
-            # Enforce the checks to critical in case we get an exception
-            $CheckPackage.AddCheck($Check);
-        }
+        $CheckPackage.AddCheck($DrivePackage);
     }
 
     return (New-IcingaCheckResult -Check $CheckPackage -NoPerfData $NoPerfData -Compile);

@@ -38,6 +38,7 @@ function Global:Get-IcingaPhysicalDiskInfo()
     $PhysicalDiskData     = @{ };
     $PartitionMapping     = @{ };
     $VolumeData           = Get-Volume;
+    [array]$MPIOData      = Get-IcingaMPIOData;
 
     # This will allow us to map the label of a volume to a certain disk later on
     foreach ($volume in $VolumeData) {
@@ -75,6 +76,7 @@ function Global:Get-IcingaPhysicalDiskInfo()
             }
 
             $DiskInfo = @{
+                'DiskId'                      = $DiskId;
                 'PartitionStyle'              = ''; # Set later on partition check
                 'PartitionLayout'             = @{ }; # Set later on partition check
                 'DriveReference'              = @{ };
@@ -134,6 +136,22 @@ function Global:Get-IcingaPhysicalDiskInfo()
                 'ConfigManagerErrorCode'      = $physical_disk.ConfigManagerErrorCode;
                 'SectorsPerTrack'             = $physical_disk.SectorsPerTrack;
             };
+
+            if ($null -ne $MPIOData) {
+                foreach ($mpio in $MPIOData.DriveInfo) {
+                    if ([int]($mpio.Name.Replace('MPIO Disk', '').Trim()) -eq [int]$DiskId) {
+                        $DiskInfo.Add(
+                            'MPIO', @{
+                                'InstanceName' = $MPIOData.InstanceName;
+                                'NumberDrives' = $MPIOData.NumberDrives;
+                                'Active'       = $MPIOData.Active;
+                                'NumberPaths'  = $mpio.NumberPaths;
+                            }
+                        );
+                        break;
+                    }
+                }
+            }
 
             $Partitions = Get-CimAssociatedInstance -InputObject $physical_disk -ResultClass Win32_DiskPartition;
             $MaxBlocks  = 0;
