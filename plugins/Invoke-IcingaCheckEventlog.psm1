@@ -286,6 +286,7 @@ function Invoke-IcingaCheckEventlog()
         $EventLogPackage.AddCheck($EventLogProblems);
     } else {
         $IcingaCheck = New-IcingaCheck -Name 'Events found matching the filter' -Value 0 -Unit 'c' -NoPerfData;
+        $IcingaCheck.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
         $EventLogPackage.AddCheck($IcingaCheck);
     }
 

@@ -16,6 +16,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 * [#476](https://github.com/Icinga/icinga-powershell-plugins/pull/476) Fixes mapping of MPIO drives to the correct LUN on the host for `Invoke-IcingaCheckMPIO`
 * [#479](https://github.com/Icinga/icinga-powershell-plugins/pull/479) Fixes Network include filter for `Invoke-IcingaCheckNetworkInterface` being broken and never being applied properly
 * [#482](https://github.com/Icinga/icinga-powershell-plugins/pull/482) Fixes network device mapping for performance counter metrics to network devices, which could contain `#`, `/` or simply just `_`
+* [#483](https://github.com/Icinga/icinga-powershell-plugins/issues/483) Fixes `Invoke-IcingaCheckEventLog` to apply thresholds also if no results were found for a given filter
 
 ## 1.14.1 (2026-03-31)
 
