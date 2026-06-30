@@ -31,18 +31,24 @@ To execute this plugin you will require to grant the following user permissions.
 ### Example Command 1
 
 ```powershell
-Invoke-IcingaCheckMPIO -NumberOfPathWarning 'LUN002=9:','LUN003=4';
+Invoke-IcingaCheckMPIO -NumberOfPathWarning 'LUN002=9:','LUN003=4' -Verbosity 1;
 ```
 
 ### Example Output 1
 
 ```powershell
-[WARNING] Multipath-IO Package: 1 Warning [WARNING] ROOT\MPIO\0000_0 Package
-\_ [WARNING] ROOT\MPIO\0000_0 Package
-    \_ [WARNING] ROOT\MPIO\0000_0 Drivers Package
-        \_ [WARNING] LUN002 Number Paths: Value 8c is lower than threshold 9
-        \_ [WARNING] LUN003 Number Paths: Value 8c is greater than threshold 4
-| lun002::ifw_mpio::numberofpaths=8c;9:;;; lun003::ifw_mpio::numberofpaths=8c;4;;; nolabel::ifw_mpio::numberofpaths=8c;;;; windows::ifw_mpio::numberofpaths=8c;;;; windowsos::ifw_mpio::numberofpaths=8c;;;; rootmpio0000_0::ifw_mpio::numberofdrives=6c;;;;    
+[WARNING] Multipath-IO Package: 1 Ok 3 Warning [WARNING] MPIO Disk 2 [WARNING] MPIO Disk 3 (All must be [OK])
+\_ [INFO] ROOT\MPIO\0000_0 Active: 1
+\_ [WARNING] ROOT\MPIO\0000_0 Drives Package (All must be [OK])
+    \_ [WARNING] MPIO Disk 2 (All must be [OK])
+        \_ [INFO] Assigned Letters: None
+        \_ [INFO] Assigned Volumes: LUN002
+        \_ [WARNING] Number Paths: Value 8c is lower than threshold 9
+    \_ [WARNING] MPIO Disk 3 (All must be [OK])
+        \_ [INFO] Assigned Letters: None
+        \_ [INFO] Assigned Volumes: LUN003
+        \_ [WARNING] Number Paths: Value 8c is greater than threshold 4
+    | windows::ifw_mpio::numberofpaths=8c;;;; lun001::ifw_mpio::numberofpaths=4c;;;; lun002::ifw_mpio::numberofpaths=8c;9:;;; lun003::ifw_mpio::numberofpaths=8c;4:;;;    
 ```
 
 

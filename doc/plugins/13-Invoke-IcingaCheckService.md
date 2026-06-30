@@ -24,7 +24,7 @@ To execute this plugin you will require to grant the following user permissions.
 
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
-| Service | Array | false | @() | Used to specify an array of services which should be checked against the status. Supports '*' for<br /> wildcards. |
+| Service | Array | false | @() | Used to specify an array of services which should be checked against the status. Supports '*' for wildcards. |
 | Exclude | Array | false | @() | Allows to exclude services which might come in handy for checking services which are configured to start automatically<br /> on Windows but are not running and weren't exited properly. |
 | Status | String | false | Running | Status for the specified service or services to check against. |
 | FilterStartupType | Array | false | @() | Allows to include only services with a specific startup type inside the monitoring,<br /> in case you check for a list of specific services by using `-Service` |
