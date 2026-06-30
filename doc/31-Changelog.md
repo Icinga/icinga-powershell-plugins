@@ -7,6 +7,10 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.16.0 (2026-09-30)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/25)
+
 ## 1.15.0 (2026-06-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/24)
