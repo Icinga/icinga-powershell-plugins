@@ -134,10 +134,10 @@ function Invoke-IcingaCheckPartitionSpace()
     }
 
     foreach ($partition in $Disks.Keys) {
-        $partition          = $Disks[$partition];
-        $ProcessPartition   = $TRUE;
-        $PartitionMandatory = $FALSE;
-        $PartitionName      = $partition.DriveLetter;
+        $partition             = $Disks[$partition];
+        $ProcessPartition      = $TRUE;
+        $PartitionMandatory    = $FALSE;
+        [string]$PartitionName = $partition.DriveLetter;
 
         $FormattedLetter = '';
         if ([string]::IsNullOrEmpty($partition.DriveLetter) -eq $FALSE) {
@@ -145,19 +145,22 @@ function Invoke-IcingaCheckPartitionSpace()
             $KnownPartitions += $FormattedLetter;
         } else {
             $PartitionName    = $partition.DriveName;
+            if (-not ([string]::IsNullOrEmpty($partition.Label))) {
+                $PartitionName = $partition.Label;
+            }
             $KnownPartitions += $PartitionName.ToLower();
         }
 
         foreach ($entry in $Include) {
             $ProcessPartition = $FALSE;
 
-            if (($partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $FormattedLetter -Include $entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower())) -or (-not $partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $partition.DriveName.ToLower() -Include $entry.ToLower()))) {
+            if (($partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $FormattedLetter -Include $entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower())) -or (-not $partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $PartitionName.ToLower() -Include $entry.ToLower()))) {
                 $ProcessPartition = $TRUE;
                 break;
             }
         }
         foreach ($entry in $Exclude) {
-            if (($partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $FormattedLetter -Exclude $entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower()) -eq $FALSE) -or (-not $partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $partition.DriveName.ToLower() -Exclude $entry.ToLower()) -eq $FALSE)) {
+            if (($partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $FormattedLetter -Exclude $entry.Replace(':', '').Replace('\', '').Replace('/', '').ToLower()) -eq $FALSE) -or (-not $partition.HasLetter -and (Test-IcingaArrayFilter -InputObject $PartitionName.ToLower() -Exclude $entry.ToLower()) -eq $FALSE)) {
                 $ProcessPartition = $FALSE;
                 break;
             }

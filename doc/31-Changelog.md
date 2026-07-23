@@ -11,6 +11,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/25)
 
+### Bugfixes
+
+* [#488](https://github.com/Icinga/icinga-powershell-plugins/pull/488) Fixes partition space plugin to use partition label names instead of disk names if given
+
 ## 1.15.0 (2026-06-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/24)

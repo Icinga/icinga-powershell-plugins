@@ -47,6 +47,7 @@ function Get-IcingaPartitionSpace()
                 'DriveLetter' = $disk.DriveLetter;
                 'DriveName'   = $disk.Name;
                 'HasLetter'   = -not [string]::IsNullOrEmpty($disk.DriveLetter);
+                'Label'       = $disk.Label;
             }
         );
     }
