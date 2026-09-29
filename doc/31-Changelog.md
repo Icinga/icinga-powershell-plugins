@@ -15,6 +15,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#488](https://github.com/Icinga/icinga-powershell-plugins/pull/488) Fixes partition space plugin to use partition label names instead of disk names if given
 
+### Enhancements
+
+* [#490](https://github.com/Icinga/icinga-powershell-plugins/issues/490) Adds support for `Invoke-IcingaCheckUpdates` to exclude specific updates by name with `-ExcludeUpdate` and entire update categories with `-ExcludeCategory`
+
 ## 1.15.0 (2026-06-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/24)

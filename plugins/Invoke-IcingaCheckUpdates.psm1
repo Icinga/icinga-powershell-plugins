@@ -27,9 +27,23 @@
     [WARNING] Windows Updates: 1 Warning 4 Ok [WARNING] Total Pending Updates (1c)
     \_ [WARNING] Total Pending Updates: 1c is greater than threshold 0c
     | 'total_pending_updates'=1c;0; 'security_update_count'=0c;; 'rollups_update_count'=0c;; 'other_update_count'=0c;; 'defender_update_count'=1c;;
+.EXAMPLE
+    PS> Invoke-IcingaCheckUpdates -Verbosity 1 -Warning 0 -ExcludeUpdate '*Intel*', '*Lenovo*' -ExcludeCategory 'Defender';
+
+    [WARNING] Windows Updates: 1 Warning [WARNING] Total Pending Updates
+    \_ [INFO] Reboot Pending: Yes
+    \_ [WARNING] Total Pending Updates: Value 2c is greater than threshold 0
+    | other::ifw_updates::count=1c;;;; reboot::ifw_updates::required=1;;;; security::ifw_updates::count=1c;;;; summary::ifw_updates::count=2c;0;;; rollups::ifw_updates::count=0c;;;;
 .PARAMETER UpdateFilter
     Allows to filter for names of updates being included in the total update count, allowing a specific monitoring and filtering of certain updates
     beyond the provided categories
+.PARAMETER ExcludeUpdate
+    Allows to exclude updates by their name, supporting wildcards like '*Intel*'. Excluded updates are ignored entirely and neither added
+    to the total update count nor to their category. Exclusions take precedence over the UpdateFilter
+.PARAMETER ExcludeCategory
+    Allows to exclude entire update categories. Updates of these categories are ignored entirely and neither added to the total update count
+    nor reported within the plugin output or performance data. Thresholds for excluded categories will not be applied.
+    Allowed values: Security, Rollups, Defender, Other
 .PARAMETER Warning
     The warning threshold for the total pending update count on the Windows machine
 .PARAMETER Critical
@@ -76,25 +90,28 @@
 function Invoke-IcingaCheckUpdates()
 {
     param (
-        [array]$UpdateFilter  = @(),
-        $Warning              = $null,
-        $Critical             = $null,
-        $WarningSecurity      = $null,
-        $CriticalSecurity     = $null,
-        $WarningRollups       = $null,
-        $CriticalRollups      = $null,
-        $WarningDefender      = $null,
-        $CriticalDefender     = $null,
-        $WarningOther         = $null,
-        $CriticalOther        = $null,
-        [switch]$WarnOnReboot = $FALSE,
-        [switch]$CritOnReboot = $FALSE,
-        [switch]$NoPerfData   = $FALSE,
+        [array]$UpdateFilter    = @(),
+        [array]$ExcludeUpdate   = @(),
+        [ValidateSet('Security', 'Rollups', 'Defender', 'Other')]
+        [array]$ExcludeCategory = @(),
+        $Warning                = $null,
+        $Critical               = $null,
+        $WarningSecurity        = $null,
+        $CriticalSecurity       = $null,
+        $WarningRollups         = $null,
+        $CriticalRollups        = $null,
+        $WarningDefender        = $null,
+        $CriticalDefender       = $null,
+        $WarningOther           = $null,
+        $CriticalOther          = $null,
+        [switch]$WarnOnReboot   = $FALSE,
+        [switch]$CritOnReboot   = $FALSE,
+        [switch]$NoPerfData     = $FALSE,
         [ValidateSet(0, 1, 2, 3)]
-        [int]$Verbosity       = 0
+        [int]$Verbosity         = 0
     );
 
-    $PendingUpdates      = Get-IcingaWindowsUpdatesPending -UpdateFilter $UpdateFilter;
+    $PendingUpdates      = Get-IcingaWindowsUpdatesPending -UpdateFilter $UpdateFilter -ExcludeUpdate $ExcludeUpdate -ExcludeCategory $ExcludeCategory;
     $WindowsUpdates      = New-IcingaCheckPackage -Name 'Windows Updates' -OperatorAnd -AddSummaryHeader -Verbose $Verbosity;
     $TotalPendingUpdates = New-IcingaCheck -Name 'Total Pending Updates' -Value $PendingUpdates.count -Unit 'c' -MetricIndex 'summary' -MetricName 'count';
     $RebootPending       = New-IcingaCheck -Name 'Reboot Pending' -Value ([int]$PendingUpdates.RebootPending) -Translation @{ 0 = 'No'; 1 = 'Yes' } -MetricIndex 'reboot' -MetricName 'required';
@@ -153,10 +170,18 @@ function Invoke-IcingaCheckUpdates()
         $CategoryPackage.AddCheck($UpdateCount);
     }
 
-    $WindowsUpdates.AddCheck($SecurityUpdates);
-    $WindowsUpdates.AddCheck($RollupUpdates);
-    $WindowsUpdates.AddCheck($DefenderUpdates);
-    $WindowsUpdates.AddCheck($OtherUpdates);
+    if ($ExcludeCategory -NotContains 'Security') {
+        $WindowsUpdates.AddCheck($SecurityUpdates);
+    }
+    if ($ExcludeCategory -NotContains 'Rollups') {
+        $WindowsUpdates.AddCheck($RollupUpdates);
+    }
+    if ($ExcludeCategory -NotContains 'Defender') {
+        $WindowsUpdates.AddCheck($DefenderUpdates);
+    }
+    if ($ExcludeCategory -NotContains 'Other') {
+        $WindowsUpdates.AddCheck($OtherUpdates);
+    }
 
     if ($PendingUpdates.ContainsKey('error')) {
         $UpdateError = New-IcingaCheck -Name 'Windows Update Error';

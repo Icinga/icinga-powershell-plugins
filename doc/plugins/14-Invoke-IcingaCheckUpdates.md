@@ -21,6 +21,8 @@ To execute this plugin you will require to grant the following user permissions.
 | Argument | Type | Required | Default | Description |
 | ---      | ---  | ---      | ---     | ---         |
 | UpdateFilter | Array | false | @() | Allows to filter for names of updates being included in the total update count, allowing a specific monitoring and filtering of certain updates<br /> beyond the provided categories |
+| ExcludeUpdate | Array | false | @() | Allows to exclude updates by their name, supporting wildcards like '*Intel*'. Excluded updates are ignored entirely and neither added<br /> to the total update count nor to their category. Exclusions take precedence over the UpdateFilter |
+| ExcludeCategory | Array | false | @() | Allows to exclude entire update categories. Updates of these categories are ignored entirely and neither added to the total update count<br /> nor reported within the plugin output or performance data. Thresholds for excluded categories will not be applied.<br /> Allowed values: Security, Rollups, Defender, Other |
 | Warning | Object | false |  | The warning threshold for the total pending update count on the Windows machine |
 | Critical | Object | false |  | The critical threshold for the total pending update count on the Windows machine |
 | WarningSecurity | Object | false |  | The warning threshold for the security update count on the Windows machine |
@@ -68,6 +70,21 @@ Invoke-IcingaCheckUpdates -Verbosity 1 -Warning 0 -UpdateFilter '*Intelligence-U
 [WARNING] Windows Updates: 1 Warning 4 Ok [WARNING] Total Pending Updates (1c)
 \_ [WARNING] Total Pending Updates: 1c is greater than threshold 0c
 | 'total_pending_updates'=1c;0; 'security_update_count'=0c;; 'rollups_update_count'=0c;; 'other_update_count'=0c;; 'defender_update_count'=1c;;    
+```
+
+### Example Command 3
+
+```powershell
+Invoke-IcingaCheckUpdates -Verbosity 1 -Warning 0 -ExcludeUpdate '*Intel*', '*Lenovo*' -ExcludeCategory 'Defender';
+```
+
+### Example Output 3
+
+```powershell
+[WARNING] Windows Updates: 1 Warning [WARNING] Total Pending Updates
+\_ [INFO] Reboot Pending: Yes
+\_ [WARNING] Total Pending Updates: Value 2c is greater than threshold 0
+| other::ifw_updates::count=1c;;;; reboot::ifw_updates::required=1;;;; security::ifw_updates::count=1c;;;; summary::ifw_updates::count=2c;0;;; rollups::ifw_updates::count=0c;;;;    
 ```
 
 
