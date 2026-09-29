@@ -1,7 +1,9 @@
 function Global:Get-IcingaWindowsUpdatesPending()
 {
     param (
-        [array]$UpdateFilter = @()
+        [array]$UpdateFilter    = @(),
+        [array]$ExcludeUpdate   = @(),
+        [array]$ExcludeCategory = @()
     );
 
     [hashtable]$PendingUpdates         = @{ };
@@ -33,7 +35,27 @@ function Global:Get-IcingaWindowsUpdatesPending()
             }
         );
 
+        # Remove excluded categories entirely, to not report them at all
+        foreach ($category in $ExcludeCategory) {
+            if ($PendingUpdates.updates.ContainsKey($category)) {
+                $PendingUpdates.updates.Remove($category);
+            }
+        }
+
         foreach ($update in $Pending.Updates) {
+            [bool]$IsExcluded = $FALSE;
+
+            foreach ($filter in $ExcludeUpdate) {
+                if ($update.Title -Like $filter) {
+                    $IsExcluded = $TRUE;
+                    break;
+                }
+            }
+
+            if ($IsExcluded) {
+                continue;
+            }
+
             [hashtable]$PendingUpdateDetails = @{ };
             $PendingUpdateDetails.Add('Title', $update.Title);
             $PendingUpdateDetails.Add('Category', $null);
@@ -73,26 +95,6 @@ function Global:Get-IcingaWindowsUpdatesPending()
             $PendingUpdateDetails.Add('AutoSelection', $update.AutoSelection);
             $PendingUpdateDetails.Add('AutoDownload', $update.AutoDownload);
 
-            if ($UpdateFilter.Count -ne 0) {
-                foreach ($filter in $UpdateFilter) {
-                    if ($update.Title -Like $filter) {
-                        $PendingUpdates.count += 1;
-                        break;
-                    }
-                }
-            } else {
-                $PendingUpdates.count += 1;
-            }
-
-            [string]$name = [string]::Format('{0} [{1}]', $update.Title, $update.LastDeploymentChangeTime);
-
-            if ($PendingUpdateNameCache.ContainsKey($name) -eq $FALSE) {
-                $PendingUpdateNameCache.Add($name, 1);
-            } else {
-                $PendingUpdateNameCache[$name] += 1;
-                $name = [string]::Format('{0} ({1})', $name, $PendingUpdateNameCache[$name]);
-            }
-
             [bool]$IsSecurity = $FALSE;
             [bool]$IsDefender = $FALSE;
             [bool]$IsRollUp   = $FALSE;
@@ -118,20 +120,42 @@ function Global:Get-IcingaWindowsUpdatesPending()
                 $PendingUpdateDetails.Category = $update.Categories[0];
             }
 
+            [string]$UpdateCategory = 'other';
+
             if ($IsSecurity) {
-                $PendingUpdates.updates.security.Add($name, $PendingUpdateDetails);
-                continue;
+                $UpdateCategory = 'security';
+            } elseif ($IsDefender) {
+                $UpdateCategory = 'defender';
+            } elseif ($IsRollUp) {
+                $UpdateCategory = 'rollups';
             }
-            if ($IsDefender) {
-                $PendingUpdates.updates.defender.Add($name, $PendingUpdateDetails);
-                continue;
-            }
-            if ($IsRollUp) {
-                $PendingUpdates.updates.rollups.Add($name, $PendingUpdateDetails);
+
+            # The category was excluded and removed before
+            if ($PendingUpdates.updates.ContainsKey($UpdateCategory) -eq $FALSE) {
                 continue;
             }
 
-            $PendingUpdates.updates.other.Add($name, $PendingUpdateDetails);
+            if ($UpdateFilter.Count -ne 0) {
+                foreach ($filter in $UpdateFilter) {
+                    if ($update.Title -Like $filter) {
+                        $PendingUpdates.count += 1;
+                        break;
+                    }
+                }
+            } else {
+                $PendingUpdates.count += 1;
+            }
+
+            [string]$name = [string]::Format('{0} [{1}]', $update.Title, $update.LastDeploymentChangeTime);
+
+            if ($PendingUpdateNameCache.ContainsKey($name) -eq $FALSE) {
+                $PendingUpdateNameCache.Add($name, 1);
+            } else {
+                $PendingUpdateNameCache[$name] += 1;
+                $name = [string]::Format('{0} ({1})', $name, $PendingUpdateNameCache[$name]);
+            }
+
+            $PendingUpdates.updates[$UpdateCategory].Add($name, $PendingUpdateDetails);
         }
     } catch {
         if ($PendingUpdates.ContainsKey('Count') -eq $FALSE) {
