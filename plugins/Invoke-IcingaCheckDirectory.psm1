@@ -62,6 +62,12 @@
     \_ [CRITICAL] File Count: 33 is greater than threshold 30
     \_ [WARNING] Total Size: 2.48GiB is greater than threshold 2.00GiB
     | 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;2147484000; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;
+.EXAMPLE
+    PS> Invoke-IcingaCheckDirectory -Path 'C:\Backup' -FileNames 'backup.bak' -OverrideNotFound 'Critical';
+
+    [CRITICAL] Directory Check: "C:\Backup": 1 Critical [CRITICAL] File Found
+    \_ [CRITICAL] File Found: No
+    | cbackup::ifw_directory::averagefile=0B;;;; cbackup::ifw_directory::files=0;;;; cbackup::ifw_directory::folders=0;;;; cbackup::ifw_directory::largestfile=0B;;;; cbackup::ifw_directory::smallestfile=0B;;;; cbackup::ifw_directory::totalsize=0B;;;;
 .PARAMETER Warning
     Checks the resulting file count of the provided filters and input and returns warning for the provided threshold.
 
@@ -156,6 +162,11 @@
     String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.
 
     Thereby all files with a size of 5 MB or less are considered within the check.
+.PARAMETER OverrideNotFound
+    This argument will allow you to override the default behavior of the plugin in case no files were found matching the
+    provided filters. By default, the plugin will only report as information if files were found, but you can set with this argument
+    if the check should return OK, WARNING, CRITICAL or UNKNOWN instead in case no files were found.
+    If set, a not existing -Path is handled like a directory without any files
 .PARAMETER Verbosity
     Changes the behavior of the plugin output which check states are printed:
     0 (default): Only service checks/packages with state not OK will be printed
@@ -199,6 +210,8 @@ function Invoke-IcingaCheckDirectory()
         [string]$AccessOlderThan,
         [string]$FileSizeGreaterThan,
         [string]$FileSizeSmallerThan,
+        [ValidateSet('Ok', 'Warning', 'Critical', 'Unknown')]
+        [string]$OverrideNotFound    = '',
         [ValidateSet(0, 1, 2, 3)]
         [int]$Verbosity              = 0,
         [switch]$NoPerfData          = $FALSE
@@ -209,7 +222,8 @@ function Invoke-IcingaCheckDirectory()
         -CreationYoungerThan $CreationYoungerThan -CreationOlderThan $CreationOlderThan `
         -CreationTimeEqual $CreationTimeEqual -ChangeTimeEqual $ChangeTimeEqual `
         -AccessYoungerThan $AccessYoungerThan -AccessOlderThan $AccessOlderThan `
-        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan;
+        -FileSizeGreaterThan $FileSizeGreaterThan -FileSizeSmallerThan $FileSizeSmallerThan `
+        -IgnoreMissingPath:([string]::IsNullOrEmpty($OverrideNotFound) -eq $FALSE);
 
     $DirectoryCheck = New-IcingaCheckPackage -Name ([string]::Format('Directory Check: "{0}"', $Path)) -OperatorAnd -Verbose $Verbosity -AddSummaryHeader;
 
@@ -260,6 +274,41 @@ function Invoke-IcingaCheckDirectory()
     $DirectoryCheck.AddCheck($SmallestFileSize);
     $DirectoryCheck.AddCheck($LargestFileSize);
     $DirectoryCheck.AddCheck($AverageFileSize);
+
+    [string]$FileFoundValue = 'No';
+
+    if ($FileCount -ne 0) {
+        $FileFoundValue = 'Yes';
+    }
+
+    $FileFoundCheck = New-IcingaCheck -Name 'File Found' -Value $FileFoundValue -NoPerfData;
+
+    if ([string]::IsNullOrEmpty($OverrideNotFound) -eq $FALSE) {
+        if ($FileCount -ne 0) {
+            $FileFoundCheck.SetOk() | Out-Null;
+        } else {
+            switch ($OverrideNotFound.ToLower()) {
+                'ok' {
+                    $FileFoundCheck.SetOk() | Out-Null;
+                    break;
+                };
+                'warning' {
+                    $FileFoundCheck.SetWarning() | Out-Null;
+                    break;
+                };
+                'critical' {
+                    $FileFoundCheck.SetCritical() | Out-Null;
+                    break;
+                };
+                default {
+                    $FileFoundCheck.SetUnknown() | Out-Null;
+                    break;
+                };
+            }
+        }
+    }
+
+    $DirectoryCheck.AddCheck($FileFoundCheck);
 
     return (New-IcingaCheckResult -Check $DirectoryCheck -NoPerfData $NoPerfData -Compile);
 }

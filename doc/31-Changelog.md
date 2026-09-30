@@ -15,6 +15,10 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 * [#488](https://github.com/Icinga/icinga-powershell-plugins/pull/488) Fixes partition space plugin to use partition label names instead of disk names if given
 
+### Enhancements
+
+* [#486](https://github.com/Icinga/icinga-powershell-plugins/issues/486) Adds new check `File Found` to `Invoke-IcingaCheckDirectory`, which is reported as information by default and allows to override the plugin state with `-OverrideNotFound` in case no files were found matching the provided filters. If `-OverrideNotFound` is set, a not existing `-Path` will no longer throw an exception
+
 ## 1.15.0 (2026-06-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/24)
