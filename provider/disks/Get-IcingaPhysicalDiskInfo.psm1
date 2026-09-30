@@ -52,8 +52,20 @@ function Global:Get-IcingaPhysicalDiskInfo()
             $PartitionMapping.Add($PartitionData.DiskNumber.ToString(), @());
         }
 
+        [string]$VolumeLabel = $volume.FileSystemLabel;
+
+        # Cluster Shared Volumes never carry a NTFS label; fall back to the ClusterStorage mount folder name
+        if ([string]::IsNullOrEmpty($VolumeLabel)) {
+            foreach ($accessPath in $PartitionData.AccessPaths) {
+                if ($accessPath -Like '*\ClusterStorage\*') {
+                    $VolumeLabel = (Split-Path -Path $accessPath.TrimEnd('\') -Leaf);
+                    break;
+                }
+            }
+        }
+
         # Assign each volume to the disk number it belongs to
-        $PartitionMapping[$PartitionData.DiskNumber.ToString()] += $volume;
+        $PartitionMapping[$PartitionData.DiskNumber.ToString()] += [PSCustomObject]@{ 'FileSystemLabel' = $VolumeLabel };
     }
 
     foreach ($disk in $MSFT_Disks) {
