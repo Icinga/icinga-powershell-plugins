@@ -18,6 +18,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Enhancements
 
 * [#486](https://github.com/Icinga/icinga-powershell-plugins/issues/486) Adds new check `File Found` to `Invoke-IcingaCheckDirectory`, which is reported as information by default and allows to override the plugin state with `-OverrideNotFound` in case no files were found matching the provided filters. If `-OverrideNotFound` is set, a not existing `-Path` will no longer throw an exception
+* [#492](https://github.com/Icinga/icinga-powershell-plugins/pull/492) Adds support for `Invoke-IcingaCheckUpdates` to use the new Windows Update offloading feature, allowing to fetch Windows Updates with a dedicated background task to prevent requiring too many permissions for Icinga for Windows
 
 ## 1.15.0 (2026-06-30)
 
