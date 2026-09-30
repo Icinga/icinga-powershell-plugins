@@ -13,7 +13,8 @@ function Get-IcingaDirectoryAll()
         [string]$AccessYoungerThan,
         [string]$AccessOlderThan,
         [string]$FileSizeGreaterThan,
-        [string]$FileSizeSmallerThan
+        [string]$FileSizeSmallerThan,
+        [switch]$IgnoreMissingPath   = $FALSE
     );
 
     if ([string]::IsNullOrEmpty($Path)) {
@@ -35,9 +36,9 @@ function Get-IcingaDirectoryAll()
     }
 
     if ($Recurse) {
-        $DirectoryData = Get-IcingaDirectoryRecurse -Path $Path -FileNames $FileNames;
+        $DirectoryData = Get-IcingaDirectoryRecurse -Path $Path -FileNames $FileNames -IgnoreMissingPath:$IgnoreMissingPath;
     } else {
-        $DirectoryData = Get-IcingaDirectory -Path $Path -FileNames $FileNames;
+        $DirectoryData = Get-IcingaDirectory -Path $Path -FileNames $FileNames -IgnoreMissingPath:$IgnoreMissingPath;
     }
 
     if ([string]::IsNullOrEmpty($ChangeTimeEqual) -eq $FALSE) {
@@ -110,10 +111,15 @@ function Get-IcingaDirectory()
 {
     param(
         [string]$Path,
-        [array]$FileNames
+        [array]$FileNames,
+        [switch]$IgnoreMissingPath = $FALSE
     );
 
     if ((Test-Path $Path) -eq $FALSE) {
+        if ($IgnoreMissingPath) {
+            return @();
+        }
+
         Exit-IcingaThrowException -ExceptionType 'Input' -CustomMessage 'Path not found' -ExceptionThrown 'Plugin execution failed because the defined -Path does not exist on this system' -Force;
         return @();
     }
@@ -146,10 +152,15 @@ function Get-IcingaDirectoryRecurse()
 {
     param(
         [string]$Path,
-        [array]$FileNames
+        [array]$FileNames,
+        [switch]$IgnoreMissingPath = $FALSE
     );
 
     if ((Test-Path $Path) -eq $FALSE) {
+        if ($IgnoreMissingPath) {
+            return @();
+        }
+
         Exit-IcingaThrowException -ExceptionType 'Input' -CustomMessage 'Path not found' -ExceptionThrown 'Plugin execution failed because the defined -Path does not exist on this system' -Force;
         return @();
     }
