@@ -44,6 +44,7 @@ No special permissions required.
 | AccessOlderThan | String | false |  | String in the format like "20d" (allowed units: ms, s, m, h, d, w, M, y).<br /> <br /> Only considers files/folders whose last access time is older than the given period. |
 | FileSizeGreaterThan | String | false |  | String that expects input format like "20MB", which translates to the filze size 20 MB. Allowed units: B, KB, MB, GB, TB.<br /> <br /> Thereby all files with a size of 20 MB or larger are considered within the check. |
 | FileSizeSmallerThan | String | false |  | String that expects input format like "5MB", which translates to the filze size 5 MB. Allowed units: B, KB, MB, GB, TB.<br /> <br /> Thereby all files with a size of 5 MB or less are considered within the check. |
+| OverrideNotFound | String | false |  | This argument will allow you to override the default behavior of the plugin in case no files were found matching the<br /> provided filters. By default, the plugin will only report as information if files were found, but you can set with this argument<br /> if the check should return OK, WARNING, CRITICAL or UNKNOWN instead in case no files were found.<br /> If set, a not existing -Path is handled like a directory without any files |
 | Verbosity | Int32 | false | 0 | Changes the behavior of the plugin output which check states are printed:<br /> 0 (default): Only service checks/packages with state not OK will be printed<br /> 1: Only services with not OK will be printed including OK checks of affected check packages including Package config<br /> 2: Everything will be printed regardless of the check state<br /> 3: Identical to Verbose 2, but prints in addition the check package configuration e.g (All must be [OK]) |
 | NoPerfData | SwitchParameter | false | False |  |
 | ThresholdInterval | String |  |  | Change the value your defined threshold checks against from the current value to a collected time threshold of the Icinga for Windows daemon, as described [here](https://icinga.com/docs/icinga-for-windows/latest/doc/110-Installation/06-Collect-Metrics-over-Time/). An example for this argument would be 1m or 15m which will use the average of 1m or 15m for monitoring. |
@@ -139,6 +140,20 @@ Invoke-IcingaCheckDirectory -Path 'C:\Users\Icinga\Downloads' -Warning 20 -Criti
 \_ [CRITICAL] File Count: 33 is greater than threshold 30
 \_ [WARNING] Total Size: 2.48GiB is greater than threshold 2.00GiB
 | 'average_file_size'=80677000B;; 'folder_count'=1;; 'total_size'=2662341000B;2147484000; 'largest_file_size'=1149023000B;; 'file_count'=33;20;30 'smallest_file_size'=0B;;    
+```
+
+### Example Command 6
+
+```powershell
+Invoke-IcingaCheckDirectory -Path 'C:\Backup' -FileNames 'backup.bak' -OverrideNotFound 'Critical';
+```
+
+### Example Output 6
+
+```powershell
+[CRITICAL] Directory Check: "C:\Backup": 1 Critical [CRITICAL] File Found
+\_ [CRITICAL] File Found: No
+| cbackup::ifw_directory::averagefile=0B;;;; cbackup::ifw_directory::files=0;;;; cbackup::ifw_directory::folders=0;;;; cbackup::ifw_directory::largestfile=0B;;;; cbackup::ifw_directory::smallestfile=0B;;;; cbackup::ifw_directory::totalsize=0B;;;;    
 ```
 
 

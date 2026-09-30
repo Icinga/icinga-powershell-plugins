@@ -94,10 +94,12 @@ function Invoke-IcingaCheckUpdates()
         [int]$Verbosity       = 0
     );
 
-    $PendingUpdates      = Get-IcingaWindowsUpdatesPending -UpdateFilter $UpdateFilter;
+    $PendingUpdates      = Get-IcingaWindowsUpdatePendingList -UpdateFilter $UpdateFilter;
     $WindowsUpdates      = New-IcingaCheckPackage -Name 'Windows Updates' -OperatorAnd -AddSummaryHeader -Verbose $Verbosity;
     $TotalPendingUpdates = New-IcingaCheck -Name 'Total Pending Updates' -Value $PendingUpdates.count -Unit 'c' -MetricIndex 'summary' -MetricName 'count';
     $RebootPending       = New-IcingaCheck -Name 'Reboot Pending' -Value ([int]$PendingUpdates.RebootPending) -Translation @{ 0 = 'No'; 1 = 'Yes' } -MetricIndex 'reboot' -MetricName 'required';
+    $LastFetchedCheck    = (New-IcingaCheck -Name 'Last Update Check' -Value $PendingUpdates.fetched -Unit 's' -NoPerfData).WarnOutOfRange('1200').CritOutOfRange('1800');
+    $LastFetched         = (New-IcingaCheck -Name 'Last Fetch Timestamp' -Value $PendingUpdates.fetched_hr -NoPerfData);
 
     if ($WarnOnReboot) {
         $RebootPending.WarnIfMatch([int][bool]$WarnOnReboot) | Out-Null;
@@ -109,6 +111,8 @@ function Invoke-IcingaCheckUpdates()
     $TotalPendingUpdates.WarnOutOfRange($Warning).CritOutOfRange($Critical) | Out-Null;
     $WindowsUpdates.AddCheck($TotalPendingUpdates);
     $WindowsUpdates.AddCheck($RebootPending);
+    $WindowsUpdates.AddCheck($LastFetchedCheck);
+    $WindowsUpdates.AddCheck($LastFetched);
 
     $SecurityUpdates = New-IcingaCheckPackage -Name 'Security Updates' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
     $RollupUpdates   = New-IcingaCheckPackage -Name 'Update Rollups' -OperatorAnd -Verbose $Verbosity -IgnoreEmptyPackage;
