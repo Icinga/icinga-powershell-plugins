@@ -14,6 +14,7 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 ### Bugfixes
 
 * [#488](https://github.com/Icinga/icinga-powershell-plugins/pull/488) Fixes partition space plugin to use partition label names instead of disk names if given
+* [#494](https://github.com/Icinga/icinga-powershell-plugins/pull/494) Fixes `Invoke-IcingaCheckMPIO` mapping MPIO disks to the wrong physical disks in case non-MPIO disks are present on the system, by matching disks by their serial number instead of their disk index
 
 ### Enhancements
 

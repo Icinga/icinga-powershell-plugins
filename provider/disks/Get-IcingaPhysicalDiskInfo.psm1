@@ -139,7 +139,7 @@ function Global:Get-IcingaPhysicalDiskInfo()
 
             if ($null -ne $MPIOData) {
                 foreach ($mpio in $MPIOData.DriveInfo) {
-                    if ([int]($mpio.Name.Replace('MPIO Disk', '').Trim()) -eq [int]$DiskId) {
+                    if ($mpio.SerialNumber -eq $disk.UniqueId) {
                         $DiskInfo.Add(
                             'MPIO', @{
                                 'InstanceName' = $MPIOData.InstanceName;
