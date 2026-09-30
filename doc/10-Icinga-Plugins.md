@@ -30,7 +30,7 @@ icinga> icinga { Invoke-IcingaCheckCPU -Warning 20 -Critical 40 -Core _Total -Th
 | [Invoke-IcingaCheckScheduledTask](plugins/19-Invoke-IcingaCheckScheduledTask.md) | Checks the current state for a list of specified tasks based on their name and prints the result |
 | [Invoke-IcingaCheckBiosSerial](plugins/01-Invoke-IcingaCheckBiosSerial.md) | Finds out the Bios Serial |
 | [Invoke-IcingaCheckEventlog](plugins/06-Invoke-IcingaCheckEventlog.md) | Checks how many eventlog occurrences of a given type there are. |
-| [Invoke-IcingaCheckHttpJsonResponse](plugins/28-Invoke-IcingaCheckHttpJsonResponse.md) | Retrieves a JSON-Object via Request and performs desired checks |
+| [Invoke-IcingaCheckHttpJsonResponse](plugins/28-Invoke-IcingaCheckHttpJsonResponse.md) | Retrieves a JSON-Object via Request or from a file and performs desired checks |
 | [Invoke-IcingaCheckNetworkInterface](plugins/21-Invoke-IcingaCheckNetworkInterface.md) | Checks availability, state and Usage of Network interfaces and Interface Teams |
 | [Invoke-IcingaCheckProcessCount](plugins/12-Invoke-IcingaCheckProcessCount.md) | Checks how many processes of a process exist. |
 | [Invoke-IcingaCheckUsers](plugins/17-Invoke-IcingaCheckUsers.md) | Checks how many users are logged on to the host |

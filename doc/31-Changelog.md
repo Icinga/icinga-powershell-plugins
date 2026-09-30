@@ -11,16 +11,23 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/25)
 
+### Breaking Changes
+
+* String thresholds for `Invoke-IcingaCheckHttpJsonResponse` are now evaluated inverted: a threshold like `status:*degraded*` returns warning/critical if the value **is** like the threshold, a threshold prefixed with `!` like `status:!OK` if the value is **not** like the threshold. Values are now compared without surrounding quotes. Please read the [upgrading](30-Upgrading-Plugins.md) documentation before upgrading
+
 ### Bugfixes
 
 * [#488](https://github.com/Icinga/icinga-powershell-plugins/pull/488) Fixes partition space plugin to use partition label names instead of disk names if given
 * [#494](https://github.com/Icinga/icinga-powershell-plugins/pull/494) Fixes `Invoke-IcingaCheckMPIO` mapping MPIO disks to the wrong physical disks in case non-MPIO disks are present on the system, by matching disks by their serial number instead of their disk index [@K0nne]
+* [#497](https://github.com/Icinga/icinga-powershell-plugins/pull/497) Fixes `Invoke-IcingaCheckHttpJsonResponse` using the warning threshold instead of the critical threshold for critical checks on `String` values
+* [#497](https://github.com/Icinga/icinga-powershell-plugins/pull/497) Fixes `Invoke-IcingaCheckHttpJsonResponse` comparing `String` values wrapped in single quotes, causing thresholds without wildcards to never match
 
 ### Enhancements
 
 * [#486](https://github.com/Icinga/icinga-powershell-plugins/issues/486) Adds new check `File Found` to `Invoke-IcingaCheckDirectory`, which is reported as information by default and allows to override the plugin state with `-OverrideNotFound` in case no files were found matching the provided filters. If `-OverrideNotFound` is set, a not existing `-Path` will no longer throw an exception
 * [#492](https://github.com/Icinga/icinga-powershell-plugins/pull/492) Adds support for `Invoke-IcingaCheckUpdates` to use the new Windows Update offloading feature, allowing to fetch Windows Updates with a dedicated background task to prevent requiring too many permissions for Icinga for Windows
 * [#493](https://github.com/Icinga/icinga-powershell-plugins/pull/493) Adds support for `Invoke-IcingaCheckMPIO` to use the `ClusterStorage` mount folder name as volume label for Cluster Shared Volumes, as those do not have a volume label assigned [@K0nne]
+* [#497](https://github.com/Icinga/icinga-powershell-plugins/pull/497) Adds support for `Invoke-IcingaCheckHttpJsonResponse` to read JSON content from local or UNC files with `-FilePath`, new value types `Info` to print values as information and `PerfData` to forward performance data strings with quotes removed from labels and a `!` prefix for `String` thresholds to alert if a value is not like the threshold
 
 ## 1.15.0 (2026-06-30)
 

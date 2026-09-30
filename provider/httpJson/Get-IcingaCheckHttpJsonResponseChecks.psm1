@@ -17,12 +17,13 @@ function Get-IcingaCheckHttpJsonResponseChecks()
 
     Write-IcingaDebugMessage -Message 'Creating checks to perform';
 
-    $Checks = New-Object System.Collections.Generic.List[System.Object];
+    $Checks   = New-Object System.Collections.Generic.List[System.Object];
+    $PerfData = New-Object System.Collections.Generic.List[System.String];
 
     foreach ($parameterDefinition in $ParameterDefinitionList.Values) {
         Write-IcingaDebugMessage -Message 'Create check for: {0}' -Objects $parameterDefinition;
 
-        $ValueToCheck = Get-ValueFromJsonObject -JsonObjectToCheck $JsonObjectToCheck -path $parameterDefinition.Path:
+        $ValueToCheck = Get-ValueFromJsonObject -JsonObjectToCheck $JsonObjectToCheck -Path $parameterDefinition.Path;
 
         Write-IcingaDebugMessage -Message 'Checking parameter with alias {0} and value {1}' -Objects $($parameterDefinition.Alias), $ValueToCheck;
 
@@ -58,24 +59,30 @@ function Get-IcingaCheckHttpJsonResponseChecks()
                 }
             } elseif ($parameterDefinition.ValueType -eq "String") {
                 Write-IcingaDebugMessage -Message 'parameter {0} is String. Check value: "{1}", Thresholds Warn: "{2}", Critical: "{3}"' -Objects $($parameterDefinition.Alias), $ValueToCheck, $parameterDefinition.Warning, $parameterDefinition.Critical;
-                # What does this do?
-                $ParameterCheck.Value = "'$ValueToCheck'";
+                $ParameterCheck.Value = $ValueToCheck;
                 if ($null -ne $parameterDefinition.Warning) {
-                    if ($NegateStringResults) {
-                        $ParameterCheck.WarnIfLike($parameterDefinition.Warning) | Out-Null;
-                    }
-                    else {
-                        $ParameterCheck.WarnIfNotLike($parameterDefinition.Warning) | Out-Null;
+                    $WarningThreshold = Get-IcingaHttpJsonStringThreshold -Threshold $parameterDefinition.Warning -NegateStringResults:$NegateStringResults;
+                    if ($WarningThreshold.AlertIfLike) {
+                        $ParameterCheck.WarnIfLike($WarningThreshold.Pattern) | Out-Null;
+                    } else {
+                        $ParameterCheck.WarnIfNotLike($WarningThreshold.Pattern) | Out-Null;
                     }
                 }
                 if ($null -ne $parameterDefinition.Critical) {
-                    if ($NegateStringResults) {
-                        $ParameterCheck.CritIfLike($parameterDefinition.Warning) | Out-Null;
-                    }
-                    else {
-                        $ParameterCheck.CritIfNotLike($parameterDefinition.Warning) | Out-Null;
+                    $CriticalThreshold = Get-IcingaHttpJsonStringThreshold -Threshold $parameterDefinition.Critical -NegateStringResults:$NegateStringResults;
+                    if ($CriticalThreshold.AlertIfLike) {
+                        $ParameterCheck.CritIfLike($CriticalThreshold.Pattern) | Out-Null;
+                    } else {
+                        $ParameterCheck.CritIfNotLike($CriticalThreshold.Pattern) | Out-Null;
                     }
                 }
+            } elseif ($parameterDefinition.ValueType -eq 'Info') {
+                Write-IcingaDebugMessage -Message 'parameter {0} is Info. Value: "{1}"' -Objects $($parameterDefinition.Alias), $ValueToCheck;
+                $ParameterCheck.Value      = $ValueToCheck;
+                $ParameterCheck.NoPerfData = $TRUE;
+            } elseif ($parameterDefinition.ValueType -eq 'PerfData') {
+                Write-IcingaDebugMessage -Message 'parameter {0} is PerfData. Value: "{1}"' -Objects $($parameterDefinition.Alias), $ValueToCheck;
+                $PerfData.Add((Format-IcingaHttpJsonPerfData -PerfData ([string]$ValueToCheck)));
             } else {
                 Write-IcingaDebugMessage -Message 'Parameter type "{0}" not supported' -Objects $($parameterDefinition.ValueType);
             }
@@ -89,7 +96,10 @@ function Get-IcingaCheckHttpJsonResponseChecks()
         }
     }
 
-    Write-IcingaDebugMessage -Message 'Created {0} checks' -Objects $($Checks.Count);
+    Write-IcingaDebugMessage -Message 'Created {0} checks and {1} performance data entries' -Objects $($Checks.Count), $($PerfData.Count);
 
-    return $Checks
+    return @{
+        'Checks'   = $Checks;
+        'PerfData' = $PerfData;
+    };
 }

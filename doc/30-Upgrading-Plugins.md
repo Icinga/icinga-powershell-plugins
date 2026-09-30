@@ -6,6 +6,21 @@ Specific version upgrades are described below. Please note that version updates 
 
 For upgrading plugins, please have a look on the [installation docs](02-Installation.md).
 
+## Upgrading to v1.16.0 (2026-09-30)
+
+### Invoke-IcingaCheckHttpJsonResponse
+
+The evaluation of `String` thresholds has been inverted, to make thresholds easier to read. Values are compared with `-like`, supporting wildcards like `*` and `?`, while a threshold without wildcards is compared for equality.
+
+| Threshold | Before v1.16.0 | Since v1.16.0 |
+| ---       | ---            | ---           |
+| `status:*degraded*` | Returns warning/critical if the value is **not** like `*degraded*` | Returns warning/critical if the value **is** like `*degraded*` |
+| `status:!OK` | Not supported | Returns warning/critical if the value is **not** like `OK` |
+
+In addition, values are no longer wrapped in single quotes before being compared and critical thresholds are no longer evaluated against the warning threshold.
+
+To keep your current monitoring behavior, add the `!` prefix to your `String` thresholds or toggle `-NegateStringResults`, which now inverts every string comparison including thresholds with `!` prefix.
+
 ## Upgrading to v1.7.0 (2021-11-09)
 
 ### Invoke-IcingaCheckUsedPartitionSpace
