@@ -11,10 +11,6 @@ Released closed milestones can be found on [GitHub](https://github.com/Icinga/ic
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/25)
 
-### Breaking Changes
-
-* String thresholds for `Invoke-IcingaCheckHttpJsonResponse` are now evaluated inverted: a threshold like `status:*degraded*` returns warning/critical if the value **is** like the threshold, a threshold prefixed with `!` like `status:!OK` if the value is **not** like the threshold. Values are now compared without surrounding quotes. Please read the [upgrading](30-Upgrading-Plugins.md) documentation before upgrading
-
 ### Bugfixes
 
 * [#488](https://github.com/Icinga/icinga-powershell-plugins/pull/488) Fixes partition space plugin to use partition label names instead of disk names if given
