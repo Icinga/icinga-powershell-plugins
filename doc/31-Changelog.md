@@ -7,6 +7,14 @@ documentation before upgrading to a new release.
 
 Released closed milestones can be found on [GitHub](https://github.com/Icinga/icinga-powershell-plugins/milestones?state=closed).
 
+## 1.16.1 (2026-10-01)
+
+[Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/27)
+
+### Bugfixes
+
+* [#498](https://github.com/Icinga/icinga-powershell-plugins/issues/498) Fixes `Format-IcingaHttpJsonPerfData` which threw a false positive for JEA-ScriptBlock detection rule
+
 ## 1.16.0 (2026-09-30)
 
 [Issue and PRs](https://github.com/Icinga/icinga-powershell-plugins/milestone/25)
