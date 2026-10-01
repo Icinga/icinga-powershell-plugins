@@ -22,7 +22,7 @@ function Format-IcingaHttpJsonPerfData()
         [string]$Label = (($Metric.Substring(0, $SeparatorPos) -replace '[''"]', '').Trim() -replace '[\s=]+', '_');
         [string]$Value = ($Metric.Substring($SeparatorPos + 1) -replace '[''"]', '');
 
-        $Metrics.Add([string]::Format('{0}={1}', $Label, $Value));
+        $Metrics.Add($Label + '=' + $Value);
     }
 
     return [string]::Join(' ', $Metrics);
